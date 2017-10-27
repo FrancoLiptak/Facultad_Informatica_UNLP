@@ -4,12 +4,105 @@
 
 #### a) Implemente un código para cada clase de niño de manera que ejecute pedido de lápiz, lo use por 10 minutos y luego lo devuelva y además el proceso abuela encargada de asignar los lápices.
 
+~~~
+
+chan pedidoNiñoTipoC (int id) 
+chan pedidoNiñoTipoN (int id)
+chan pedidoNiñoTipoA (int id)
+chan enviarLapizA [1..N] (int numLapiz)
+chan enviarLapizN [1..N] (int numLapiz)
+chan enviarLapizC [1..N] (int numLapiz, char tipo)
+chan devolverLapiz(int numLapiz, char tipo)
+
+Process Abuela{
+    int cantLapicesNegros = 15
+    int cantLapicesColores = 10
+    int idNiño
+    int idLapizNiñoA // Al niño A le doy un lápiz del tipo que mayor cantidad tenga.
+    int idLapizDevuelto
+    char tipoLapizEnviado
+    char tipoLapizDevuelto
+
+    while(true){
+        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0){
+            receive pedidoNiñoTipoC(idNiño)
+            send enviarLapizC[idNiño] (cantLapicesColores)
+            cantLapicesColores --
+        }
+
+        if(!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0){
+            receive pedidoNiñoTipoN(idNiño)
+            send enviarLapizN[idNiño] (cantLapicesNegros)
+            cantLapicesNegros --
+        }
+
+        if(!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 OR cantLapicesColores > 0)){
+            if( cantLapicesNegros > cantLapicesColores ){
+                idLapizNiñoA = cantLapicesNegros
+                cantLapicesNegros --
+                tipoLapizEnviado = 'N'
+            }else{
+                idLapizNiñoA = cantLapicesColores
+                cantLapicesColores --
+                tipoLapizEnviado = 'C'
+            }
+            receive pedidoNiñoTipoA(idNiño)
+            send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
+        }
+
+        if(!empty(devolverLapiz)){
+            receive(idLapizDevuelto, tipoLapizDevuelto)
+            if(tipoLapizDevuelto = 'N'){
+                cantLapicesNegros ++
+            }else{
+                cantLapicesColores ++
+            }
+        }
+    }
+
+}
+
+Process NiñoA[a:1..N]{ #Usa cualquier tipo de lápiz
+    int numLapiz
+    while(true){
+        send pedidoNiñoTipoC(a)
+        receive enviarLapizA[a](numLapiz)
+        delay(10*60)
+        send devolverLapiz(numLapiz, 'A')
+    }
+}
+
+Process NiñoN[n:1..N]{ #Solo usa lápices negros
+    int numLapiz
+    while(true){
+        send pedidoNiñoTipoN(n)
+        receive enviarLapizN[n](numLapiz)
+        delay(10*60)
+        send devolverLapiz(numLapiz, 'N')
+    }
+}
+
+Process NiñoC[c:1..N]{ #Solo usa lápices de colores
+    int numLapiz
+    char tipoLapiz
+    while(true){
+        send pedidoNiñoTipoC(c)
+        receive enviarLapizC[c](numLapiz, tipoLapiz)
+        delay(10*60)
+        send devolverLapiz(numLapiz, tipoLapiz)
+    }
+}
+
+~~~
+
+
 #### b) Modificar el ejercicio para que a los niños de tipo A se les puede asignar un lápiz sólo cuando: hay lápiz negro disponible y ningún pedido pendiente de tipo N, o si hay lápiz de color disponible y ningún pedido pendiente de tipo C. 
 
 
 ___
 
 ### 2. Se desea modelar el funcionamiento de un banco en el cual existen 5 cajas para realizar pagos. Existen P personas que desean pagar. Para esto cada una selecciona la caja donde hay menos personas esperando, una vez seleccionada espera a ser atendido. 
+
 #### Nota: maximizando la concurrencia, deben usarse los valores actualizados del tamaño de las colas para seleccionar la caja con menos gente esperando.
 
 ___
@@ -24,7 +117,7 @@ ___
 ##### Nota: maximizar la concurrencia.
 ___
 
-#### 4. Se desea modelar una competencia de atletismo. Para eso existen dos tipos de procesos: C corredores y un portero. Los corredores deben esperar que se habilite la entrada a la pista, donde deben esperar que lleguen todos los corredores para comenzar. El portero es el encargado de habilitar la entrada a la pista.
+### 4. Se desea modelar una competencia de atletismo. Para eso existen dos tipos de procesos: C corredores y un portero. Los corredores deben esperar que se habilite la entrada a la pista, donde deben esperar que lleguen todos los corredores para comenzar. El portero es el encargado de habilitar la entrada a la pista.
 
 ##### NOTAS: el proceso portero NO puede contabilizar nada, su única función es habilitar la entrada a la pista; NO se puede suponer ningún orden en la llegada de los corredores al punto de partida.
 
@@ -34,11 +127,11 @@ ___
 
 ___
 
-#### 5. Suponga que N personas llegan a la cola de un banco. Una vez que la persona se agrega en la cola no espera más de 15 minutos para su atención, si pasado ese tiempo no fue atendida se retira. Para atender a las personas existen 2 empleados que van atendiendo de a una y por orden de llegada a las personas.
+### 5. Suponga que N personas llegan a la cola de un banco. Una vez que la persona se agrega en la cola no espera más de 15 minutos para su atención, si pasado ese tiempo no fue atendida se retira. Para atender a las personas existen 2 empleados que van atendiendo de a una y por orden de llegada a las personas.
 
 ___
 
-#### 6. Existe una casa de comida rápida que es atendida por 1 empleado. Cuando una persona llega se pone en la cola y espera a lo sumo 10 minutos a que el empleado lo atienda. Pasado ese tiempo se retira sin realizar la compra.
+### 6. Existe una casa de comida rápida que es atendida por 1 empleado. Cuando una persona llega se pone en la cola y espera a lo sumo 10 minutos a que el empleado lo atienda. Pasado ese tiempo se retira sin realizar la compra.
 
 #### a) Implementar una solución utilizando un proceso intermedio entre cada persona y el empleado.
 #### b) Implementar una solución sin utilizar un proceso intermedio entre cada persona y el empleado.
