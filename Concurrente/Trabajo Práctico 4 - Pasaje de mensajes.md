@@ -388,6 +388,12 @@ ___
 ~~~
 ## FALTA CHEQUEAR.
 
+chan esperarCliente(int idCliente)
+chan estadoCliente[1..N](string estadoCliente)
+chan terminarAtencion[1..N]()
+chan timerEsperaPersona[1..N]()
+chan personaEsperaTimer[1..N]()
+
 Process Empleado[e:1..2]{
     int idCliente
     string estadoCliente
@@ -432,7 +438,118 @@ ___
 ### 6. Existe una casa de comida rápida que es atendida por 1 empleado. Cuando una persona llega se pone en la cola y espera a lo sumo 10 minutos a que el empleado lo atienda. Pasado ese tiempo se retira sin realizar la compra.
 
 #### a) Implementar una solución utilizando un proceso intermedio entre cada persona y el empleado.
+
+~~~
+## FALTA CHEQUEAR.
+
+chan esperarCliente(int idCliente)
+chan estadoCliente[1..N](string estadoCliente)
+chan terminarAtencion[1..N]()
+chan timerEsperaPersona[1..N]()
+chan personaEsperaTimer[1..N]()
+
+Process Empleado{ // Solo le llegan aquellos clientes a los que puede atender (No se fueron por el Timer)
+    int idCliente
+    string estadoCliente
+
+    while(true){
+        receive atenderCliente(idCliente)
+        send estadoCliente[idCliente]("atendido")
+        atender(idCliente)
+        send terminarAtencion[idCliente]()
+    }
+}
+
+Process Coordinador{
+    int idCliente
+    string estadoCliente
+
+    while(true){
+        receive esperarCliente(idCliente)
+        receive estadoCliente[idCliente](estadoCliente)
+        if( estadoCliente = "esperando" ){
+            send atenderCliente(idCliente)
+        }
+    }
+}
+
+Process Timer[t:1..N]{
+    string estadoCliente
+
+    send timerEsperaPersona[t]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    receive personaEsperaTimer[t]()
+    delar(10*60)
+    receive estadoCliente[t](estadoCliente)
+    if( estadoCliente = "esperando" ){
+        send estadoCliente[idCliente]("irse")
+        send terminarAtencion[idCliente]()
+    }
+}
+
+Process Persona[p:1..N]{
+
+    receive timerEsperaPersona[p]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    send personaEsperaTimer[p]()
+    send esperarCliente(p)
+    send estadoCliente[p]("esperando")
+    receive terminarAtencion[p]()
+    irse()
+}
+
+
+~~~
+
 #### b) Implementar una solución sin utilizar un proceso intermedio entre cada persona y el empleado.
+
+~~~
+## FALTA CHEQUEAR.
+
+chan esperarCliente(int idCliente)
+chan estadoCliente[1..N](string estadoCliente)
+chan terminarAtencion[1..N]()
+chan timerEsperaPersona[1..N]()
+chan personaEsperaTimer[1..N]()
+
+Process Empleado{
+    int idCliente
+    string estadoCliente
+
+    while(true){
+        receive esperarCliente(idCliente)
+        receive estadoCliente[idCliente](estadoCliente)
+        if( estadoCliente = "esperando" ){
+            send estadoCliente[idCliente]("atendido")
+            atender(idCliente)
+            send terminarAtencion[idCliente]()
+        }
+    }
+}
+
+Process Timer[t:1..N]{
+    string estadoCliente
+
+    send timerEsperaPersona[t]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    receive personaEsperaTimer[t]()
+    delar(10*60)
+    receive estadoCliente[t](estadoCliente)
+    if( estadoCliente = "esperando" ){
+        send estadoCliente[idCliente]("irse")
+        send terminarAtencion[idCliente]()
+    }
+}
+
+Process Persona[p:1..N]{
+
+    receive timerEsperaPersona[p]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    send personaEsperaTimer[p]()
+    send esperarCliente(p)
+    send estadoCliente[p]("esperando")
+    receive terminarAtencion[p]()
+    irse()
+}
+
+~~~
+
 ___
 
 ## Pasaje de mensajes sincrónicos (PMS)
