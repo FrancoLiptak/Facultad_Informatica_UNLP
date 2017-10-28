@@ -311,6 +311,10 @@ ___
 
 ~~~
 
+chan habilitarPista()
+chan esperarHabilitacion[1..C]
+chan avisarLlegada()
+
 Process Portero{
 
     receive habilitarPista() // se puede no poner variables?
@@ -343,7 +347,39 @@ Process Coordinador{
 
 #### b) Implementar sin usar un coordinador.
 
+~~~
 
+chan habilitarPista()
+chan esperarHabilitacion[1..C]
+chan avisarLlegada()
+
+Process Portero{
+
+    send avisarLlegada(0)
+    receive sePuedeHabilitar()
+    
+    for(int i = 1; i <= C; i++){
+        send esperarHabilitacion[i] 
+    }
+
+    
+}
+
+Process Corredores[c:1..C]{
+    int cantCorredores
+
+    receive avisarLlegada(cantCorredores)
+    send avisarLlegada(cantCorredores + 1 )
+
+    if ( cantCorredores + 1 = C ){
+        send sePuedeHabilitar()
+    }
+
+    receive esperarHabilitacion[c]()
+
+}
+
+~~~
 ___
 
 ### 5. Suponga que N personas llegan a la cola de un banco. Una vez que la persona se agrega en la cola no espera más de 15 minutos para su atención, si pasado ese tiempo no fue atendida se retira. Para atender a las personas existen 2 empleados que van atendiendo de a una y por orden de llegada a las personas.
