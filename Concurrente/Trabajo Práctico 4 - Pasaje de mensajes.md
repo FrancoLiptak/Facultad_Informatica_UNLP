@@ -98,6 +98,99 @@ Process NiñoC[c:1..N]{ #Solo usa lápices de colores
 
 #### b) Modificar el ejercicio para que a los niños de tipo A se les puede asignar un lápiz sólo cuando: hay lápiz negro disponible y ningún pedido pendiente de tipo N, o si hay lápiz de color disponible y ningún pedido pendiente de tipo C. 
 
+~~~
+
+chan pedidoNiñoTipoC (int id) 
+chan pedidoNiñoTipoN (int id)
+chan pedidoNiñoTipoA (int id)
+chan enviarLapizA [1..N] (int numLapiz)
+chan enviarLapizN [1..N] (int numLapiz)
+chan enviarLapizC [1..N] (int numLapiz, char tipo)
+chan devolverLapiz(int numLapiz, char tipo)
+
+Process Abuela{
+    int cantLapicesNegros = 15
+    int cantLapicesColores = 10
+    int idNiño
+    int idLapizNiñoA // Al niño A le doy un lápiz del tipo que mayor cantidad tenga.
+    int idLapizDevuelto
+    char tipoLapizEnviado
+    char tipoLapizDevuelto
+
+    while(true){
+        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0){
+            receive pedidoNiñoTipoC(idNiño)
+            send enviarLapizC[idNiño] (cantLapicesColores)
+            cantLapicesColores --
+        }
+
+        if(!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0){
+            receive pedidoNiñoTipoN(idNiño)
+            send enviarLapizN[idNiño] (cantLapicesNegros)
+            cantLapicesNegros --
+        }
+
+        if(!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 && empty(pedidoNiñoTipoN) ) OR ( cantLapicesColores > 0) && empty(pedidoNiñoTipoC)){
+            if( empty(pedidoNiñoTipoA) && ( cantLapicesColores > cantLapicesNegros ) ){ 
+                # Primero intento dar lápiz de color, ya que la mayoría de los lapices son de colores.
+                idLapizNiñoA = cantLapicesColores
+                cantLapicesColores --
+                tipoLapizEnviado = 'C'
+            }else{
+                if ( empty(pedidoNiñoTipoN) ){
+                    idLapizNiñoA = cantLapicesNegros
+                    cantLapicesNegros --
+                    tipoLapizEnviado = 'N'
+                }
+            }
+            receive pedidoNiñoTipoA(idNiño)
+            send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
+        }
+
+        if(!empty(devolverLapiz)){
+            receive(idLapizDevuelto, tipoLapizDevuelto)
+            if(tipoLapizDevuelto = 'N'){
+                cantLapicesNegros ++
+            }else{
+                cantLapicesColores ++
+            }
+        }
+    }
+
+}
+
+Process NiñoA[a:1..N]{ #Usa cualquier tipo de lápiz
+    int numLapiz
+    while(true){
+        send pedidoNiñoTipoC(a)
+        receive enviarLapizA[a](numLapiz)
+        delay(10*60)
+        send devolverLapiz(numLapiz, 'A')
+    }
+}
+
+Process NiñoN[n:1..N]{ #Solo usa lápices negros
+    int numLapiz
+    while(true){
+        send pedidoNiñoTipoN(n)
+        receive enviarLapizN[n](numLapiz)
+        delay(10*60)
+        send devolverLapiz(numLapiz, 'N')
+    }
+}
+
+Process NiñoC[c:1..N]{ #Solo usa lápices de colores
+    int numLapiz
+    char tipoLapiz
+    while(true){
+        send pedidoNiñoTipoC(c)
+        receive enviarLapizC[c](numLapiz, tipoLapiz)
+        delay(10*60)
+        send devolverLapiz(numLapiz, tipoLapiz)
+    }
+}
+
+~~~
 
 ___
 
