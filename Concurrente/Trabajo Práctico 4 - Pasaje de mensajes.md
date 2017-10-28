@@ -259,16 +259,36 @@ Process Cocinero[c:1..2]{
     }
 }
 
+Process Administrador{
+    cola colaPedidos
+    int idCliente
+    int idVendedor
+
+    while(true){
+        if(!empty(realizarPedido)) ->   receive realizarPedido(idCliente)
+                                        encolar(colaPedidos, idCliente) // Encolo el cliente que realizó el pedido.
+        □ (!empty(tomarPedido)) ->      receive tomarPedido(idVendedor)
+                                        if(empty(colaPedidos)){
+                                            send darPedido[idVendedor](null)
+                                        }else{
+                                            desencolar(colaPedidos, idCliente)
+                                            send darPedido[idVendedor](idCliente)
+                                        }
+    }
+}
+
 Process Vendedor[v:1..3]{
     int idCliente
 
     while(true){
-        if(!empty(realizarPedido)){
-            receive realizarPedido(idCliente)
-            send cocinarEnBaseAPedido(idCliente)
-        }else{
+
+        send tomarPedido(v)
+        receive (idCliente) // Obtengo el cliente al cual le tengo que cocinar.
+        if ( idCliente = null ){
             minutos = random(1,3)
-            delay(minutos) // Esto simboliza la parte de la heladera. Creo que está mal porque la heladera deberia modelarse.
+            delay(minutos)
+        }else{
+            send cocinarEnBaseAPedido(idCliente)
         }
     }
 
