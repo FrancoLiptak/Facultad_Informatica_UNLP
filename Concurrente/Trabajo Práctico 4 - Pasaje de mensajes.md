@@ -177,24 +177,6 @@ Process NiñoC[c:1..N]{ #Solo usa lápices de colores
     }
 }
 
-
-if(!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 && empty(pedidoNiñoTipoN) ) OR ( cantLapicesColores > 0) && empty(pedidoNiñoTipoC)){
-            if( empty(pedidoNiñoTipoA) && ( cantLapicesColores > cantLapicesNegros ) ){ 
-                # Primero intento dar lápiz de color, ya que la mayoría de los lapices son de colores.
-                idLapizNiñoA = cantLapicesColores
-                cantLapicesColores --
-                tipoLapizEnviado = 'C'
-            }else{
-                if ( empty(pedidoNiñoTipoN) ){
-                    idLapizNiñoA = cantLapicesNegros
-                    cantLapicesNegros --
-                    tipoLapizEnviado = 'N'
-                }
-            }
-            receive pedidoNiñoTipoA(idNiño)
-            send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
-        }
-
 ~~~
 
 ___
@@ -215,12 +197,10 @@ Process Banco{
     int idCajaMenorCola
 
     while(true){
-        if(!empty(pedidoCaja)){ // ¿Este if está al pedo?
-            receive pedidoCaja(idPersona)
-            idCajaMenorCola = detectMin(colaCajas[]) // Asumo que me devuelve la posición con menor valor.
-            colaCajas[idCajaMenorCola]++
-            send recibirCaja(idCajaMenorCola)
-        }
+        receive pedidoCaja(idPersona)
+        idCajaMenorCola = detectMin(colaCajas[]) // Asumo que me devuelve la posición con menor valor.
+        colaCajas[idCajaMenorCola]++
+        send recibirCaja(idCajaMenorCola)
     }
 }
 
@@ -233,17 +213,16 @@ Process Persona[p:1..P]{
     receive recibirCaja(idCajaMenorCola)
     send pedidoAtencion[idCajaMenorCola](p)
     receive respuestaAtencion[idCajaMenorCola](atencion)
+    send avisarFinalizacion(idCajaMenorCola)
 }
 
 Process Caja[c:1..5]{
     int idPersonaAAtender
 
     while(true){
-        if(!empty(pedidoAtencion[c])){ // ¿Este if está al pedo?
-            receive pedidoAtencion[c](idPersonaAAtender)
-            resultadoAtencion = atenderPersona(idPersonaaAtender) //Asumo que me devuelve un boolean
-            send respuestaAAtencion[c] (resultadoAtencion)
-        }
+        receive pedidoAtencion[c](idPersonaAAtender)
+        resultadoAtencion = atenderPersona(idPersonaaAtender) // Asumo que me devuelve un boolean
+        send respuestaAAtencion[c] (resultadoAtencion)
     }
 }
 
@@ -456,11 +435,12 @@ Process Empleado{
         Cola!EmpleadoPidePersona()
         Cola?desencolarPersona(idPersona)
         estadoPersona[idPersona]!EmpleadoConsultaEstado()
-        estadoPersona[idPersona]?EmpleadoRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
+        if estadoPersona[idPersona]?EmpleadoRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
                                                                         estadoPersona[idPersona]!EmpleadoSetteaEstado("atendido")
                                                                         atenderPersona(idPersona)
                                                                         Persona[idPersona]!esperarAtencion()
                                                                     end if
+        end if
     }
 }
 
@@ -470,7 +450,8 @@ Process Cola{
 
     while(true){
         if Persona?encolarPersona(idPersona) --> encolar(colaClientes, idPersona);
-        if (!empty(colaClientes)); Empleado?damePersona() --> Empleado!desencolarPersona( desencolar(colaClientes, idPersona) );
+        □ (!empty(colaClientes)); Empleado?damePersona() --> Empleado!desencolarPersona( desencolar(colaClientes, idPersona) );
+        end if
     }
 
 }
@@ -483,20 +464,23 @@ Process estadoPersona[e:1..N]{
                                                 estado = nuevoEstado
                                                 Persona[e]!resultadoEspera("atendido")
 
-        Timer?TimerConsultaEstado() -->         TimerRecibeEstado!(estado)
+    □   Timer?TimerConsultaEstado() -->         TimerRecibeEstado!(estado)
                                                 TimerSetteaEstado?(nuevoEstado)
                                                 estado = nuevoEstado
                                                 Persona[e]!resultadoEspera("irse")
+    end do
 }
 
 Process Timer[t:1..N]{
+    string estadoPersona
     Persona?iniciarTimer()
     delay(10*60)
   
     estadoPersona[idPersona]!TimerConsultaEstado(t)
-    estadoPersona[t]?TimerRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
+    if estadoPersona[t]?TimerRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
                                                         estadoPersona[t]!TimerSetteaEstado("irse")
                                                         end if
+    end if
 }
 
 Process Persona[p:1..N]{
@@ -516,4 +500,4 @@ Process Persona[p:1..N]{
 
 #### b) Implementar una solución sin utilizar un proceso intermedio entre cada persona y el empleado.
 
-Este ejercicio puede realizarse, pero vale aclarar algo importante: El rol del proceso estadoPersona (en el ejercicio A), cumple la función de solucionar el problema de que uno de los dos procesos (Timer o Empleado), se queden colgados. Por ejemplo, si el Timer provoca que el Cliente se vaya, el Empleado me quedaría colgado. Si por el contrario, el Empleado atiende, provocaría que la persona se vaya, y el Timer quedaría colgado.
+Este ejercicio puede realizarse, pero vale aclarar algo importante: El rol del proceso estadoPersona (en el ejercicio A), cumple la función de solucionar el problema de que uno de los dos procesos (Timer o Empleado), se queden colgados. Por ejemplo, si el Timer provoca que el Cliente se vaya, el Empleado se quedaría colgado. Si por el contrario, el Empleado atiende, provocaría que la persona se vaya, y el Timer quedaría colgado. Se podria hacer que esto no ocurra enviandole un mensaje a aquel proceso que llegue segundo, pero supondria “sincronizar” tanto el timer como al empleado, lo cual es ineficiente y va en contra a lo que dice el enunciado.
