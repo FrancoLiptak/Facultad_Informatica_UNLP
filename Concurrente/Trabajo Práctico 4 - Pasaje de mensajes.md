@@ -198,6 +198,52 @@ ___
 
 #### Nota: maximizando la concurrencia, deben usarse los valores actualizados del tamaño de las colas para seleccionar la caja con menos gente esperando.
 
+~~~
+chan pedidoCaja(int idPersona)
+chan recibirCaja(int idCaja)
+chan pedidoAtencion[1..5](int idPersona)
+chan respuestaAtencion[1..5](boolean atencion) // Consultar la variable atencion
+
+Process Banco{
+    array of int colaCajas[1..5]
+    int idPersona
+    int idCajaMenorCola
+
+    while(true){
+        if(!empty(pedidoCaja)){
+            receive pedidoCaja(idPersona)
+            idCajaMenorCola = detectMin(colaCajas[]) // Asumo que me devuelve la posición con menor valor.
+            colaCajas[idCajaMenorCola]++
+            send recibirCaja(idCajaMenorCola)
+        }
+    }
+}
+
+
+Process Persona[p:1..P]{
+    int idCajaMenorCola
+    boolean atencion
+
+    send pedidoCaja(p)
+    receive recibirCaja(idCajaMenorCola)
+    send pedidoAtencion[idCajaMenorCola](p)
+    receive respuestaAtencion[idCajaMenorCola](atencion)
+}
+
+Process Caja[c:1..5]{
+    int idPersonaAAtender
+
+    while(true){
+        if(!empty(pedidoAtencion[c])){
+            receive pedidoAtencion[c](idPersonaAAtender)
+            resultadoAtencion = atenderPersona(idPersonaaAtender) //Asumo que me devuelve un boolean
+            send respuestaAAtencion[c] (resultadoAtencion)
+        }
+    }
+}
+
+~~~
+
 ___
 
 ### 3. Se debe modelar una casa de Comida Rápida, en el cual trabajan 2 cocineros y 3 vendedores. Además hay C clientes que dejan un pedido y quedan esperando a que se lo alcancen. 
