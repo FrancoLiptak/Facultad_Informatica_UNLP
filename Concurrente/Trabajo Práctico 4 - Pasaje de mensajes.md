@@ -1,4 +1,4 @@
-## Pasaje de mensajes sincrónicos
+## Pasaje de mensajes asincrónicos (PMA)
 
 ### 1. Supongamos que tenemos una abuela que tiene dos tipos de lápices para dibujar: 10 de colores y 15 negros. Además tenemos tres clases de niños que quieren dibujar con los lápices: los que quieren usar sólo los lápices de colores (tipo C), los que usan sólo los lápices negros (tipo N), y los niños que usan cualquier tipo de lápiz (tipo A).
 
@@ -321,9 +321,9 @@ Process Corredores[c:1..C]{
 }
 
 Process Coordinador{
-    int cantCorredores
+    int cantCorredores = 0
     while( cantCorredores < C ){
-        receive avisarLlegada(idCorredor)
+        receive avisarLlegada()
         cantCorredores ++
     }
 
@@ -336,6 +336,7 @@ Process Coordinador{
 
 #### b) Implementar sin usar un coordinador.
 
+
 ___
 
 ### 5. Suponga que N personas llegan a la cola de un banco. Una vez que la persona se agrega en la cola no espera más de 15 minutos para su atención, si pasado ese tiempo no fue atendida se retira. Para atender a las personas existen 2 empleados que van atendiendo de a una y por orden de llegada a las personas.
@@ -346,3 +347,11 @@ ___
 
 #### a) Implementar una solución utilizando un proceso intermedio entre cada persona y el empleado.
 #### b) Implementar una solución sin utilizar un proceso intermedio entre cada persona y el empleado.
+___
+
+## Pasaje de mensajes sincrónicos (PMS)
+
+### 7. En una estación de comunicaciones se cuenta con 10 radares y una unidad de procesamiento que se encarga de procesar la información enviada por los radares. Cada radar repetidamente detecta señales de radio durante 15 segundos y le envía esos datos a la unidad de procesamiento para que los analice. Los radares no deben esperar a ser atendidos para continuar trabajando.
+
+##### Nota: maximizar la concurrencia.
+
