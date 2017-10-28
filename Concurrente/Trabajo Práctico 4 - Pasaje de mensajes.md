@@ -14,7 +14,8 @@ chan pedidoNiñoTipoA (int id)
 chan enviarLapizA [1..N] (int numLapiz)
 chan enviarLapizN [1..N] (int numLapiz)
 chan enviarLapizC [1..N] (int numLapiz, char tipo)
-chan devolverLapiz(int numLapiz, char tipo)
+chan devolverLapizNegro(int numLapiz) // Devuelvo por dos canales distintos por eficiencia.
+chan devolverLapizColor(int numLapi) // Devuelvo por dos canales distintos por eficiencia.
 
 Process Abuela{
     int cantLapicesNegros = 15
@@ -23,44 +24,33 @@ Process Abuela{
     int idLapizNiñoA // Al niño A le doy un lápiz del tipo que mayor cantidad tenga.
     int idLapizDevuelto
     char tipoLapizEnviado
-    char tipoLapizDevuelto
 
     while(true){
-        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0){
-            receive pedidoNiñoTipoC(idNiño)
-            send enviarLapizC[idNiño] (cantLapicesColores)
-            cantLapicesColores --
-        }
+        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0) ->    receive pedidoNiñoTipoC(idNiño)
+                                                                    send enviarLapizC[idNiño] (cantLapicesColores)
+                                                                    cantLapicesColores --
 
-        if(!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0){
-            receive pedidoNiñoTipoN(idNiño)
-            send enviarLapizN[idNiño] (cantLapicesNegros)
-            cantLapicesNegros --
-        }
+        □ (!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0) ->     receive pedidoNiñoTipoN(idNiño)
+                                                                    send enviarLapizN[idNiño] (cantLapicesNegros)
+                                                                    cantLapicesNegros --
 
-        if(!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 OR cantLapicesColores > 0)){
-            if( cantLapicesNegros > cantLapicesColores ){
-                idLapizNiñoA = cantLapicesNegros
-                cantLapicesNegros --
-                tipoLapizEnviado = 'N'
-            }else{
-                idLapizNiñoA = cantLapicesColores
-                cantLapicesColores --
-                tipoLapizEnviado = 'C'
-            }
-            receive pedidoNiñoTipoA(idNiño)
-            send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
-        }
+        □ (!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 )) -> idLapizNiñoA = cantLapicesNegros
+                                                                    cantLapicesNegros --
+                                                                    tipoLapizEnviado = 'N'
+                                                                    receive pedidoNiñoTipoA(idNiño)
+                                                                    send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
 
-        if(!empty(devolverLapiz)){
-            receive(idLapizDevuelto, tipoLapizDevuelto)
-            if(tipoLapizDevuelto = 'N'){
-                cantLapicesNegros ++
-            }else{
-                cantLapicesColores ++
-            }
-        }
-    }
+        □ (!empty(pedidoNiñoTipoA) && (cantLapicesColores > 0)) ->  idLapizNiñoA = cantLapicesColores
+                                                                    cantLapicesColores --
+                                                                    tipoLapizEnviado = 'C'
+                                                                    receive pedidoNiñoTipoA(idNiño)
+                                                                    send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
+
+        □ (!empty(devolverLapizNegro)) ->                           receive devolverLapizNegro(idLapizDevuelto)
+                                                                    cantLapicesNegros ++
+
+        □ (!empty(devolverLapizcolor)) ->                           receive devolverLapizColor(idLapizDevuelto)
+                                                                    cantLapicesColores ++
 
 }
 
@@ -68,9 +58,13 @@ Process NiñoA[a:1..N]{ #Usa cualquier tipo de lápiz
     int numLapiz
     while(true){
         send pedidoNiñoTipoC(a)
-        receive enviarLapizA[a](numLapiz)
+        receive enviarLapizA[a](numLapiz, tipoLapiz)
         delay(10*60)
-        send devolverLapiz(numLapiz, 'A')
+        if ( tipoLapiz = "N" ){
+            send devolverLapizNegro(numLapiz)
+        }else{
+            send devolverLapizColor(numLapiz)
+        }
     }
 }
 
@@ -80,7 +74,7 @@ Process NiñoN[n:1..N]{ #Solo usa lápices negros
         send pedidoNiñoTipoN(n)
         receive enviarLapizN[n](numLapiz)
         delay(10*60)
-        send devolverLapiz(numLapiz, 'N')
+        send devolverLapizNegro(numLapiz)
     }
 }
 
@@ -89,9 +83,9 @@ Process NiñoC[c:1..N]{ #Solo usa lápices de colores
     char tipoLapiz
     while(true){
         send pedidoNiñoTipoC(c)
-        receive enviarLapizC[c](numLapiz, tipoLapiz)
+        receive enviarLapizC[c](numLapiz)
         delay(10*60)
-        send devolverLapiz(numLapiz, tipoLapiz)
+        send devolverLapizColor(numLapiz)
     }
 }
 
@@ -108,7 +102,8 @@ chan pedidoNiñoTipoA (int id)
 chan enviarLapizA [1..N] (int numLapiz)
 chan enviarLapizN [1..N] (int numLapiz)
 chan enviarLapizC [1..N] (int numLapiz, char tipo)
-chan devolverLapiz(int numLapiz, char tipo)
+chan devolverLapizNegro(int numLapiz) // Devuelvo por dos canales distintos por eficiencia.
+chan devolverLapizColor(int numLapi) // Devuelvo por dos canales distintos por eficiencia.
 
 Process Abuela{
     int cantLapicesNegros = 15
@@ -117,22 +112,73 @@ Process Abuela{
     int idLapizNiñoA // Al niño A le doy un lápiz del tipo que mayor cantidad tenga.
     int idLapizDevuelto
     char tipoLapizEnviado
-    char tipoLapizDevuelto
 
     while(true){
-        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0){
-            receive pedidoNiñoTipoC(idNiño)
-            send enviarLapizC[idNiño] (cantLapicesColores)
-            cantLapicesColores --
-        }
+        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0) ->    receive pedidoNiñoTipoC(idNiño)
+                                                                    send enviarLapizC[idNiño] (cantLapicesColores)
+                                                                    cantLapicesColores --
 
-        if(!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0){
-            receive pedidoNiñoTipoN(idNiño)
-            send enviarLapizN[idNiño] (cantLapicesNegros)
-            cantLapicesNegros --
-        }
+        □ (!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0) ->     receive pedidoNiñoTipoN(idNiño)
+                                                                    send enviarLapizN[idNiño] (cantLapicesNegros)
+                                                                    cantLapicesNegros --
 
-        if(!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 && empty(pedidoNiñoTipoN) ) OR ( cantLapicesColores > 0) && empty(pedidoNiñoTipoC)){
+        □ (!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 && empty(pedidoNiñoTipoN))) ->    idLapizNiñoA = cantLapicesNegros
+                                                                                                cantLapicesNegros --
+                                                                                                tipoLapizEnviado = 'N'
+                                                                                                receive pedidoNiñoTipoA(idNiño)
+                                                                                                send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
+
+        □ (!empty(pedidoNiñoTipoA) && (cantLapicesColores > 0 && empty(pedidoNiñoTipoC))) ->    idLapizNiñoA = cantLapicesColores
+                                                                                                cantLapicesColores --
+                                                                                                tipoLapizEnviado = 'C'
+                                                                                                receive pedidoNiñoTipoA(idNiño)
+                                                                                                send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
+
+        □ (!empty(devolverLapizNegro)) ->                           receive devolverLapizNegro(idLapizDevuelto)
+                                                                    cantLapicesNegros ++
+
+        □ (!empty(devolverLapizcolor)) ->                           receive devolverLapizColor(idLapizDevuelto)
+                                                                    cantLapicesColores ++
+
+}
+
+Process NiñoA[a:1..N]{ #Usa cualquier tipo de lápiz
+    int numLapiz
+    while(true){
+        send pedidoNiñoTipoC(a)
+        receive enviarLapizA[a](numLapiz, tipoLapiz)
+        delay(10*60)
+        if ( tipoLapiz = "N" ){
+            send devolverLapizNegro(numLapiz)
+        }else{
+            send devolverLapizColor(numLapiz)
+        }
+    }
+}
+
+Process NiñoN[n:1..N]{ #Solo usa lápices negros
+    int numLapiz
+    while(true){
+        send pedidoNiñoTipoN(n)
+        receive enviarLapizN[n](numLapiz)
+        delay(10*60)
+        send devolverLapizNegro(numLapiz)
+    }
+}
+
+Process NiñoC[c:1..N]{ #Solo usa lápices de colores
+    int numLapiz
+    char tipoLapiz
+    while(true){
+        send pedidoNiñoTipoC(c)
+        receive enviarLapizC[c](numLapiz)
+        delay(10*60)
+        send devolverLapizColor(numLapiz)
+    }
+}
+
+
+if(!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 && empty(pedidoNiñoTipoN) ) OR ( cantLapicesColores > 0) && empty(pedidoNiñoTipoC)){
             if( empty(pedidoNiñoTipoA) && ( cantLapicesColores > cantLapicesNegros ) ){ 
                 # Primero intento dar lápiz de color, ya que la mayoría de los lapices son de colores.
                 idLapizNiñoA = cantLapicesColores
@@ -148,49 +194,6 @@ Process Abuela{
             receive pedidoNiñoTipoA(idNiño)
             send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
         }
-
-        if(!empty(devolverLapiz)){
-            receive(idLapizDevuelto, tipoLapizDevuelto)
-            if(tipoLapizDevuelto = 'N'){
-                cantLapicesNegros ++
-            }else{
-                cantLapicesColores ++
-            }
-        }
-    }
-
-}
-
-Process NiñoA[a:1..N]{ #Usa cualquier tipo de lápiz
-    int numLapiz
-    while(true){
-        send pedidoNiñoTipoC(a)
-        receive enviarLapizA[a](numLapiz)
-        delay(10*60)
-        send devolverLapiz(numLapiz, 'A')
-    }
-}
-
-Process NiñoN[n:1..N]{ #Solo usa lápices negros
-    int numLapiz
-    while(true){
-        send pedidoNiñoTipoN(n)
-        receive enviarLapizN[n](numLapiz)
-        delay(10*60)
-        send devolverLapiz(numLapiz, 'N')
-    }
-}
-
-Process NiñoC[c:1..N]{ #Solo usa lápices de colores
-    int numLapiz
-    char tipoLapiz
-    while(true){
-        send pedidoNiñoTipoC(c)
-        receive enviarLapizC[c](numLapiz, tipoLapiz)
-        delay(10*60)
-        send devolverLapiz(numLapiz, tipoLapiz)
-    }
-}
 
 ~~~
 
