@@ -195,12 +195,17 @@ Process Banco{
     array of int colaCajas[1..5]
     int idPersona
     int idCajaMenorCola
+    int idCaja
 
     while(true){
-        receive pedidoCaja(idPersona)
-        idCajaMenorCola = detectMin(colaCajas[]) // Asumo que me devuelve la posición con menor valor.
-        colaCajas[idCajaMenorCola]++
-        send recibirCaja(idCajaMenorCola)
+        if(!empty(avisarFinalizacion)) ->   receive avisarFinalizacion(idCaja)
+                                        colaCajas[idCaja]--
+        □ (!empty(pedidoCaja) and empty(avisarFinalizacion)) ->  receive pedidoCaja(idPersona)
+                                                                idCajaMenorCola = detectMin(colaCajas[])
+                                                                colaCajas[idCajaMenorCola]++
+                                                                send recibirCaja(idCajaMenorCola)
+        end if
+
     }
 }
 
