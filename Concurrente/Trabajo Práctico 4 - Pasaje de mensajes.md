@@ -355,3 +355,162 @@ ___
 
 ##### Nota: maximizar la concurrencia.
 
+~~~
+
+Process Radar[r:1..10]{
+    string datos
+
+    while(true){
+        delay(15)
+        datos = detectarSeñalDeRadio()
+        Administrador!datosSeñalDeRadio(datos)
+    }
+}
+
+Process Administrador{
+    string datos
+    
+    while(true){
+        if  Radar?datosSeñalDeRadio(datos) --> encolar(cola, datos)
+            !empty(cola); UnidadProcesamiento ? damedatos()--> datosAProcesar!(desencolar(cola,datos))
+        end if
+}
+
+Process UnidadProcesamiento{
+    string datos
+
+    while(true){
+        Administrador!damedatos()
+        Administrador?datosAProcesar(datos)
+        procesar(datos)
+    }
+}
+
+~~~
+
+___
+
+### 8. Supongamos que tenemos una abuela que tiene dos tipos de lápices para dibujar: 10 de colores y 15 negros. Además tenemos tres clases de niños que quieren dibujar con los lápices: los que quieren usar sólo los lápices de colores (tipo C), los que usan sólo los lápices negros (tipo N), y los niños que usan cualquier tipo de lápiz (tipo A).
+
+##### Nota: se deben modelar los procesos niño y el proceso abuela.
+
+#### a) Implemente un código para cada clase de niño de manera que ejecute pedido de lápiz, lo use por 10 minutos y luego lo devuelva y además el proceso abuela encargada de asignar los lápices.
+
+Process NiñoA[a:1..N]{
+
+}
+
+___
+
+### 9. Se debe modelar la atención en una panadería por parte de 3 empleados. Hay C clientes que ingresan al negocio para ser atendidos por cualquiera de los empleados, los cuales deben atenderse de acuerdo al orden de llegada.
+
+##### Nota: maximizar la concurrencia.
+
+Process Empleado[e:1..3]{
+    int idCliente
+
+    while(true){
+        Panaderia!tomarPedido(e)
+        Panaderia?enviarPedido(idCliente)
+        "atenderCliente"
+        Cliente[idCliente]!notificacionAtencion()
+    }
+
+}
+
+Process Panaderia{
+    int idCliente
+    int idEmpleado
+    cola colaClientes
+
+    while(true){
+        if Cliente[*]?llegaCliente(idCliente) --> encolar(colaClientes, idCliente);
+            !empty(colaClientes); Empleado[*]?tomarPedido(idEmpleado) --> desencolar(colaClientes, idCliente)
+                                                                          Empleado[idEmpleado]!enviarPedido(idCliente);
+        end if
+    }
+}
+
+Process Cliente[c:1..C]{
+    Panaderia!llegaCliente(c)
+    Empleado[*]?notificacionAtencion()
+}
+
+___
+
+### 10.Existe una casa de comida rápida que es atendida por 1 empleado. Cuando una persona llega se pone en la cola y espera a lo sumo 10 minutos a que el empleado lo atienda. Pasado ese tiempo se retira sin realizar la compra.
+
+#### a) Implementar una solución utilizando un proceso intermedio entre cada persona y el empleado.
+
+~~~
+
+Process Empleado{
+    int idPersona
+    string estadoPersona
+
+    while(true){
+
+        Cola!EmpleadoPidePersona()
+        Cola?desencolarPersona(idPersona)
+        estadoPersona[idPersona]!EmpleadoConsultaEstado()
+        estadoPersona[idPersona]?EmpleadoRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
+                                                                        estadoPersona[idPersona]!EmpleadoSetteaEstado("atendido")
+                                                                        atenderPersona(idPersona)
+                                                                        Persona[idPersona]!esperarAtencion()
+                                                                    end if
+    }
+}
+
+Process Cola{
+    cola ColaPersonas
+    int idPersona
+
+    while(true){
+        if Persona?encolarPersona(idPersona) --> encolar(colaClientes, idPersona);
+        if (!empty(colaClientes)); Empleado?damePersona() --> Empleado!desencolarPersona( desencolar(colaClientes, idPersona) );
+    }
+
+}
+
+Process estadoPersona[e:1..N]{
+    string estado ='esperando'
+
+    do Empleado?EmpleadoConsultaEstado() -->    EmpleadoRecibeEstado!(estado)
+                                                EmpleadoSetteaEstado?(nuevoEstado)
+                                                estado = nuevoEstado
+                                                Persona[e]!resultadoEspera("atendido")
+
+        Timer?TimerConsultaEstado() -->         TimerRecibeEstado!(estado)
+                                                TimerSetteaEstado?(nuevoEstado)
+                                                estado = nuevoEstado
+                                                Persona[e]!resultadoEspera("irse")
+}
+
+Process Timer[t:1..N]{
+    Persona?iniciarTimer()
+    delay(10*60)
+  
+    estadoPersona[idPersona]!TimerConsultaEstado(t)
+    estadoPersona[t]?TimerRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
+                                                        estadoPersona[t]!TimerSetteaEstado("irse")
+                                                        end if
+}
+
+Process Persona[p:1..N]{
+    string estado
+
+    Timer[p]!iniciarTimer()
+    Cola!encolarPersona(p)
+    Estado?resultadoEspera(estado)
+
+    if (estado = "atendido"){
+        Empleado?esperarAtencion()
+    }
+
+}
+
+~~~
+
+#### b) Implementar una solución sin utilizar un proceso intermedio entre cada persona y el empleado.
+
+Este ejercicio puede realizarse, pero vale aclarar algo importante: El rol del proceso estadoPersona (en el ejercicio A), cumple la función de solucionar el problema de que uno de los dos procesos (Timer o Empleado), se queden colgados. Por ejemplo, si el Timer provoca que el Cliente se vaya, el Empleado me quedaría colgado. Si por el contrario, el Empleado atiende, provocaría que la persona se vaya, y el Timer quedaría colgado.
