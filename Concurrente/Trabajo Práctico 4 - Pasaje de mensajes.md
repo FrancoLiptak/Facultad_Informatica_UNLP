@@ -1,3 +1,5 @@
+## Pasaje de mensajes sincrónicos
+
 ### 1. Supongamos que tenemos una abuela que tiene dos tipos de lápices para dibujar: 10 de colores y 15 negros. Además tenemos tres clases de niños que quieren dibujar con los lápices: los que quieren usar sólo los lápices de colores (tipo C), los que usan sólo los lápices negros (tipo N), y los niños que usan cualquier tipo de lápiz (tipo A).
 
 ##### Nota: se deben modelar los procesos niño y el proceso abuela.
@@ -252,8 +254,13 @@ ___
 
 ### Repetidamente cada cocinero toma un pedido pendiente dejado por los vendedores, lo cocina y se lo entrega directamente al cliente correspondiente.
 
-
 ##### Nota: maximizar la concurrencia.
+
+~~~
+
+
+
+~~~
 ___
 
 ### 4. Se desea modelar una competencia de atletismo. Para eso existen dos tipos de procesos: C corredores y un portero. Los corredores deben esperar que se habilite la entrada a la pista, donde deben esperar que lleguen todos los corredores para comenzar. El portero es el encargado de habilitar la entrada a la pista.
