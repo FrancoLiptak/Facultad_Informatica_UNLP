@@ -199,7 +199,7 @@ Process Banco{
 
     while(true){
         if(!empty(avisarFinalizacion)) ->   receive avisarFinalizacion(idCaja)
-                                        colaCajas[idCaja]--
+                                            colaCajas[idCaja]--
         □ (!empty(pedidoCaja) and empty(avisarFinalizacion)) ->  receive pedidoCaja(idPersona)
                                                                 idCajaMenorCola = detectMin(colaCajas[])
                                                                 colaCajas[idCajaMenorCola]++
@@ -384,6 +384,49 @@ ___
 
 ### 5. Suponga que N personas llegan a la cola de un banco. Una vez que la persona se agrega en la cola no espera más de 15 minutos para su atención, si pasado ese tiempo no fue atendida se retira. Para atender a las personas existen 2 empleados que van atendiendo de a una y por orden de llegada a las personas.
 
+
+~~~
+## FALTA CHEQUEAR.
+
+Process Empleado[e:1..2]{
+    int idCliente
+    string estadoCliente
+
+    while(true){
+        receive esperarCliente(idCliente)
+        receive estadoCliente[idCliente](estadoCliente)
+        if( estadoCliente = "esperando" ){
+            send estadoCliente[idCliente]("atendido")
+            atender(idCliente)
+            send terminarAtencion[idCliente]()
+        }
+    }
+}
+
+Process Timer[t:1..N]{
+    string estadoCliente
+
+    send timerEsperaPersona[t]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    receive personaEsperaTimer[t]()
+    delar(15*60)
+    receive estadoCliente[t](estadoCliente)
+    if( estadoCliente = "esperando" ){
+        send estadoCliente[idCliente]("irse")
+        send terminarAtencion[idCliente]()
+    }
+}
+
+Process Persona[p:1..N]{
+
+    receive timerEsperaPersona[p]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    send personaEsperaTimer[p]()
+    send esperarCliente(p)
+    send estadoCliente[p]("esperando")
+    receive terminarAtencion[p]()
+    irse()
+}
+
+~~~
 ___
 
 ### 6. Existe una casa de comida rápida que es atendida por 1 empleado. Cuando una persona llega se pone en la cola y espera a lo sumo 10 minutos a que el empleado lo atienda. Pasado ese tiempo se retira sin realizar la compra.
@@ -440,6 +483,8 @@ ___
 #### a) Implemente un código para cada clase de niño de manera que ejecute pedido de lápiz, lo use por 10 minutos y luego lo devuelva y además el proceso abuela encargada de asignar los lápices.
 
 ~~~
+
+## FALTA CHEQUEAR.
 
 Process Abuela{
 	int idNiño, negro, color;
@@ -511,7 +556,8 @@ Process NiñoN[n: 1..N]{
 #### b) Modificar el ejercicio para que a los niños de tipo A se les puede asignar un lápiz sólo cuando: hay lápiz negro disponible y ningún pedido pendiente de tipo N, o si hay lápiz de color disponible y ningún pedido pendiente de tipo C.
 
 ~~~
-## CONSULTAR.
+
+## FALTA CHEQUEAR.
 
 Process Coordinador{
 	cola colaN, colaC, colaA;
@@ -596,6 +642,8 @@ ___
 ### 9. Se debe modelar la atención en una panadería por parte de 3 empleados. Hay C clientes que ingresan al negocio para ser atendidos por cualquiera de los empleados, los cuales deben atenderse de acuerdo al orden de llegada.
 
 ##### Nota: maximizar la concurrencia.
+
+~~~ 
 
 Process Empleado[e:1..3]{
     int idCliente
