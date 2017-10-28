@@ -378,10 +378,158 @@ ___
 
 #### a) Implemente un código para cada clase de niño de manera que ejecute pedido de lápiz, lo use por 10 minutos y luego lo devuelva y además el proceso abuela encargada de asignar los lápices.
 
-Process NiñoA[a:1..N]{
+~~~
+
+Process Abuela{
+	int idNiño, negro, color;
+	string lapiz;
+	negro:= 15;
+	color:= 10;
+	while (true){
+		if negro > 0; NiñoN[*]?PedirLapizNegro(idNiño) →    negro:= negro - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘negro’);
+
+		□ color > 0; NiñoC[*]?PedirLapizColor(idNiño) →     color:= color - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘color’);
+
+		□ negro > 0; NiñoA[*]?PedirLapiz(idNiño) →          negro:= negro - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘negro’);
+
+		□ color > 0; NiñoA[*]?PedirLapiz(idNiño) →          color:= color - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘color’);
+
+		□ NiñoC[*]?DevolverLapizColor(lapiz) → color:= color + 1; 
+		□ NiñoN[*]?DevolverLapizNegro(lapiz) → negro:= negro + 1; 
+		□ NiñoA[*]?DevolverLapizColor(lapiz) → color:= color + 1; 
+		□ NiñoA[*]?DevolverLapizNegro(lapiz) → negro:= negro + 1; 
+
+		end if
+}
 
 }
 
+
+Process NiñoA[i: 1..A]{
+	string lapiz;
+	while(true){
+		Abuela!PedirLapiz(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		if (lapiz == “negro”){
+			Abuela!DevolverLapizNegro(lapiz);
+		else{
+	        Abuela!DevolverLapizColor(lapiz);
+        }
+    }
+}
+
+
+Process NiñoC[i: 1..C]{
+	string lapiz;
+	while(true){
+		Abuela!PedirLapizColor(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		Abuela!DevolverLapizColor(lapiz);
+    }
+}
+
+
+Process NiñoN[n: 1..N]{
+	string lapiz;
+	while(true){
+		Abuela!PedirLapizNegro(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		Abuela!DevolverLapizNegro(lapiz);
+    }
+}
+
+~~~
+
+#### b) Modificar el ejercicio para que a los niños de tipo A se les puede asignar un lápiz sólo cuando: hay lápiz negro disponible y ningún pedido pendiente de tipo N, o si hay lápiz de color disponible y ningún pedido pendiente de tipo C.
+
+~~~
+## CONSULTAR.
+
+Process Coordinador{
+	cola colaN, colaC, colaA;
+	while(true){
+	    if NiñoN[*]?PedirLapizNegro(idNiño) → encolar (colaN, idNiño);
+        □ NiñoC[*]?PedirLapizColor(idNiño) → encolar (colaC, idNiño);
+        □ NiñoA[*]?PedirLapiz(idNiño) → encolar (colaA, idNiño);
+        □ (empty(ColaC) && empty(ColaN)); Abuela!atenderNiñoA( desencolar(ColaA) );
+        □  (!empty(colaC)); Abuela!atenderNiñoC( desencolar(colaC) );
+        □  (!empty(ColaN)); Abuela!atenderNiñoN( desencolar(ColaN) );
+	}
+}
+
+Process Abuela{
+	int idNiño, negro, color;
+	string lapiz;
+	negro:= 15;
+	color:= 10;
+
+	while (true){
+		if negro > 0; Coordinador?atenderNiñoN(idNiño) →    negro:= negro - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘negro’);
+
+		□ color > 0; Coordinador?atenderNiñoC(idNiño) →     color:= color - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘color’);
+
+		□ negro > 0; Coordinador?atenderNiñoA(idNiño) →     negro:= negro - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘negro’);
+
+		□ color > 0; Coordinador?atenderNiñoA(idNiño) →     color:= color - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘color’);
+
+		□ NiñoC[*]?DevolverLapizColor(lapiz) →              color:= color + 1; 
+		□ NiñoN[*]?DevolverLapizNegro(lapiz) →              negro:= negro + 1; 
+		□ NiñoA[*]?DevolverLapizColor(lapiz) →              color:= color + 1; 
+		□ NiñoA[*]?DevolverLapizNegro(lapiz) →              negro:= negro + 1; 
+
+		end if
+}
+
+}
+
+Process NiñoA[i: 1..A]{
+	string lapiz;
+	while(true){
+		Coordinador!PedirLapiz(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		if (lapiz == “negro”){
+			Abuela!DevolverLapizNegro(lapiz);
+		else{
+	        Abuela!DevolverLapizColor(lapiz);
+        }
+    }
+}
+
+
+Process NiñoC[i: 1..C]{
+	string lapiz;
+	while(true){
+		Coordinador!PedirLapizColor(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		Abuela!DevolverLapizColor(lapiz);
+    }
+}
+
+
+Process NiñoN[n: 1..N]{
+	string lapiz;
+	while(true){
+		Coordinador!PedirLapizNegro(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		Abuela!DevolverLapizNegro(lapiz);
+    }
+}
+
+~~~
 ___
 
 ### 9. Se debe modelar la atención en una panadería por parte de 3 empleados. Hay C clientes que ingresan al negocio para ser atendidos por cualquiera de los empleados, los cuales deben atenderse de acuerdo al orden de llegada.
@@ -417,6 +565,8 @@ Process Cliente[c:1..C]{
     Panaderia!llegaCliente(c)
     Empleado[*]?notificacionAtencion()
 }
+
+~~~
 
 ___
 
@@ -500,4 +650,4 @@ Process Persona[p:1..N]{
 
 #### b) Implementar una solución sin utilizar un proceso intermedio entre cada persona y el empleado.
 
-Este ejercicio puede realizarse, pero vale aclarar algo importante: El rol del proceso estadoPersona (en el ejercicio A), cumple la función de solucionar el problema de que uno de los dos procesos (Timer o Empleado), se queden colgados. Por ejemplo, si el Timer provoca que el Cliente se vaya, el Empleado se quedaría colgado. Si por el contrario, el Empleado atiende, provocaría que la persona se vaya, y el Timer quedaría colgado. Se podria hacer que esto no ocurra enviandole un mensaje a aquel proceso que llegue segundo, pero supondria “sincronizar” tanto el timer como al empleado, lo cual es ineficiente y va en contra a lo que dice el enunciado.
+Este ejercicio puede realizarse, pero vale aclarar algo importante: El rol del proceso estadoPersona (en el ejercicio A), cumple la función de solucionar el problema de que uno de los dos procesos (Timer o Empleado), se queden colgados. Por ejemplo, si el Timer provoca que el Cliente se vaya, el Empleado se quedaría colgado. Si por el contrario, el Empleado atiende, provocaría que la persona se vaya, y el Timer quedaría colgado. Se podria hacer que esto no ocurra enviandole un mensaje a aquel proceso que llegue segundo, pero supondria “sincronizar” tanto el timer como al empleado, lo cual es ineficiente y va en contra a lo que dice el enunciado.s
