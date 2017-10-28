@@ -212,7 +212,7 @@ Process Banco{
     int idCajaMenorCola
 
     while(true){
-        if(!empty(pedidoCaja)){
+        if(!empty(pedidoCaja)){ // ¿Este if está al pedo?
             receive pedidoCaja(idPersona)
             idCajaMenorCola = detectMin(colaCajas[]) // Asumo que me devuelve la posición con menor valor.
             colaCajas[idCajaMenorCola]++
@@ -236,7 +236,7 @@ Process Caja[c:1..5]{
     int idPersonaAAtender
 
     while(true){
-        if(!empty(pedidoAtencion[c])){
+        if(!empty(pedidoAtencion[c])){ // ¿Este if está al pedo?
             receive pedidoAtencion[c](idPersonaAAtender)
             resultadoAtencion = atenderPersona(idPersonaaAtender) //Asumo que me devuelve un boolean
             send respuestaAAtencion[c] (resultadoAtencion)
@@ -257,8 +257,40 @@ ___
 ##### Nota: maximizar la concurrencia.
 
 ~~~
+chan realizarPedido(int idCliente)
+chan cocinarEnBaseAPedido(int idCliente)
+chan entregarPlato[1..C](string plato) // Representa al plato con una descripción o nombre. ¿Puedo usar canal sin variables?
 
+Process Cocinero[c:1..2]{
+    int idCliente
 
+    while(true){
+        receive cocinarEnBaseAPedido(idCliente)
+        plato = cocinar() // Asumo que me devuelve el plato
+        send entregarPlato[idCliente](plato)
+    }
+}
+
+Process Vendedor[v:1..3]{
+    int idCliente
+
+    while(true){
+        if(!empty(realizarPedido)){
+            receive realizarPedido(idCliente)
+            send cocinarEnBaseAPedido(idCliente)
+        }else{
+            minutos = random(1,3)
+            delay(minutos) // Esto simboliza la parte de la heladera. Creo que está mal porque la heladera deberia modelarse.
+        }
+    }
+
+}
+
+Process Clientes[c:1..C]{
+    send realizarPedido(c)
+    receive entregarPlato[c](plato)
+    comer(plato)
+}
 
 ~~~
 ___
