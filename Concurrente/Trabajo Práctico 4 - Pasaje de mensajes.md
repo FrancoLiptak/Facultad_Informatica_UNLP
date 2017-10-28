@@ -257,6 +257,7 @@ ___
 ##### Nota: maximizar la concurrencia.
 
 ~~~
+
 chan realizarPedido(int idCliente)
 chan cocinarEnBaseAPedido(int idCliente)
 chan entregarPlato[1..C](string plato) // Representa al plato con una descripción o nombre. ¿Puedo usar canal sin variables?
@@ -300,8 +301,40 @@ ___
 ##### NOTAS: el proceso portero NO puede contabilizar nada, su única función es habilitar la entrada a la pista; NO se puede suponer ningún orden en la llegada de los corredores al punto de partida.
 
 #### a) Implementar usando un coordinador.
-#### b) Implementar sin usar un coordinador.
 
+~~~
+
+Process Portero{
+
+    receive habilitarPista() // se puede no poner variables?
+    for(int i = 1; i <= C; i++){
+        send esperarHabilitacion[i] 
+    }
+
+    
+}
+
+Process Corredores[c:1..C]{
+    send avisarLlegada()
+    receive esperarHabilitacion[c]()
+
+}
+
+Process Coordinador{
+    int cantCorredores
+    while( cantCorredores < C ){
+        receive avisarLlegada(idCorredor)
+        cantCorredores ++
+    }
+
+    // Cuando sale es porque cantCorredores = C
+
+    send habilitarPista()
+}
+
+~~~
+
+#### b) Implementar sin usar un coordinador.
 
 ___
 
