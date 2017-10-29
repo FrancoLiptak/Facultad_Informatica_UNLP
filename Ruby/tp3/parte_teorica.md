@@ -18,6 +18,7 @@ https://airbrake.io/blog/ruby-exception-handling/ruby-exception-classes
 
 - SystemExit: el método ` Kernel#exit ` fué invocado para finalizar el proceso actual.
 
+___
 
 ### 2. ¿Cuál es la diferencia entre raise y throw? ¿Para qué usarías una u otra opción?
 
@@ -28,6 +29,8 @@ Throw and Catch: Se usa como un "go to". La idea es que la ejecución siga a par
 Raise and rescue: maneja excepciones. La palabra clave ` raise ` por defecto levanta una excepción de la clase RuntimeError, como fué definido en el punto anterior. Para levantar cualquier otra excepción, será necesario indicar su nombre: ` rescue nombreExcepcion `.
 
 Ruby emplea manejo de excepciones por terminación.
+
+___
 
 ### 3. ¿Para qué sirven begin .. rescue .. else y ensure? Pensá al menos 2 casos concretos en que usarías estas sentencias en un script Ruby
 
@@ -49,6 +52,8 @@ Si necesitas garantizar que algún proceso es ejecutado al final de un bloque de
 
 ##### Mas información y ejemplos en: https://es.wikibooks.org/wiki/Programaci%C3%B3n_en_Ruby/Manejo_de_excepciones
 
+___
+
 ### 4. ¿Para qué sirve retry? ¿Cómo evitarías caer en un loop infinito al usarla?
 
 Si ` retry ` aparece en la cláusula ` rescue ` de una expresión Begin, vuelve al comienzo del cuerpo del Begin.
@@ -65,6 +70,8 @@ end
 ~~~
 
 La idea de usar ` retry ` es de poder solucionar un error en tiempo de ejecución y volver a intentar ejecutar, de manera de que el programa siga su ejecución correctamente. Obviamente se esperará que el manejo de la excepción haya sido exitoso, de manera de no caer en un loop infinito.
+
+___
 
 ### 5. ¿Cuáles son las diferencias entre los siguientes métodos?
 
@@ -83,6 +90,8 @@ end
 
 ~~~
 
+La ejecución de opcion_1 retorna 0. Podemos afirmar que se produce una excepción del tipo NoMethodError cuando se ejecuta ` nil * 3 `.
+
 ~~~
 
 def opcion_2
@@ -100,6 +109,8 @@ end
 
 ~~~
 
+La ejecución de opcion_2 retorna nil e imprime 0. La ejecución del bloque termina y se ejecuta ` rescue `. Por esto es que imprime 0 (la variable C queda con valor 0). 
+
 ~~~
 
 def opcion_3
@@ -111,6 +122,8 @@ end
 
 ~~~
 
+Mismo caso que con la opcion_2.
+
 ~~~
 
 def opcion_4
@@ -121,3 +134,5 @@ def opcion_4
 end
 
 ~~~
+
+Como el rescue está dentro del bloque, se ejecutará para cada instrucción que levante una excepción, y la ejecución continuará sin problemas. La variable 0 queda con valor [ 3, 0, 9, 0, 15, 0, 21, 0, 27, 0 ].
