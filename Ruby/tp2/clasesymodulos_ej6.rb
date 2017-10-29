@@ -14,7 +14,9 @@ module GenericFactory
         base.extend ClassMethods
     end 
 
-    # una función self.included se llama cuando un módulo es incluído en una clase. Esto permite que los métodos de ClassMethods sean incluídos en el contexto de la base.
+    # una función self.included se llama cuando un módulo es incluído en una clase. 
+    # Esto permite que los métodos de ClassMethods sean incluídos en el contexto de la base.
+    # Gracias al uso de extend, los métodos de ClassMethods serán métodos de clase.
 end
 
 class Prueba
