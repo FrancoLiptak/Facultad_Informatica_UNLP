@@ -48,3 +48,76 @@ Ejecuta su bloque si el nombre de la excepción levantada no coincide con ningun
 Si necesitas garantizar que algún proceso es ejecutado al final de un bloque de código sin importar si se generó una excepción o no, puedes usar la cláusula ensure. ensure va al final de la última cláusula rescue y contiene un bloque de código que siempre va a ser ejecutado.
 
 ##### Mas información y ejemplos en: https://es.wikibooks.org/wiki/Programaci%C3%B3n_en_Ruby/Manejo_de_excepciones
+
+### 4. ¿Para qué sirve retry? ¿Cómo evitarías caer en un loop infinito al usarla?
+
+Si ` retry ` aparece en la cláusula ` rescue ` de una expresión Begin, vuelve al comienzo del cuerpo del Begin.
+
+~~~
+
+begin
+   do_something # exception raised
+rescue
+   # handles error
+   retry  # restart from beginning
+end
+
+~~~
+
+La idea de usar ` retry ` es de poder solucionar un error en tiempo de ejecución y volver a intentar ejecutar, de manera de que el programa siga su ejecución correctamente. Obviamente se esperará que el manejo de la excepción haya sido exitoso, de manera de no caer en un loop infinito.
+
+### 5. ¿Cuáles son las diferencias entre los siguientes métodos?
+
+~~~
+
+def opcion_1
+    a = [1, nil, 3, nil, 5, nil, 7, nil, 9, nil]
+    b = 3
+    c = a.map do | x|
+        x * b
+    end
+    puts c.inspect
+rescue
+    0
+end
+
+~~~
+
+~~~
+
+def opcion_2
+    c = begin
+        a = [1, nil, 3, nil, 5, nil, 7, nil, 9, nil]
+        b = 3
+        a.map do | x|
+            x * b
+        end
+        rescue
+            0
+        end
+    puts c.inspect
+end
+
+~~~
+
+~~~
+
+def opcion_3
+    a = [1, nil, 3, nil, 5, nil, 7, nil, 9, nil]
+    b = 3
+    c = a.map { | x| x * b } rescue 0
+    puts c.inspect
+end
+
+~~~
+
+~~~
+
+def opcion_4
+    a = [1, nil, 3, nil, 5, nil, 7, nil, 9, nil]
+    b = 3
+    c = a.map { | x| x * b rescue 0 }
+    puts c.inspect
+end
+
+~~~
