@@ -14,7 +14,8 @@ chan pedidoNiñoTipoA (int id)
 chan enviarLapizA [1..N] (int numLapiz)
 chan enviarLapizN [1..N] (int numLapiz)
 chan enviarLapizC [1..N] (int numLapiz, char tipo)
-chan devolverLapiz(int numLapiz, char tipo)
+chan devolverLapizNegro(int numLapiz) // Devuelvo por dos canales distintos por eficiencia.
+chan devolverLapizColor(int numLapi) // Devuelvo por dos canales distintos por eficiencia.
 
 Process Abuela{
     int cantLapicesNegros = 15
@@ -23,44 +24,33 @@ Process Abuela{
     int idLapizNiñoA // Al niño A le doy un lápiz del tipo que mayor cantidad tenga.
     int idLapizDevuelto
     char tipoLapizEnviado
-    char tipoLapizDevuelto
 
     while(true){
-        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0){
-            receive pedidoNiñoTipoC(idNiño)
-            send enviarLapizC[idNiño] (cantLapicesColores)
-            cantLapicesColores --
-        }
+        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0) ->    receive pedidoNiñoTipoC(idNiño)
+                                                                    send enviarLapizC[idNiño] (cantLapicesColores)
+                                                                    cantLapicesColores --
 
-        if(!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0){
-            receive pedidoNiñoTipoN(idNiño)
-            send enviarLapizN[idNiño] (cantLapicesNegros)
-            cantLapicesNegros --
-        }
+        □ (!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0) ->     receive pedidoNiñoTipoN(idNiño)
+                                                                    send enviarLapizN[idNiño] (cantLapicesNegros)
+                                                                    cantLapicesNegros --
 
-        if(!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 OR cantLapicesColores > 0)){
-            if( cantLapicesNegros > cantLapicesColores ){
-                idLapizNiñoA = cantLapicesNegros
-                cantLapicesNegros --
-                tipoLapizEnviado = 'N'
-            }else{
-                idLapizNiñoA = cantLapicesColores
-                cantLapicesColores --
-                tipoLapizEnviado = 'C'
-            }
-            receive pedidoNiñoTipoA(idNiño)
-            send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
-        }
+        □ (!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 )) -> idLapizNiñoA = cantLapicesNegros
+                                                                    cantLapicesNegros --
+                                                                    tipoLapizEnviado = 'N'
+                                                                    receive pedidoNiñoTipoA(idNiño)
+                                                                    send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
 
-        if(!empty(devolverLapiz)){
-            receive(idLapizDevuelto, tipoLapizDevuelto)
-            if(tipoLapizDevuelto = 'N'){
-                cantLapicesNegros ++
-            }else{
-                cantLapicesColores ++
-            }
-        }
-    }
+        □ (!empty(pedidoNiñoTipoA) && (cantLapicesColores > 0)) ->  idLapizNiñoA = cantLapicesColores
+                                                                    cantLapicesColores --
+                                                                    tipoLapizEnviado = 'C'
+                                                                    receive pedidoNiñoTipoA(idNiño)
+                                                                    send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
+
+        □ (!empty(devolverLapizNegro)) ->                           receive devolverLapizNegro(idLapizDevuelto)
+                                                                    cantLapicesNegros ++
+
+        □ (!empty(devolverLapizcolor)) ->                           receive devolverLapizColor(idLapizDevuelto)
+                                                                    cantLapicesColores ++
 
 }
 
@@ -68,9 +58,13 @@ Process NiñoA[a:1..N]{ #Usa cualquier tipo de lápiz
     int numLapiz
     while(true){
         send pedidoNiñoTipoC(a)
-        receive enviarLapizA[a](numLapiz)
+        receive enviarLapizA[a](numLapiz, tipoLapiz)
         delay(10*60)
-        send devolverLapiz(numLapiz, 'A')
+        if ( tipoLapiz = "N" ){
+            send devolverLapizNegro(numLapiz)
+        }else{
+            send devolverLapizColor(numLapiz)
+        }
     }
 }
 
@@ -80,7 +74,7 @@ Process NiñoN[n:1..N]{ #Solo usa lápices negros
         send pedidoNiñoTipoN(n)
         receive enviarLapizN[n](numLapiz)
         delay(10*60)
-        send devolverLapiz(numLapiz, 'N')
+        send devolverLapizNegro(numLapiz)
     }
 }
 
@@ -89,9 +83,9 @@ Process NiñoC[c:1..N]{ #Solo usa lápices de colores
     char tipoLapiz
     while(true){
         send pedidoNiñoTipoC(c)
-        receive enviarLapizC[c](numLapiz, tipoLapiz)
+        receive enviarLapizC[c](numLapiz)
         delay(10*60)
-        send devolverLapiz(numLapiz, tipoLapiz)
+        send devolverLapizColor(numLapiz)
     }
 }
 
@@ -108,7 +102,8 @@ chan pedidoNiñoTipoA (int id)
 chan enviarLapizA [1..N] (int numLapiz)
 chan enviarLapizN [1..N] (int numLapiz)
 chan enviarLapizC [1..N] (int numLapiz, char tipo)
-chan devolverLapiz(int numLapiz, char tipo)
+chan devolverLapizNegro(int numLapiz) // Devuelvo por dos canales distintos por eficiencia.
+chan devolverLapizColor(int numLapi) // Devuelvo por dos canales distintos por eficiencia.
 
 Process Abuela{
     int cantLapicesNegros = 15
@@ -117,47 +112,33 @@ Process Abuela{
     int idLapizNiñoA // Al niño A le doy un lápiz del tipo que mayor cantidad tenga.
     int idLapizDevuelto
     char tipoLapizEnviado
-    char tipoLapizDevuelto
 
     while(true){
-        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0){
-            receive pedidoNiñoTipoC(idNiño)
-            send enviarLapizC[idNiño] (cantLapicesColores)
-            cantLapicesColores --
-        }
+        if(!empty(pedidoNiñoTipoC) && cantLapicesColores > 0) ->    receive pedidoNiñoTipoC(idNiño)
+                                                                    send enviarLapizC[idNiño] (cantLapicesColores)
+                                                                    cantLapicesColores --
 
-        if(!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0){
-            receive pedidoNiñoTipoN(idNiño)
-            send enviarLapizN[idNiño] (cantLapicesNegros)
-            cantLapicesNegros --
-        }
+        □ (!empty(pedidoNiñoTipoN) && cantLapicesNegros > 0) ->     receive pedidoNiñoTipoN(idNiño)
+                                                                    send enviarLapizN[idNiño] (cantLapicesNegros)
+                                                                    cantLapicesNegros --
 
-        if(!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 && empty(pedidoNiñoTipoN) ) OR ( cantLapicesColores > 0) && empty(pedidoNiñoTipoC)){
-            if( empty(pedidoNiñoTipoA) && ( cantLapicesColores > cantLapicesNegros ) ){ 
-                # Primero intento dar lápiz de color, ya que la mayoría de los lapices son de colores.
-                idLapizNiñoA = cantLapicesColores
-                cantLapicesColores --
-                tipoLapizEnviado = 'C'
-            }else{
-                if ( empty(pedidoNiñoTipoN) ){
-                    idLapizNiñoA = cantLapicesNegros
-                    cantLapicesNegros --
-                    tipoLapizEnviado = 'N'
-                }
-            }
-            receive pedidoNiñoTipoA(idNiño)
-            send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
-        }
+        □ (!empty(pedidoNiñoTipoA) && ( cantLapicesNegros > 0 && empty(pedidoNiñoTipoN))) ->    idLapizNiñoA = cantLapicesNegros
+                                                                                                cantLapicesNegros --
+                                                                                                tipoLapizEnviado = 'N'
+                                                                                                receive pedidoNiñoTipoA(idNiño)
+                                                                                                send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
 
-        if(!empty(devolverLapiz)){
-            receive(idLapizDevuelto, tipoLapizDevuelto)
-            if(tipoLapizDevuelto = 'N'){
-                cantLapicesNegros ++
-            }else{
-                cantLapicesColores ++
-            }
-        }
-    }
+        □ (!empty(pedidoNiñoTipoA) && (cantLapicesColores > 0 && empty(pedidoNiñoTipoC))) ->    idLapizNiñoA = cantLapicesColores
+                                                                                                cantLapicesColores --
+                                                                                                tipoLapizEnviado = 'C'
+                                                                                                receive pedidoNiñoTipoA(idNiño)
+                                                                                                send enviarLapizN[idNiño] (idLapizNiñoA, tipoLapizEnviado)
+
+        □ (!empty(devolverLapizNegro)) ->                           receive devolverLapizNegro(idLapizDevuelto)
+                                                                    cantLapicesNegros ++
+
+        □ (!empty(devolverLapizcolor)) ->                           receive devolverLapizColor(idLapizDevuelto)
+                                                                    cantLapicesColores ++
 
 }
 
@@ -165,9 +146,13 @@ Process NiñoA[a:1..N]{ #Usa cualquier tipo de lápiz
     int numLapiz
     while(true){
         send pedidoNiñoTipoC(a)
-        receive enviarLapizA[a](numLapiz)
+        receive enviarLapizA[a](numLapiz, tipoLapiz)
         delay(10*60)
-        send devolverLapiz(numLapiz, 'A')
+        if ( tipoLapiz = "N" ){
+            send devolverLapizNegro(numLapiz)
+        }else{
+            send devolverLapizColor(numLapiz)
+        }
     }
 }
 
@@ -177,7 +162,7 @@ Process NiñoN[n:1..N]{ #Solo usa lápices negros
         send pedidoNiñoTipoN(n)
         receive enviarLapizN[n](numLapiz)
         delay(10*60)
-        send devolverLapiz(numLapiz, 'N')
+        send devolverLapizNegro(numLapiz)
     }
 }
 
@@ -186,9 +171,9 @@ Process NiñoC[c:1..N]{ #Solo usa lápices de colores
     char tipoLapiz
     while(true){
         send pedidoNiñoTipoC(c)
-        receive enviarLapizC[c](numLapiz, tipoLapiz)
+        receive enviarLapizC[c](numLapiz)
         delay(10*60)
-        send devolverLapiz(numLapiz, tipoLapiz)
+        send devolverLapizColor(numLapiz)
     }
 }
 
@@ -210,14 +195,17 @@ Process Banco{
     array of int colaCajas[1..5]
     int idPersona
     int idCajaMenorCola
+    int idCaja
 
     while(true){
-        if(!empty(pedidoCaja)){ // ¿Este if está al pedo?
-            receive pedidoCaja(idPersona)
-            idCajaMenorCola = detectMin(colaCajas[]) // Asumo que me devuelve la posición con menor valor.
-            colaCajas[idCajaMenorCola]++
-            send recibirCaja(idCajaMenorCola)
-        }
+        if(!empty(avisarFinalizacion)) ->   receive avisarFinalizacion(idCaja)
+                                            colaCajas[idCaja]--
+        □ (!empty(pedidoCaja) and empty(avisarFinalizacion)) ->  receive pedidoCaja(idPersona)
+                                                                idCajaMenorCola = detectMin(colaCajas[])
+                                                                colaCajas[idCajaMenorCola]++
+                                                                send recibirCaja(idCajaMenorCola)
+        end if
+
     }
 }
 
@@ -230,17 +218,16 @@ Process Persona[p:1..P]{
     receive recibirCaja(idCajaMenorCola)
     send pedidoAtencion[idCajaMenorCola](p)
     receive respuestaAtencion[idCajaMenorCola](atencion)
+    send avisarFinalizacion(idCajaMenorCola)
 }
 
 Process Caja[c:1..5]{
     int idPersonaAAtender
 
     while(true){
-        if(!empty(pedidoAtencion[c])){ // ¿Este if está al pedo?
-            receive pedidoAtencion[c](idPersonaAAtender)
-            resultadoAtencion = atenderPersona(idPersonaaAtender) //Asumo que me devuelve un boolean
-            send respuestaAAtencion[c] (resultadoAtencion)
-        }
+        receive pedidoAtencion[c](idPersonaAAtender)
+        resultadoAtencion = atenderPersona(idPersonaaAtender) // Asumo que me devuelve un boolean
+        send respuestaAAtencion[c] (resultadoAtencion)
     }
 }
 
@@ -272,16 +259,36 @@ Process Cocinero[c:1..2]{
     }
 }
 
+Process Administrador{
+    cola colaPedidos
+    int idCliente
+    int idVendedor
+
+    while(true){
+        if(!empty(realizarPedido)) ->   receive realizarPedido(idCliente)
+                                        encolar(colaPedidos, idCliente) // Encolo el cliente que realizó el pedido.
+        □ (!empty(tomarPedido)) ->      receive tomarPedido(idVendedor)
+                                        if(empty(colaPedidos)){
+                                            send darPedido[idVendedor](null)
+                                        }else{
+                                            desencolar(colaPedidos, idCliente)
+                                            send darPedido[idVendedor](idCliente)
+                                        }
+    }
+}
+
 Process Vendedor[v:1..3]{
     int idCliente
 
     while(true){
-        if(!empty(realizarPedido)){
-            receive realizarPedido(idCliente)
-            send cocinarEnBaseAPedido(idCliente)
-        }else{
+
+        send tomarPedido(v)
+        receive (idCliente) // Obtengo el cliente al cual le tengo que cocinar.
+        if ( idCliente = null ){
             minutos = random(1,3)
-            delay(minutos) // Esto simboliza la parte de la heladera. Creo que está mal porque la heladera deberia modelarse.
+            delay(minutos)
+        }else{
+            send cocinarEnBaseAPedido(idCliente)
         }
     }
 
@@ -303,6 +310,10 @@ ___
 #### a) Implementar usando un coordinador.
 
 ~~~
+
+chan habilitarPista()
+chan esperarHabilitacion[1..C]
+chan avisarLlegada()
 
 Process Portero{
 
@@ -336,17 +347,209 @@ Process Coordinador{
 
 #### b) Implementar sin usar un coordinador.
 
+~~~
 
+chan habilitarPista()
+chan esperarHabilitacion[1..C]
+chan avisarLlegada()
+
+Process Portero{
+
+    send avisarLlegada(0)
+    receive sePuedeHabilitar()
+    
+    for(int i = 1; i <= C; i++){
+        send esperarHabilitacion[i] 
+    }
+
+    
+}
+
+Process Corredores[c:1..C]{
+    int cantCorredores
+
+    receive avisarLlegada(cantCorredores)
+    send avisarLlegada(cantCorredores + 1 )
+
+    if ( cantCorredores + 1 = C ){
+        send sePuedeHabilitar()
+    }
+
+    receive esperarHabilitacion[c]()
+
+}
+
+~~~
 ___
 
 ### 5. Suponga que N personas llegan a la cola de un banco. Una vez que la persona se agrega en la cola no espera más de 15 minutos para su atención, si pasado ese tiempo no fue atendida se retira. Para atender a las personas existen 2 empleados que van atendiendo de a una y por orden de llegada a las personas.
 
+
+~~~
+## FALTA CHEQUEAR.
+
+chan esperarCliente(int idCliente)
+chan estadoCliente[1..N](string estadoCliente)
+chan terminarAtencion[1..N]()
+chan timerEsperaPersona[1..N]()
+chan personaEsperaTimer[1..N]()
+
+Process Empleado[e:1..2]{
+    int idCliente
+    string estadoCliente
+
+    while(true){
+        receive esperarCliente(idCliente)
+        receive estadoCliente[idCliente](estadoCliente)
+        if( estadoCliente = "esperando" ){
+            send estadoCliente[idCliente]("atendido")
+            atender(idCliente)
+            send terminarAtencion[idCliente]()
+        }
+    }
+}
+
+Process Timer[t:1..N]{
+    string estadoCliente
+
+    send timerEsperaPersona[t]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    receive personaEsperaTimer[t]()
+    delar(15*60)
+    receive estadoCliente[t](estadoCliente)
+    if( estadoCliente = "esperando" ){
+        send estadoCliente[idCliente]("irse")
+        send terminarAtencion[idCliente]()
+    }
+}
+
+Process Persona[p:1..N]{
+
+    receive timerEsperaPersona[p]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    send personaEsperaTimer[p]()
+    send esperarCliente(p)
+    send estadoCliente[p]("esperando")
+    receive terminarAtencion[p]()
+    irse()
+}
+
+~~~
 ___
 
 ### 6. Existe una casa de comida rápida que es atendida por 1 empleado. Cuando una persona llega se pone en la cola y espera a lo sumo 10 minutos a que el empleado lo atienda. Pasado ese tiempo se retira sin realizar la compra.
 
 #### a) Implementar una solución utilizando un proceso intermedio entre cada persona y el empleado.
+
+~~~
+## FALTA CHEQUEAR.
+
+chan esperarCliente(int idCliente)
+chan estadoCliente[1..N](string estadoCliente)
+chan terminarAtencion[1..N]()
+chan timerEsperaPersona[1..N]()
+chan personaEsperaTimer[1..N]()
+
+Process Empleado{ // Solo le llegan aquellos clientes a los que puede atender (No se fueron por el Timer)
+    int idCliente
+    string estadoCliente
+
+    while(true){
+        receive atenderCliente(idCliente)
+        send estadoCliente[idCliente]("atendido")
+        atender(idCliente)
+        send terminarAtencion[idCliente]()
+    }
+}
+
+Process Coordinador{
+    int idCliente
+    string estadoCliente
+
+    while(true){
+        receive esperarCliente(idCliente)
+        receive estadoCliente[idCliente](estadoCliente)
+        if( estadoCliente = "esperando" ){
+            send atenderCliente(idCliente)
+        }
+    }
+}
+
+Process Timer[t:1..N]{
+    string estadoCliente
+
+    send timerEsperaPersona[t]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    receive personaEsperaTimer[t]()
+    delar(10*60)
+    receive estadoCliente[t](estadoCliente)
+    if( estadoCliente = "esperando" ){
+        send estadoCliente[idCliente]("irse")
+        send terminarAtencion[idCliente]()
+    }
+}
+
+Process Persona[p:1..N]{
+
+    receive timerEsperaPersona[p]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    send personaEsperaTimer[p]()
+    send esperarCliente(p)
+    send estadoCliente[p]("esperando")
+    receive terminarAtencion[p]()
+    irse()
+}
+
+
+~~~
+
 #### b) Implementar una solución sin utilizar un proceso intermedio entre cada persona y el empleado.
+
+~~~
+## FALTA CHEQUEAR.
+
+chan esperarCliente(int idCliente)
+chan estadoCliente[1..N](string estadoCliente)
+chan terminarAtencion[1..N]()
+chan timerEsperaPersona[1..N]()
+chan personaEsperaTimer[1..N]()
+
+Process Empleado{
+    int idCliente
+    string estadoCliente
+
+    while(true){
+        receive esperarCliente(idCliente)
+        receive estadoCliente[idCliente](estadoCliente)
+        if( estadoCliente = "esperando" ){
+            send estadoCliente[idCliente]("atendido")
+            atender(idCliente)
+            send terminarAtencion[idCliente]()
+        }
+    }
+}
+
+Process Timer[t:1..N]{
+    string estadoCliente
+
+    send timerEsperaPersona[t]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    receive personaEsperaTimer[t]()
+    delar(10*60)
+    receive estadoCliente[t](estadoCliente)
+    if( estadoCliente = "esperando" ){
+        send estadoCliente[idCliente]("irse")
+        send terminarAtencion[idCliente]()
+    }
+}
+
+Process Persona[p:1..N]{
+
+    receive timerEsperaPersona[p]() // El timer y la persona deben esperarse mutuamente, ya que usamos PMA
+    send personaEsperaTimer[p]()
+    send esperarCliente(p)
+    send estadoCliente[p]("esperando")
+    receive terminarAtencion[p]()
+    irse()
+}
+
+~~~
+
 ___
 
 ## Pasaje de mensajes sincrónicos (PMS)
@@ -396,15 +599,168 @@ ___
 
 #### a) Implemente un código para cada clase de niño de manera que ejecute pedido de lápiz, lo use por 10 minutos y luego lo devuelva y además el proceso abuela encargada de asignar los lápices.
 
-Process NiñoA[a:1..N]{
+~~~
+
+## FALTA CHEQUEAR.
+
+Process Abuela{
+	int idNiño, negro, color;
+	string lapiz;
+	negro:= 15;
+	color:= 10;
+	while (true){
+		if negro > 0; NiñoN[*]?PedirLapizNegro(idNiño) →    negro:= negro - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘negro’);
+
+		□ color > 0; NiñoC[*]?PedirLapizColor(idNiño) →     color:= color - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘color’);
+
+		□ negro > 0; NiñoA[*]?PedirLapiz(idNiño) →          negro:= negro - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘negro’);
+
+		□ color > 0; NiñoA[*]?PedirLapiz(idNiño) →          color:= color - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘color’);
+
+		□ NiñoC[*]?DevolverLapizColor(lapiz) → color:= color + 1; 
+		□ NiñoN[*]?DevolverLapizNegro(lapiz) → negro:= negro + 1; 
+		□ NiñoA[*]?DevolverLapizColor(lapiz) → color:= color + 1; 
+		□ NiñoA[*]?DevolverLapizNegro(lapiz) → negro:= negro + 1; 
+
+		end if
+}
 
 }
 
+
+Process NiñoA[i: 1..A]{
+	string lapiz;
+	while(true){
+		Abuela!PedirLapiz(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		if (lapiz == “negro”){
+			Abuela!DevolverLapizNegro(lapiz);
+		else{
+	        Abuela!DevolverLapizColor(lapiz);
+        }
+    }
+}
+
+
+Process NiñoC[i: 1..C]{
+	string lapiz;
+	while(true){
+		Abuela!PedirLapizColor(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		Abuela!DevolverLapizColor(lapiz);
+    }
+}
+
+
+Process NiñoN[n: 1..N]{
+	string lapiz;
+	while(true){
+		Abuela!PedirLapizNegro(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		Abuela!DevolverLapizNegro(lapiz);
+    }
+}
+
+~~~
+
+#### b) Modificar el ejercicio para que a los niños de tipo A se les puede asignar un lápiz sólo cuando: hay lápiz negro disponible y ningún pedido pendiente de tipo N, o si hay lápiz de color disponible y ningún pedido pendiente de tipo C.
+
+~~~
+
+## FALTA CHEQUEAR.
+
+Process Coordinador{
+	cola colaN, colaC, colaA;
+	while(true){
+	    if NiñoN[*]?PedirLapizNegro(idNiño) → encolar (colaN, idNiño);
+        □ NiñoC[*]?PedirLapizColor(idNiño) → encolar (colaC, idNiño);
+        □ NiñoA[*]?PedirLapiz(idNiño) → encolar (colaA, idNiño);
+        □ (empty(ColaC) && empty(ColaN)); Abuela!atenderNiñoA( desencolar(ColaA) );
+        □  (!empty(colaC)); Abuela!atenderNiñoC( desencolar(colaC) );
+        □  (!empty(ColaN)); Abuela!atenderNiñoN( desencolar(ColaN) );
+	}
+}
+
+Process Abuela{
+	int idNiño, negro, color;
+	string lapiz;
+	negro:= 15;
+	color:= 10;
+
+	while (true){
+		if negro > 0; Coordinador?atenderNiñoN(idNiño) →    negro:= negro - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘negro’);
+
+		□ color > 0; Coordinador?atenderNiñoC(idNiño) →     color:= color - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘color’);
+
+		□ negro > 0; Coordinador?atenderNiñoA(idNiño) →     negro:= negro - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘negro’);
+
+		□ color > 0; Coordinador?atenderNiñoA(idNiño) →     color:= color - 1; 
+                                                            NiñoN[idNiño]!RecibirLapiz(‘color’);
+
+		□ NiñoC[*]?DevolverLapizColor(lapiz) →              color:= color + 1; 
+		□ NiñoN[*]?DevolverLapizNegro(lapiz) →              negro:= negro + 1; 
+		□ NiñoA[*]?DevolverLapizColor(lapiz) →              color:= color + 1; 
+		□ NiñoA[*]?DevolverLapizNegro(lapiz) →              negro:= negro + 1; 
+
+		end if
+}
+
+}
+
+Process NiñoA[i: 1..A]{
+	string lapiz;
+	while(true){
+		Coordinador!PedirLapiz(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		if (lapiz == “negro”){
+			Abuela!DevolverLapizNegro(lapiz);
+		else{
+	        Abuela!DevolverLapizColor(lapiz);
+        }
+    }
+}
+
+
+Process NiñoC[i: 1..C]{
+	string lapiz;
+	while(true){
+		Coordinador!PedirLapizColor(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		Abuela!DevolverLapizColor(lapiz);
+    }
+}
+
+
+Process NiñoN[n: 1..N]{
+	string lapiz;
+	while(true){
+		Coordinador!PedirLapizNegro(i);
+		Abuela?RecibirLapiz(lapiz);
+		delay(10);
+		Abuela!DevolverLapizNegro(lapiz);
+    }
+}
+
+~~~
 ___
 
 ### 9. Se debe modelar la atención en una panadería por parte de 3 empleados. Hay C clientes que ingresan al negocio para ser atendidos por cualquiera de los empleados, los cuales deben atenderse de acuerdo al orden de llegada.
 
 ##### Nota: maximizar la concurrencia.
+
+~~~ 
 
 Process Empleado[e:1..3]{
     int idCliente
@@ -436,6 +792,8 @@ Process Cliente[c:1..C]{
     Empleado[*]?notificacionAtencion()
 }
 
+~~~
+
 ___
 
 ### 10.Existe una casa de comida rápida que es atendida por 1 empleado. Cuando una persona llega se pone en la cola y espera a lo sumo 10 minutos a que el empleado lo atienda. Pasado ese tiempo se retira sin realizar la compra.
@@ -453,11 +811,12 @@ Process Empleado{
         Cola!EmpleadoPidePersona()
         Cola?desencolarPersona(idPersona)
         estadoPersona[idPersona]!EmpleadoConsultaEstado()
-        estadoPersona[idPersona]?EmpleadoRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
+        if estadoPersona[idPersona]?EmpleadoRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
                                                                         estadoPersona[idPersona]!EmpleadoSetteaEstado("atendido")
                                                                         atenderPersona(idPersona)
                                                                         Persona[idPersona]!esperarAtencion()
                                                                     end if
+        end if
     }
 }
 
@@ -467,7 +826,8 @@ Process Cola{
 
     while(true){
         if Persona?encolarPersona(idPersona) --> encolar(colaClientes, idPersona);
-        if (!empty(colaClientes)); Empleado?damePersona() --> Empleado!desencolarPersona( desencolar(colaClientes, idPersona) );
+        □ (!empty(colaClientes)); Empleado?damePersona() --> Empleado!desencolarPersona( desencolar(colaClientes, idPersona) );
+        end if
     }
 
 }
@@ -480,20 +840,23 @@ Process estadoPersona[e:1..N]{
                                                 estado = nuevoEstado
                                                 Persona[e]!resultadoEspera("atendido")
 
-        Timer?TimerConsultaEstado() -->         TimerRecibeEstado!(estado)
+    □   Timer?TimerConsultaEstado() -->         TimerRecibeEstado!(estado)
                                                 TimerSetteaEstado?(nuevoEstado)
                                                 estado = nuevoEstado
                                                 Persona[e]!resultadoEspera("irse")
+    end do
 }
 
 Process Timer[t:1..N]{
+    string estadoPersona
     Persona?iniciarTimer()
     delay(10*60)
   
     estadoPersona[idPersona]!TimerConsultaEstado(t)
-    estadoPersona[t]?TimerRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
+    if estadoPersona[t]?TimerRecibeEstado(estadoPersona) --> if ( estadoPersona = "espera" ) 
                                                         estadoPersona[t]!TimerSetteaEstado("irse")
                                                         end if
+    end if
 }
 
 Process Persona[p:1..N]{
@@ -513,4 +876,4 @@ Process Persona[p:1..N]{
 
 #### b) Implementar una solución sin utilizar un proceso intermedio entre cada persona y el empleado.
 
-Este ejercicio puede realizarse, pero vale aclarar algo importante: El rol del proceso estadoPersona (en el ejercicio A), cumple la función de solucionar el problema de que uno de los dos procesos (Timer o Empleado), se queden colgados. Por ejemplo, si el Timer provoca que el Cliente se vaya, el Empleado me quedaría colgado. Si por el contrario, el Empleado atiende, provocaría que la persona se vaya, y el Timer quedaría colgado.
+Este ejercicio puede realizarse, pero vale aclarar algo importante: El rol del proceso estadoPersona (en el ejercicio A), cumple la función de solucionar el problema de que uno de los dos procesos (Timer o Empleado), se queden colgados. Por ejemplo, si el Timer provoca que el Cliente se vaya, el Empleado se quedaría colgado. Si por el contrario, el Empleado atiende, provocaría que la persona se vaya, y el Timer quedaría colgado. Se podria hacer que esto no ocurra enviandole un mensaje a aquel proceso que llegue segundo, pero supondria “sincronizar” tanto el timer como al empleado, lo cual es ineficiente y va en contra a lo que dice el enunciado.s
