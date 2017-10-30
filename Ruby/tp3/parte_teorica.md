@@ -230,4 +230,10 @@ end
 
 #### 2. ¿Qué pasaría si se permuta, dentro de fun3, el manejador de excepciones para RuntimeError y el manejador de excepciones genérico (el que tiene el rescue vacío)?
 
+Se entraría por el manejador genérico, ya que al ejecutar nos interesa el orden en el cual aparecen los manejadores. Nos quedamos con el primero que coincide.
+
 #### 3. ¿La palabra reservada retry que función cumple? ¿Afectaría el funcionamiento del programa si se mueve la línea x = 0 dentro del segundo begin (inmediatamente antes de llamar a fun1 con x)?
+
+La idea de usar ` retry ` es de poder solucionar un error en tiempo de ejecución y volver a intentar ejecutar, de manera de que el programa siga su ejecución correctamente. Obviamente se esperará que el manejo de la excepción haya sido exitoso, de manera de no caer en un loop infinito.
+
+Justamente, si se moviera la linea x = 0 a la linea que se menciona, quedaría en un loop infinito.

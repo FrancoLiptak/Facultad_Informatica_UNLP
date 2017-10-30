@@ -21,19 +21,30 @@ end
 
 
 numeros = 1.upto(cantidad).map do
-    puts 'Ingrese un número'
+    puts 'Ingrese un número:'
 
     begin
         numero = Integer(gets)
-    
+
+        raise Exception, "Debe ingresar un número mayor a 0. Intente nuevamente:" unless numero > 0
+
     rescue ArgumentError => e
         puts "#{e.message}. Intente nuevamente:"
         retry
-    end 
+    rescue Exception => e
+        puts e.message
+        retry
+    end
+    numero 
  end
 
 resultado = numeros.map do | x| 
-    x / (x - 1) 
-    raise ZeroDivisionError unless (x - 1) > 0 
+    begin 
+        result = x / (x - 1) 
+        raise ZeroDivisionError unless (x - 1) > 0
+    rescue ZeroDivisionError => e
+        puts e.message
+    end
+    result
 end
 puts 'El resultado es: %s' % resultado.join(', ')
