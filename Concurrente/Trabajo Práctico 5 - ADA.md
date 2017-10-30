@@ -76,7 +76,7 @@ Procedure puente_unidireccional is
         END
     END Camioneta;
 
-Begin Null; End puente_unidireccional
+End puente_unidireccional
 
 
 ~~~
@@ -98,7 +98,9 @@ END Empleado
 TASK BODY Empleado IS
 BEGIN
     LOOP
-        ACCEPT cliente_solicita_atencion;
+        ACCEPT cliente_solicita_atencion do
+            atender();
+        END cliente_solicita_atencion;
     END LOOP
 END Empleado
 
@@ -111,7 +113,7 @@ BEGIN
     irse()
 END Cliente;
 
-Begin Null; End Banco
+End Banco
 
 ~~~
 
@@ -120,7 +122,54 @@ ___
 ### 3. Se debe modelar un buscador para contar la cantidad de veces que aparece un número dentro de un vector distribuido entre las N tareas contador. Además existe un administrador que decide el número que se desea buscar y se lo envía a los N contadores para que lo busquen en la parte del vector que poseen.
 
 ~~~
+Procedure Buscador_de_numeros is 
 
+TASK Administrador IS
+	Entry cantidadDeApariciones(cantidad: IN Integer );
+END Administrador;
+
+TASK TYPE Contador IS
+	Entry numeroABuscar(numero: IN Integer);
+END Contador;
+
+type Contadores is array (1 .. N) of Contador;
+
+TASK BODY Administrador IS
+
+    total: Integer;
+
+    BEGIN
+        for I in 1..N loop # Le pido al contador que busque el número.
+            Contadores(I).numeroABuscar( random() );
+        end loop;
+
+        for I in 1..N loop
+            ACCEPT cantidadDeApariciones(cantidad: IN Integer) do # Acepto el número que los contadores me devuelven.
+                total := total + cantidad;
+            END cantidadDeApariciones;
+        END loop
+    END Administrador
+
+TASK BODY Contador IS
+    apariciones: Integer;
+    mi_parte_del_vector is array (1.. T) of Integer;
+    numABuscar: Integer;
+
+    BEGIN
+        ACCEPT numeroABuscar(numero: IN Integer) do
+            numABuscar:= numero;
+        END numeroABuscar
+
+        for I in 1..T loop
+            if (mi_parte_del_vector(i) = numABuscar ) then
+                apariciones := apariciones + 1;
+            end if;
+        end loop
+
+        Administrador.cantidadDeApariciones(apariciones);
+        end Contador
+
+End Buscador_de_numeros;
 
 
 ~~~
@@ -136,6 +185,8 @@ ___
 ### Un proceso que quiera escribir podrá acceder si no hay ningún otro proceso en la base de datos, al acceder escribe y avisa que termino de escribir. Un proceso que quiera leer podrá acceder si no hay procesos que escriban, al acceder lee y avisa que termino de leer. Siempre se le debe dar prioridad al pedido de acceso para escribir sobre el pedido de acceso para leer.
 
 ~~~
+
+
 
 ~~~
 
