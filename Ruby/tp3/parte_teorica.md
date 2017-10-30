@@ -237,3 +237,13 @@ Se entraría por el manejador genérico, ya que al ejecutar nos interesa el orde
 La idea de usar ` retry ` es de poder solucionar un error en tiempo de ejecución y volver a intentar ejecutar, de manera de que el programa siga su ejecución correctamente. Obviamente se esperará que el manejo de la excepción haya sido exitoso, de manera de no caer en un loop infinito.
 
 Justamente, si se moviera la linea x = 0 a la linea que se menciona, quedaría en un loop infinito.
+
+___
+
+## Testing
+
+### 1. ¿En qué consiste la metodología TDD? ¿En qué se diferencia con la forma tradicional de escribir código y luego realizar los tests?
+
+Desarrollo guiado por pruebas de software, o Test-driven development (TDD) es una práctica de ingeniería de software que involucra otras dos prácticas: Escribir las pruebas primero (Test First Development) y Refactorización (Refactoring). Para escribir las pruebas generalmente se utilizan las pruebas unitarias (unit test). En primer lugar, se escribe una prueba y se verifica que las pruebas fallan. A continuación, se implementa el código que hace que la prueba pase satisfactoriamente y seguidamente se refactoriza el código escrito. El propósito del desarrollo guiado por pruebas es lograr un código limpio que funcione. La idea es que los requisitos sean traducidos a pruebas, de este modo, cuando las pruebas pasen se garantizará que el software cumple con los requisitos que se han establecido.
+
+La principal diferencia podremos notarla en nuestro código resultado. Usando TDD, seguramente nuestro código sea mas desacoplado, logrando funciones mas simples y fáciles de mantener. Es importante notar también, que en caso de realizar los test luego del código, la persona que los escriba no debería ser la misma que la persona que implementó la funcionalidad. Si eso pasara, entonces los test probablemente serían escritos en función al código ya escrito, lo cual no sería ideal.
