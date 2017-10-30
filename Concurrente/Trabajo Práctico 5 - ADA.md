@@ -4,6 +4,21 @@
 
 ~~~
 
+Procedure puente_unidireccional is
+
+TASK TYPE Auto;
+TASK TYPE Camioneta;
+TASK TYPE Camion;
+
+TASK Puente IS
+ENTRY auto_pide_puente;
+ENTRY auto_sale;
+ENTRY camioneta_pide_puente;
+ENTRY camioneta_sale;
+ENTRY camion_pide_puente;
+ENTRY camion_sale;
+END Puente;
+
 
 
 ~~~
