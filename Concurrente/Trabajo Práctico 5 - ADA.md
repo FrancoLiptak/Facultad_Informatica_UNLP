@@ -6,63 +6,77 @@
 
 Procedure puente_unidireccional is
 
-TASK TYPE Auto;
-TASK TYPE Camioneta;
-TASK TYPE Camion;
+    TASK TYPE Auto;
+    TASK TYPE Camioneta;
+    TASK TYPE Camion;
 
-TASK Puente IS
-ENTRY auto_pide_puente;
-ENTRY auto_sale;
-ENTRY camioneta_pide_puente;
-ENTRY camioneta_sale;
-ENTRY camion_pide_puente;
-ENTRY camion_sale;
-END Puente;
+    TASK Puente IS
+    ENTRY auto_pide_puente;
+    ENTRY auto_sale;
+    ENTRY camioneta_pide_puente;
+    ENTRY camioneta_sale;
+    ENTRY camion_pide_puente;
+    ENTRY camion_sale;
+    END Puente;
 
-TASK BODY Puente IS
+    TASK BODY Puente IS
 
-int cantAutos = 0
-int cantCamionetas = 0 
-int cantCamiones = 0
+    int cantAutos = 0
+    int cantCamionetas = 0 
+    int cantCamiones = 0
 
-BEGIN
-    LOOP
-        SELECT
-            WHEN ( cantAutos = 0 && cantCamionetas = 0 && cantCamiones = 0) =>  ACCEPT camion_pide_puente IS
-                                                                                cantCamiones ++;
-                                                                                END camion_pide_puente
-        OR
-            WHEN ( cantAutos < 3 && cantCamionetas = 0 && cantCamiones = 0) =>  ACCEPT auto_pide_puente IS
-                                                                                cantAutos ++;
-                                                                                END auto_pide_puente
-        OR
-            WHEN ( cantAutos = 0 && cantCamionetas < 2 && cantCamiones = 0) =>  ACCEPT camioneta_pide_puente IS
-                                                                                cantCamionetas ++;
-                                                                                END camioneta_pide_puente
-        OR
-            ACCEPT auto_sale;
-            cantAutos --;
-        OR 
-            ACCEPT camioneta_sale;
-            cantCamionetas --;
-        OR
-            ACCEPT camion_sale;
-            cantCamiones --;
-        END SELECT;
-    END LOOP;
-END Puente;
+    BEGIN
+        LOOP
+            SELECT
+                WHEN ( cantAutos = 0 && cantCamionetas = 0 && cantCamiones = 0) =>  ACCEPT camion_pide_puente IS
+                                                                                    cantCamiones ++;
+                                                                                    END camion_pide_puente
+            OR
+                WHEN ( cantAutos < 3 && cantCamionetas = 0 && cantCamiones = 0) =>  ACCEPT auto_pide_puente IS
+                                                                                    cantAutos ++;
+                                                                                    END auto_pide_puente
+            OR
+                WHEN ( cantAutos = 0 && cantCamionetas < 2 && cantCamiones = 0) =>  ACCEPT camioneta_pide_puente IS
+                                                                                    cantCamionetas ++;
+                                                                                    END camioneta_pide_puente
+            OR
+                ACCEPT auto_sale;
+                cantAutos --;
+            OR 
+                ACCEPT camioneta_sale;
+                cantCamionetas --;
+            OR
+                ACCEPT camion_sale;
+                cantCamiones --;
+            END SELECT;
+        END LOOP;
+    END Puente;
 
-TASK  BODY Auto IS
-	BEGIN
-		Puente.auto_pide_puente;
-		pasar()
-		Puente.auto_sale;
-	END
-END Auto;
+    TASK  BODY Auto IS
+        BEGIN
+            Puente.auto_pide_puente;
+            pasar()
+            Puente.auto_sale;
+        END
+    END Auto;
 
+    TASK  BODY Camion IS
+        BEGIN
+            Puente.camion_pide_puente;
+            pasar()
+            Puente.camion_sale;
+        END
+    END Camion;
 
+    TASK  BODY Camioneta IS
+        BEGIN
+            Puente.camioneta_pide_puente;
+            pasar()
+            Puente.camioneta_sale;
+        END
+    END Camioneta;
 
-
+Begin Null; End puente_unidireccional
 
 
 ~~~
@@ -73,6 +87,32 @@ ___
 
 ~~~
 
+Procedure Banco IS
+
+TASK TYPE Cliente;
+
+TASK Empleado IS
+    ENTRY cliente_solicita_atencion;
+END Empleado
+
+TASK BODY Empleado IS
+BEGIN
+    LOOP
+        ACCEPT cliente_solicita_atencion;
+    END LOOP
+END Empleado
+
+TASK BODY Cliente IS
+BEGIN
+    SELECT
+        Empleado.cliente_solicita_atencion;
+    OR DELAY 10*60
+    END SELECT
+    irse()
+END Cliente;
+
+Begin Null; End Banco
+
 ~~~
 
 ___
@@ -80,6 +120,8 @@ ___
 ### 3. Se debe modelar un buscador para contar la cantidad de veces que aparece un número dentro de un vector distribuido entre las N tareas contador. Además existe un administrador que decide el número que se desea buscar y se lo envía a los N contadores para que lo busquen en la parte del vector que poseen.
 
 ~~~
+
+
 
 ~~~
 
