@@ -9,13 +9,13 @@ puts '¿Cuál es la cantidad de números que ingresará? Debe ser al menos 15'
 begin
     cantidad = Integer(gets) 
 
-    raise Exception unless cantidad >= 15
+    raise Exception, "Debe ingresar un número mayor o igual a 15. Intente nuevamente:" unless cantidad >= 15
 
-rescue ArgumentError
-    puts "Debe ingresar un número. Intente nuevamente:"
+rescue ArgumentError => e
+    puts "#{e.message}. Intentelo nuevamente:"
     retry
-rescue Exception
-    puts "El número debe ser mayor a 15. Intente nuevamente:"
+rescue Exception => e
+    puts e.message
     retry
 end    
 
@@ -26,8 +26,8 @@ numeros = 1.upto(cantidad).map do
     begin
         numero = Integer(gets)
     
-    rescue ArgumentError
-        puts "Debe ingresar un número. Intente nuevamente:"
+    rescue ArgumentError => e
+        puts "#{e.message}. Intente nuevamente:"
         retry
     end 
  end
