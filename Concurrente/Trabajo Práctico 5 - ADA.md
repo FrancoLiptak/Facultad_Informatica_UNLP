@@ -19,6 +19,50 @@ ENTRY camion_pide_puente;
 ENTRY camion_sale;
 END Puente;
 
+TASK BODY Puente IS
+
+int cantAutos = 0
+int cantCamionetas = 0 
+int cantCamiones = 0
+
+BEGIN
+    LOOP
+        SELECT
+            WHEN ( cantAutos = 0 && cantCamionetas = 0 && cantCamiones = 0) =>  ACCEPT camion_pide_puente IS
+                                                                                cantCamiones ++;
+                                                                                END camion_pide_puente
+        OR
+            WHEN ( cantAutos < 3 && cantCamionetas = 0 && cantCamiones = 0) =>  ACCEPT auto_pide_puente IS
+                                                                                cantAutos ++;
+                                                                                END auto_pide_puente
+        OR
+            WHEN ( cantAutos = 0 && cantCamionetas < 2 && cantCamiones = 0) =>  ACCEPT camioneta_pide_puente IS
+                                                                                cantCamionetas ++;
+                                                                                END camioneta_pide_puente
+        OR
+            ACCEPT auto_sale;
+            cantAutos --;
+        OR 
+            ACCEPT camioneta_sale;
+            cantCamionetas --;
+        OR
+            ACCEPT camion_sale;
+            cantCamiones --;
+        END SELECT;
+    END LOOP;
+END Puente;
+
+TASK  BODY Auto IS
+	BEGIN
+		Puente.auto_pide_puente;
+		pasar()
+		Puente.auto_sale;
+	END
+END Auto;
+
+
+
+
 
 
 ~~~
