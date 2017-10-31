@@ -123,55 +123,55 @@ ___
 ### 3. Se debe modelar un buscador para contar la cantidad de veces que aparece un número dentro de un vector distribuido entre las N tareas contador. Además existe un administrador que decide el número que se desea buscar y se lo envía a los N contadores para que lo busquen en la parte del vector que poseen.
 
 ~~~
+# CHEQUEAR.
 
-Procedure Buscador_de_numeros is 
+Procedure buscador IS
 
-TASK Administrador IS
-	Entry cantidadDeApariciones(cantidad: IN Integer );
-END Administrador;
+TASK Contador IS;
+    Entry numeroABuscar(numero: IN Integer)
+End Contador;
 
-TASK TYPE Contador IS
-	Entry numeroABuscar(numero: IN Integer);
-END Contador;
+TASK Administrador IS;
+    Entry cantidadEncontrada(cantidad: IN Integer)
+End Administrador;
 
 type Contadores is array (1 .. N) of Contador;
 
-TASK BODY Administrador IS
-
-    total: Integer;
-
-    BEGIN
-        for I in 1..N loop # Le pido al contador que busque el número.
-            Contadores(I).numeroABuscar( random() );
-        end loop;
-
-        for I in 1..N loop
-            ACCEPT cantidadDeApariciones(cantidad: IN Integer) do # Acepto el número que los contadores me devuelven.
-                total := total + cantidad;
-            END cantidadDeApariciones;
-        END loop
-    END Administrador
-
 TASK BODY Contador IS
-    apariciones: Integer;
-    mi_parte_del_vector is array (1.. T) of Integer;
-    numABuscar: Integer;
+    mi_parte is array 1..C of Integer;
+    coincidencias: Integer;
+    coincidencias := 0;
+    
+    BEGIN
+        ACCEPT numeroABuscar(num) DO
+            numeroABuscar:= num;
+        END numeroABuscar;
+
+        for I in 1..C LOOP
+            if (mi_parte(i) = numeroABuscar) then
+                coincidencias:= coincidencias + 1;
+            end if
+        END LOOP
+        Administrador.cantidadEncontrada(coincidencias);
+    END Contador
+
+TASK BODY Administrador IS;
+    numeroABuscar: Integer;
 
     BEGIN
-        ACCEPT numeroABuscar(numero: IN Integer) do
-            numABuscar:= numero;
-        END numeroABuscar
+        numeroABuscar:= random();
+        for I in 1..N LOOP
+            Contadores(I).numeroABuscar(numeroABuscar)
+        END LOOP
 
-        for I in 1..T loop
-            if (mi_parte_del_vector(i) = numABuscar ) then
-                apariciones := apariciones + 1;
-            end if;
-        end loop
+        for I in 1..N LOOP
+            ACCEPT cantidadEncontrada(cantidad) DO
+                total := total + cantidad;
+            END cantidadEncontrada;
+        END LOOP
+    END Administrador; 
 
-        Administrador.cantidadDeApariciones(apariciones);
-        end Contador
-
-End Buscador_de_numeros;
+END buscador;
 
 
 ~~~
@@ -188,82 +188,87 @@ ___
 
 ~~~
 
+#CHEQUEAR EL PROCESO BASE.
+
 Procedure base_de_datos IS
 
-TASK TYPE Tipo1
-TASK TYPE Tipo2
-TASK TYPE Tipo3
- 
+TASK TYPE Tipo1;
+TASK TYPE Tipo2;
+TASK TYPE Tipo3;
 
-TASK TYPE Base IS
-	Entry iniciar_lectura;
-    Entry terminar_lectura;
-    Entry iniciar_escritura;
-    Entry terminar_escritura;
-END Contador;
+TASK Base IS
+    Entry pedido_escritura;
+    Entry finalizar_escritura;
+    Entry pedido_lectura;
+    Entry finalizar_lectura;
+END Base;
 
 TASK BODY Base IS
     cantProcesos: Integer;
+    cantLeyendo: Integer;
     BEGIN
         LOOP
             SELECT
-                ACCEPT iniciar_lectura; cantProcesos ++;
+                WHEN ( pedido_escritura'COUNT = 0 ) =>      ACCEPT pedido_lectura; #    De esta manera manejo la prioridad.
+                                                            cantLeyendo:= cantLeyendo + 1;
             OR
-                ACCEPT terminar_lectura; cantProcesos --;
-            OR when cantProcesos = 0 => ACCEPT  iniciar_escritura;
-                                                finalizar_escritura;
+                ACCEPT finalizar_lectura;
+                cantLetendo:= cantLeyendo - 1;
+            OR
+                WHEN ( cantLeyendo = 0) =>  ACCEPT pedido_escritura;
+                                            ACCEPT finalizar_escritura;
             END SELECT
         END LOOP
-    END Base
-
+    END Base;
+            
 
 TASK BODY Tipo1 IS
-BEGIN
-    LOOP
-        SELECT
-            Base.iniciar_escritura;
-            escribir();
-            Base.finalizar_escritura;
-        OR DELAY 2*60
-            DELAY 5*60
-        END SELECT
-    END LOOP
-END Tipo1;
+    BEGIN
+        LOOP
+            SELECT
+                Base.pedido_escritura;
+                escribir();
+                Base.finalizar_escritura;
+            OR DELAY 2*60;
+                DELAY 5*60;
+            END SELECT
+        END LOOP
+    END Tipo1
 
 TASK BODY Tipo2 IS
-BEGIN
-    LOOP
-        SELECT
-            Base.iniciar_escritura;
-            escribir();
-            Base.finalizar_escritura;
-        OR DELAY 5*60
+    BEGIN
+        LOOP
             SELECT
-                Base.iniciar_lectura;
-                leer();
-                Base.finalizar_lectura;
-            OR DELAY 5*60
+                Base.pedido_escritura;
+                escribir();
+                Base.finalizar_escritura;
+            OR DELAY 5*60;
+                SELECT
+                    Base.pedido_lectura;
+                    leer();
+                    Base.finalizar_lectura;
+                OR DELAY 5*60;
+                END SELECT
             END SELECT
-        END SELECT
-    END LOOP
-END Tipo2;
+        END LOOP
+    END Tipo2;
 
 TASK BODY Tipo3 IS
-BEGIN
-    LOOP
-        SELECT
-            Base.iniciar_lectura;
-            leer();
-            Base.finalizar_lectura;
-        ELSE
-            Base.iniciar_escritura;
-            escribir();
-            Base.finalizar_escritura;
-        END SELECT
-    END LOOP
-END Tipo3;
+    BEGIN
+        LOOP
+            SELECT
+                Base.pedido_lectura;
+                leer();
+                Base.finalizar_lectura;
+            ELSE
+                Base.pedido_escritura;
+                escribir();
+                Base.finalizar_escritura;
+            END SELECT
+        END LOOP
+    END Tipo3;
 
-End base_de_datos;
+
 
 ~~~
 
@@ -279,7 +284,7 @@ ___
 
 Procedure Señales IS
 
-TASK Central;
+TASK Central IS
     Entry enviaseñal1(señal1: IN señal)
     Entry enviaseñal2(señal2: IN señal)
     Entry seTerminoTiempo()
@@ -374,16 +379,16 @@ ___
 
 Procedure Punto6 IS
 
-TASK Usuario;
+TASK Usuario IS
     Entry procesadorAsignado;
     Entry devolucionPrograma;
 End Usuario;
 
-TASK Administrador;
+TASK Administrador IS
     Entry solicitarProcesador;
 End Administrador;
 
-TASK Procesador;
+TASK Procesador IS
     Entry recibirPrograma;
 End Procesador;
 
@@ -485,5 +490,100 @@ ___
 ##### NOTA: maximice la concurrencia.
 
 ~~~
+# FALTA CHEQUEAR.
+
+Procedure Clinica;
+
+TASK TYPE Persona;
+TASK TYPE Enfermera;
+
+TASK TYPE Escritorio IS
+    Entry obtenerNota(OUT nota);
+    Entry dejarNota(IN nota);
+END Escritorio;
+
+TASK TYPE Medico IS
+    Entry atenderEnfermera;
+    Entry atenderPaciente;
+END Medico;
+
+
+pacientes:= array (1..P) of Persona; # PREGUNTAR QUE ONDA ESTO PORQUE NO LO USO PERO CREO QUE DEBERÍA IR.
+enfermeras:= array (1..E) of Enfermera;
+
+
+TASK BODY Escritorio IS
+    cola notas;
+
+    BEGIN
+        SELECT
+            WHEN ( notas.length > 0 ) => ACCEPT obtenerNota(OUT nota) IS
+                                            nota := notas.desencolar();
+                                        END obtenerNota;
+        OR
+            ACCEPT dejarNota (nota) IS
+                notas.encolar(nota);
+            END dejarNota;
+        END SELECT
+    END BEGIN
+
+
+    END Escritorio;
+
+TASK BODY Medico IS
+    BEGIN
+        SELECT
+            WHEN ( atenderPaciente'COUNT = 0) =>    Escritorio.obtenerNota(nota) IS
+                                                        firmarNota(nota);
+                                                    End obtenerNota;
+
+            OR WHEN ( atenderPaciente'COUNT = 0 ) =>    ACCEPT atenderEnfermera IS
+                                                            atender();
+                                                        End atenderEnfermera;
+            OR
+                ACCEPT atenderPaciente() IS
+                    atender();
+                END atenderPaciente;
+        END SELECT
+    END Medico;
+        
+
+TASK BODY Persona IS
+    cantSolicitudes: Integer;
+
+    BEGIN
+
+    cantSolicitudes:= 0;
+
+    while ( !atendido OR cantSolicitudes != 3 ) LOOP
+        SELECT
+            Medico.atenderPaciente;
+        OR DELAY 5*60
+            cantSolicitudes := cantSolicitudes + 1;
+            DELAY 10*60
+        END SELECT
+    END While
+
+    if( cantSolicitudes = 3 ) then
+        enojarse();
+        irse();
+    end if
+
+    END Persona;
+
+TASK BODY Enfermera IS
+    BEGIN
+        LOOP
+
+            SELECT
+                Medico.atenderEnfermera;
+            ELSE
+                nota = hacerNota();
+                Escritorio.dejarNota( nota );
+            END SELECT
+        END LOOP
+    END Enfermera;
+
+End Clinica;
 
 ~~~
