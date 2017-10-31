@@ -277,6 +277,77 @@ ___
 
 ~~~
 
+Procedure Señales IS
+
+TASK Central;
+    Entry enviaseñal1(señal1: IN señal)
+    Entry enviaseñal2(señal2: IN señal)
+    Entry seTerminoTiempo()
+END Central;
+
+TASK TYPE Proceso1;
+TASK TYPE Proceso2;
+TASK TYPE Timer;
+
+TASK BODY Central IS
+    BEGIN
+        ACCEPT enviaseñal1(señal1);
+
+        LOOP
+            SELECT
+                ACCEPT enviaseñal1;
+            OR
+                ACCEPT enviaseñal2(señal2);
+
+                Timer.iniciarTimer();
+                
+                WHILE ( !finTiempo ) LOOP
+
+                    SELECT  
+                        when ( COUNT' seTerminoTiempo() = 0 ) => ACCEPT enviaseñal2(señal2);
+                    OR
+                        ACCEPT seTerminoTiempo();
+                        finTiempo = true;
+                    END SELECT
+                END WHILE
+        END LOOP
+    END Central
+
+TASK BODY Timer IS;
+    BEGIN
+        ACCEPT iniciarTimer()
+        delay(3*60)
+        Central.seTerminoTiempo();
+    END Timer;             
+
+
+TASK BODY Proceso1 IS;
+    BEGIN
+        LOOP
+            señal := generarSeñal()
+            SELECT
+                Centrar.enviaseñal1(señal)
+            OR DELAY 2*60
+            END SELECT
+        END LOOP
+    END Proceso1;
+
+
+TASK BODY Proceso2 IS;
+    BEGIN
+        LOOP
+            señal:= generarSeñal()
+            while ( !envioExitoso ) LOOP
+                SELECT
+                    Centrar.enviaseñal2(señal)
+                    envioExitoso := true
+                ELSE
+                    DELAY 60
+                END SELECT
+            END while
+        END LOOP
+    END Proceso2;
+
 ~~~
 
 ___

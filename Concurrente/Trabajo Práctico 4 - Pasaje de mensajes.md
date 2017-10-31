@@ -386,7 +386,6 @@ ___
 
 
 ~~~
-## FALTA CHEQUEAR.
 
 chan esperarCliente(int idCliente)
 chan estadoCliente[1..N](string estadoCliente)
@@ -502,7 +501,6 @@ Process Persona[p:1..N]{
 #### b) Implementar una solución sin utilizar un proceso intermedio entre cada persona y el empleado.
 
 ~~~
-## FALTA CHEQUEAR.
 
 chan esperarCliente(int idCliente)
 chan estadoCliente[1..N](string estadoCliente)
@@ -553,6 +551,10 @@ Process Persona[p:1..N]{
 ___
 
 ## Pasaje de mensajes sincrónicos (PMS)
+
+##### Nota: La diferencia entre PMA y PSM es que en PMA los canales pueden ser usados por cualquier proceso. El programador es el encargado de garantizar el correcto envío y recibimiento de mensajes entre los procesos correctos. Además, en PMA no hay límite de capacidad en el canal. En PMS los canales son entre procesos si o si, y la capacidad del canal es 1.
+
+___
 
 ### 7. En una estación de comunicaciones se cuenta con 10 radares y una unidad de procesamiento que se encarga de procesar la información enviada por los radares. Cada radar repetidamente detecta señales de radio durante 15 segundos y le envía esos datos a la unidad de procesamiento para que los analice. Los radares no deben esperar a ser atendidos para continuar trabajando.
 
