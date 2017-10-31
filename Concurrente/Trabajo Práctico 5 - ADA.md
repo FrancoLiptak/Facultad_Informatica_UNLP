@@ -372,6 +372,104 @@ ___
 
 ~~~
 
+Procedure Punto6 IS
+
+TASK Usuario;
+    Entry procesadorAsignado;
+    Entry devolucionPrograma;
+End Usuario;
+
+TASK Administrador;
+    Entry solicitarProcesador;
+End Administrador;
+
+TASK Procesador;
+    Entry recibirPrograma;
+End Procesador;
+
+type Procesadores is array (1 .. N) of Procesador;
+type Usuarios is array (1 .. N) of Usuario;
+
+TASK BODY Administrador IS;
+    int idUsuario;
+    int procesadorAAsignar;
+    procesadoresEnEjecucion IS array (1..N);
+
+    BEGIN
+        LOOP
+            ACCEPT solicitarProcesador(procesadorAAsignar) IS // No necesito idUser porque devuelvo en el mismo llamado.
+                procesadoraAsignar = Min(procesadoresEnEjecucion)
+                procesadoresEnEjecucion(procesadoraAsignar) ++
+            END solicitarProcesador();
+
+            ACCEPT liberarProcesador(procesadorALiberar) IS
+                procesadoresEnEjecucion(procesadorALiberar) --
+            END liberarProcesador();
+
+    END Administrador;
+
+
+TASK BODY Procesador IS;
+    string linea;
+    int resultado;
+    cola programasEnEjecucion;
+
+    BEGIN
+        LOOP
+            SELECT
+                ACCEPT recibirPrograma(programa, idUsuario) IS
+                    programasEnEjecucion.encolar(programa, idUsuario);
+                END recibirPrograma;
+            ELSE // si pusiera OR WHEN tendría poner una sentencia recepcion.
+                if ( programasEnEjecucion.length > 0 ) then
+                    
+                    programa, idUsuarioActual = programasEnEjecucion.desencolar()
+
+                    linea = Linasiguiente(programa);
+                    resultado = EJECUCION (LINEA);
+
+                    if ( resultado != 2) then
+                        Usuario(idUsuario).devolucionPrograma(resultado)
+                    else
+                        programasEnEjecucion.encolar(idUsuarioActual, programa)
+                    end if
+                else // para que no quede en loop 
+                    ACCEPT recibirPrograma(programa, idUsuario) IS
+                    programasEnEjecucion.encolar(programa, idUsuario);
+                    END recibirPrograma;
+                end if
+            END SELECT
+        END LOOP
+    END Procesador;
+
+
+    END Procesador;
+
+
+TASK BODY Usuario IS
+    int numProcesador
+    string programa
+    int respuestaPrograma = 1; // Asumo que arranca "con error", ya que todavía no lo comprobé.
+
+    BEGIN
+        programa = escribirPrograma()
+        Administrador.solicitarProcesador()
+        ACCEPT procesadorAsignado(numProcesador)
+
+        while ( respuestaPrograma != 3 ) LOOP
+
+            Procesadores(numProcesador).recibirPrograma(programa)
+            ACCEPT devolucionPrograma(respuestaPrograma)
+
+            if(respuestaPrograma = 1) then
+                corregirLinea(programa)
+            else
+                Administrador.liberarProcesador(numProcesador)
+            end if
+
+        END WHILE
+    END
+
 ~~~
 
 ___
