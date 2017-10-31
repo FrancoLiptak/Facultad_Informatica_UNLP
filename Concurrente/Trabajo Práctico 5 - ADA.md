@@ -70,7 +70,8 @@ Procedure puente_unidireccional is
 
     TASK  BODY Camioneta IS
         BEGIN
-            Puente.camioneta_pide_puente;
+            Puente.camioneta_pide_puente; 
+            # llamo de esta manera a la accion, y no "pedirPuente" generico, ya que me importa la cantidad de camionetas (y de otros vehículos) que haya.
             pasar()
             Puente.camioneta_sale;
         END
@@ -122,6 +123,7 @@ ___
 ### 3. Se debe modelar un buscador para contar la cantidad de veces que aparece un número dentro de un vector distribuido entre las N tareas contador. Además existe un administrador que decide el número que se desea buscar y se lo envía a los N contadores para que lo busquen en la parte del vector que poseen.
 
 ~~~
+
 Procedure Buscador_de_numeros is 
 
 TASK Administrador IS
@@ -186,7 +188,82 @@ ___
 
 ~~~
 
+Procedure base_de_datos IS
 
+TASK TYPE Tipo1
+TASK TYPE Tipo2
+TASK TYPE Tipo3
+ 
+
+TASK TYPE Base IS
+	Entry iniciar_lectura;
+    Entry terminar_lectura;
+    Entry iniciar_escritura;
+    Entry terminar_escritura;
+END Contador;
+
+TASK BODY Base IS
+    cantProcesos: Integer;
+    BEGIN
+        LOOP
+            SELECT
+                ACCEPT iniciar_lectura; cantProcesos ++;
+            OR
+                ACCEPT terminar_lectura; cantProcesos --;
+            OR when cantProcesos = 0 => ACCEPT  iniciar_escritura;
+                                                finalizar_escritura;
+            END SELECT
+        END LOOP
+    END Base
+
+
+TASK BODY Tipo1 IS
+BEGIN
+    LOOP
+        SELECT
+            Base.iniciar_escritura;
+            escribir();
+            Base.finalizar_escritura;
+        OR DELAY 2*60
+            DELAY 5*60
+        END SELECT
+    END LOOP
+END Tipo1;
+
+TASK BODY Tipo2 IS
+BEGIN
+    LOOP
+        SELECT
+            Base.iniciar_escritura;
+            escribir();
+            Base.finalizar_escritura;
+        OR DELAY 5*60
+            SELECT
+                Base.iniciar_lectura;
+                leer();
+                Base.finalizar_lectura;
+            OR DELAY 5*60
+            END SELECT
+        END SELECT
+    END LOOP
+END Tipo2;
+
+TASK BODY Tipo3 IS
+BEGIN
+    LOOP
+        SELECT
+            Base.iniciar_lectura;
+            leer();
+            Base.finalizar_lectura;
+        ELSE
+            Base.iniciar_escritura;
+            escribir();
+            Base.finalizar_escritura;
+        END SELECT
+    END LOOP
+END Tipo3;
+
+End base_de_datos;
 
 ~~~
 
