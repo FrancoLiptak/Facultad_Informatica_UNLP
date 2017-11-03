@@ -1,0 +1,38 @@
+{% include 'base.html.twig' %}
+
+{% block body %}
+
+{% if mensaje is not null %}
+
+    {{ mensaje }}
+
+{% endif %}
+
+{% if logueado == true %}
+
+<a href="?controlador=session&accion=close_session">Cerrar session</a>
+
+<h1>Edite su pregunta, {{ usuario.nombre }}.</h1>
+
+<form action="?controlador=preguntas&accion=editarPregunta&id={{ pregunta.idPregunta }}" method="post">
+
+    <h2>Ingrese un título</h2>
+    <input type="text" name="titulo" value="{{ pregunta.titulo }}" required>
+
+    <h2>Ingrese el texto</h2>
+    <textarea name="texto" required>{{ pregunta.texto }}</textarea>
+
+    <input type="submit" value="Editar Pregunta">
+
+</form>
+
+{% else %}
+
+    <h2>Usted no ha iniciado sesión.</h2>
+
+    <a href="?controlador=Index&accion=show">Iniciar sesion</a>
+
+{% endif %}
+
+
+{% endblock %}

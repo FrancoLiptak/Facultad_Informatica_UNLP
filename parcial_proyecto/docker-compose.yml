@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+    links:
+      - db
+
+  db:
+    image: mariadb:10.0.32
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    volumes:
+      - db:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    links:
+      - db
+
+volumes:
+  db:
+    driver: local

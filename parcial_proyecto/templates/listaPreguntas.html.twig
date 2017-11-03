@@ -1,0 +1,45 @@
+{% include 'base.html.twig' %}
+
+{% block body %}
+
+{% if mensaje is not null %}
+
+    <h3> {{ mensaje }} </h3>
+
+{% endif %}
+
+{% if logueado == true %}
+
+<h1>Puede ver aquí la lista de preguntas.</h1>
+
+<a href="?controlador=session&accion=close_session">Cerrar sesion</a>
+
+{% for pregunta in preguntas %}
+
+    <h3>{{ pregunta.titulo }}</h3>
+    <p>{{ pregunta.nombreUsuario }}</p>
+    <p>{{ pregunta.fecha }}</p>
+    <p>{{ pregunta.texto }}</p>
+
+    {% if pregunta.nombreUsuario == usuario.usuario  %}
+
+        <a href="?controlador=preguntas&accion=eliminar&id= {{ pregunta.idPregunta }} ">Eliminar Pregunta</a>
+
+        <a href="?controlador=preguntas&accion=mostrarEditarPregunta&id= {{ pregunta.idPregunta }} ">Editar Pregunta</a>
+
+    {% endif %}
+
+{% endfor %}
+
+{% else %}
+
+    <h2>Usted no ha iniciado sesión.</h2>
+
+    <a href="?controlador=Index&accion=show">Iniciar sesion</a>
+
+{% endif %}
+
+
+
+
+{% endblock %}
