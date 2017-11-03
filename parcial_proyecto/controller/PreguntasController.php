@@ -41,7 +41,7 @@ class PreguntasController{
 
                 if ( isset($resultado)) {
                     
-                    $this->mostrarListaPreguntas(<);
+                    $this->mostrarListaPreguntas();
 
                 }else{
                     $this->mostrarCrearPregunta('Ha habido un error. Por favor, intente denuevo.');
