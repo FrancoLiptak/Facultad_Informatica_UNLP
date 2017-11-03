@@ -39,9 +39,9 @@ class PreguntasController{
                 $repositorioPreguntas = RepositorioPreguntas::getInstance();
                 $resultado = $repositorioPreguntas->registrarPregunta($titulo, $texto, $idUser);
 
-                if ( $resultado == true ){
+                if ( isset($resultado)) {
                     
-                    $this->mostrarListaPreguntas();
+                    $this->mostrarListaPreguntas(<);
 
                 }else{
                     $this->mostrarCrearPregunta('Ha habido un error. Por favor, intente denuevo.');
