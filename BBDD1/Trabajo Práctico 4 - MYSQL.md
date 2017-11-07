@@ -123,9 +123,19 @@ CREATE VIEW sucursalesPorCliente
 
 ~~~
 
-SELECT dniCliente FROM cliente WHERE dniCliente NOT IN (SELECT r.dniCliente FROM reparacion r WHERE r.direccionReparacionCliente NOT IN (SELECT s.domicilioSucursal FROM sucursal s INNER JOIN cliente c ON c.ciudadCliente = s.ciudadSucursal))
+USE reparacion;
 
-# Consultar. Está mal
+SELECT *
+FROM cliente c2
+WHERE c2.dniCliente NOT IN (    SELECT c.dniCliente
+                                FROM sucursal s INNER JOIN cliente c ON (s.ciudadSucursal = c.ciudadCliente)
+                                WHERE c.dniCliente = c2.dniCliente AND s.codSucursal <> All (   SELECT r.codSucursal
+                                                                                                FROM reparacion r
+                                                                                                WHERE r.ciudadReparacionCliente = c2.ciudadCliente
+                                                                                            )
+                            );
+
+# 20000 rows in set (0.43 sec)
 
 ~~~
 
@@ -133,6 +143,19 @@ SELECT dniCliente FROM cliente WHERE dniCliente NOT IN (SELECT r.dniCliente FROM
 
 ~~~
 
+SELECT *
+FROM cliente c2
+WHERE c2.dniCliente NOT IN  (   SELECT spc.dniCliente
+                                FROM sucursalesPorCliente spc INNER JOIN sucursal s ON (s.ciudadSucursal = spc.ciudadCliente)
+                                WHERE c2.dniCliente = spc.dniCliente AND s.codSucursal <> ALL ( SELECT r.codSucursal
+                                                                                                FROM reparacion r
+                                                                                                WHERE r.ciudadReparacionCliente = c2.ciudadCliente
+                                                                                              ) 
+                            );
+
+# 20000 rows in set (0.44 sec)
+
+# Primero se resuelve la vista, y después se resuelve el resto de la consulta.
 ~~~
 
 ### 6) Hallar los clientes que en alguna de sus reparaciones hayan dejado como dato de contacto el mismo domicilio y ciudad que figura en su DNI. Realice la consulta en ambas bases.
@@ -140,14 +163,14 @@ SELECT dniCliente FROM cliente WHERE dniCliente NOT IN (SELECT r.dniCliente FROM
 ~~~
 
 USE reparacion;
-SELECT dniCliente, nombreApellidoCliente FROM cliente WHERE EXISTS (Select * FROM cliente c INNER JOIN reparacion r ON (c.dniCliente = r.dniCliente) WHERE r.direccionReparacionCliente = c.domicilioCliente AND r.ciudadReparacionCliente = c.ciudadCliente);
+Select * FROM cliente c INNER JOIN reparacion r ON (c.dniCliente = r.dniCliente) WHERE r.direccionReparacionCliente = c.domicilioCliente AND r.ciudadReparacionCliente = c.ciudadCliente;
 
-# 20000 rows in set (0.02 sec)
+# 30286 rows in set (0.18 sec)
 
 USE reparacion_dn;
-SELECT dniCliente, nombreApellidoCliente FROM reparacion WHERE EXISTS (Select * FROM reparacion WHERE direccionReparacionCliente = domicilioCliente AND ciudadReparacionCliente = ciudadCliente);
+Select * FROM reparacion WHERE direccionReparacionCliente = domicilioCliente AND ciudadReparacionCliente = ciudadCliente;
 
-# 162252 rows in set (0.10 sec)
+# 130138 rows in set (0.69 sec)
 
 ~~~
 
