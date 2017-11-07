@@ -123,6 +123,8 @@ CREATE VIEW sucursalesPorCliente
 
 ~~~
 
+
+
 ~~~
 
 #### b. Realice la consulta utilizando la vista creada en el ej 4.
@@ -151,7 +153,15 @@ SELECT dniCliente, nombreApellidoCliente FROM reparacion WHERE EXISTS (Select * 
 
 ~~~
 
+USE reparacion;
+SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(rep.repuestoreparacion) AS cantidad_repuestos FROM reparacion r INNER JOIN repuestoreparacion rep ON (r.fechaInicioReparacion = rep.fechaInicioReparacion) WHERE (r.dniCliente = rep.dniCliente) GROUP BY r.fechaInicioReparacion HAVING COUNT(rep.repuestoreparacion) > 3;
 
+# 4068 rows in set (0.10 sec)
+
+USE reparacion_dn;
+SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(r.repuestoreparacion) AS cantidad_repuestos FROM reparacion r INNER JOIN reparacion rep ON (r.dniCliente = rep.dniCliente) WHERE (r.fechaInicioReparacion = rep.fechaInicioReparacion) GROUP BY r.fechaInicioReparacion HAVING COUNT(r.repuestoreparacion) > 3;
+
+# CONSULTAR, EL SEGUNDO ESTÁ MAL, PERO NO SE SOLUCIONARLO.
 
 ~~~
 
