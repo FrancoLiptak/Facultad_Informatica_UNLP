@@ -240,6 +240,7 @@ ___
 #### - Iterar el cursor e insertar los valores correspondientes en la tabla REPARACIONESPORCLIENTE.
 
 ~~~
+# Consultar lugar del NOW y CURRENT en el cursor.
 
 DELIMITER //
 CREATE PROCEDURE ejercicio9()
@@ -355,6 +356,8 @@ ___
 
 ### 13) Realizar las inserciones provistas en el archivo inserciones.sql. Validar mediante una consulta que la tabla REPARACIONESPORCLIENTE se esté actualizando correctamente.
 
+# CONSULTAR
+
 ___
 
 ### 14) Considerando la siguiente consulta
@@ -372,6 +375,8 @@ and s.ciudadsucursal='La Plata';
 ~~~
 
 ### Analice su plan de ejecución mediante el uso de la sentencia EXPLAIN.
+
+La sentencia EXPLAIN se utiliza para optimizar consultas. Esta sentencia nos permitirá obtener información sobre el plan de ejecución de nuestras consultas realizadas contra nuestra la base de datos. De esta forma, podremos analizar este plan de ejecución para saber cómo optimizar la ejecución de dichas consultas.
 
 #### a) ¿Qué atributos del plan de ejecución encuentra relevantes para evaluar la performance de la consulta?
 
