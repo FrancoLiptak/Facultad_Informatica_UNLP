@@ -242,20 +242,26 @@ ___
 ~~~
 
 DELIMITER //
-CREATE PROCEDURE ejercicio()
+CREATE PROCEDURE ejercicio9()
 
 BEGIN
-    DECLARE dniCliente int(11);
-    DECLARE cantidadReparaciones int(11);
-    DECLARE fechaultimaactualizacion datetime;
-    DECLARE usuario char(16);
+    DECLARE fin INT DEFAULT 0;
+    DECLARE dniCliente INT(11);
+    DECLARE cantidadReparaciones INT(11);
+    DECLARE fechaultimaactualizacion DATETIME;
+    DECLARE usuario CHAR(16);
     DECLARE obtenerInformacion CURSOR FOR 
-                                        SELECT c.dniCliente, COUNT(r.fechaInicioReparacion) as cantidad_reparaciones, CURRENT_USER(), NOW() FROM cliente c INNER JOIN reparacion r ON (c.dniCliente = r.dniCliente) GROUP BY c.dniCliente;
+                                        SELECT c.dniCliente, COUNT(r.fechaInicioReparacion) as cantidad_reparaciones, NOW(), CURRENT_USER() FROM cliente c INNER JOIN reparacion r ON (c.dniCliente = r.dniCliente) GROUP BY c.dniCliente;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin = 1;
 
     START TRANSACTION;
         OPEN obtenerInformacion;
         ciclo_loop: LOOP
             FETCH obtenerInformacion INTO dniCliente, cantidadReparaciones, fechaultimaactualizacion, usuario;
+
+            if (fin=1) then
+                LEAVE ciclo_loop;
+            end if;
 
             INSERT INTO reparacionesporcliente (dniCliente, cantidadReparaciones, fechaultimaactualizacion, usuario) VALUES (dniCliente, cantidadReparaciones, fechaultimaactualizacion, usuario);
         END LOOP ciclo_loop;
@@ -268,8 +274,6 @@ END //
 
 ### b) Ejecute el stored procedure.
 
-### CONSULTAR.
-
 ~~~
 
 CALL ejercicio9;
@@ -280,6 +284,9 @@ ___
 ### 10) Crear un trigger de modo que al insertar un dato en la tabla REPARACION, se actualice la cantidad de reparaciones del cliente, la fecha de actualización y el usuario responsable de la misma (actualiza la tabla REPARACIONESPORCLIENTE).
 
 ~~~
+
+CREATE TRIGGER ejercicio10 BEFORE INSERT
+ON reparacion FOR EACH ROW 
 
 ~~~
 
