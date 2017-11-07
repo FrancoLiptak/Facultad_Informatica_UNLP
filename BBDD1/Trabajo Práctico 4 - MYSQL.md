@@ -179,14 +179,15 @@ Select * FROM reparacion WHERE direccionReparacionCliente = domicilioCliente AND
 ~~~
 
 USE reparacion;
-SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(rep.repuestoreparacion) AS cantidad_repuestos FROM reparacion r INNER JOIN repuestoreparacion rep ON (r.fechaInicioReparacion = rep.fechaInicioReparacion) WHERE (r.dniCliente = rep.dniCliente) GROUP BY r.fechaInicioReparacion HAVING COUNT(rep.repuestoreparacion) > 3;
+
+SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(rep.repuestoreparacion) AS cantidad_repuestos FROM reparacion r INNER JOIN repuestoreparacion rep ON (r.fechaInicioReparacion = rep.fechaInicioReparacion) WHERE (r.dniCliente = rep.dniCliente) GROUP BY r.dniCliente, r.fechaInicioReparacion HAVING COUNT(rep.repuestoreparacion) > 3;
 
 # 4068 rows in set (0.10 sec)
 
 USE reparacion_dn;
-SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(r.repuestoreparacion) AS cantidad_repuestos FROM reparacion r INNER JOIN reparacion rep ON (r.dniCliente = rep.dniCliente) WHERE (r.fechaInicioReparacion = rep.fechaInicioReparacion) GROUP BY r.fechaInicioReparacion HAVING COUNT(r.repuestoreparacion) > 3;
+SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(r.repuestoreparacion) AS cantidad_repuestos FROM reparacion r GROUP BY r.dniCliente, r.fechaInicioReparacion HAVING COUNT(cantidad_repuestos) > 3;
 
-# CONSULTAR, EL SEGUNDO ESTÁ MAL, PERO NO SE SOLUCIONARLO.
+# 20789 rows in set (0.12 sec)
 
 ~~~
 
