@@ -268,6 +268,7 @@ BEGIN
         CLOSE obtenerInformacion;
 
     COMMIT;
+
 END //
 
 ~~~
@@ -302,6 +303,34 @@ ___
 ### 11) Crear un stored procedure que sirva para agregar una reparación, junto con una revisión de un empleado (REVISIONREPARACION) y un repuesto (REPUESTOREPARACION) relacionados dentro de una sola transacción. El stored procedure debe recibir los siguientes parámetros: dniCliente, codSucursal, fechaReparacion, cantDiasReparacion, telefonoReparacion, empleadoReparacion, repuestoReparacion.
 
 ~~~
+
+DELIMITER //
+CREATE PROCEDURE ejercicio11(IN dni INT(11), IN sucursal INT, IN fechaReparacion DATETIME, IN cantDiasRep INT,
+    IN telefonoRep VARCHAR(45), IN empleadoRep VARCHAR(30), IN repuestoRep VARCHAR(30))
+
+
+BEGIN
+   
+   DECLARE direccion VARCHAR(255);
+   DECLARE tarjeta VARCHAR(255);
+   DECLARE ciudad VARCHAR(255);
+
+   SELECT domicilioCliente, ciudadCliente, tarjetaPrimaria INTO direccion, ciudad, tarjeta FROM cliente c WHERE c.dniCliente = dni;
+
+
+    START TRANSACTION;
+
+        INSERT INTO reparacion (codSucursal, dniCliente, fechaInicioReparacion, cantDiasReparacion, telefonoReparacionCliente,
+    direccionReparacionCliente, ciudadReparacionCliente, tarjetaReparacion) VALUES (sucursal, dni, fechaReparacion, cantDiasRep, telefonoRep, direccion, ciudad, tarjeta);
+
+        INSERT INTO revisionreparacion (dniCliente, fechaInicioReparacion, empleadoReparacion) VALUES (dni, fechaReparacion, empleadoRep);
+
+        INSERT INTO repuestoreparacion (dniCliente, fechaInicioReparacion, repuestoReparacion) VALUES (dni, fechaReparacion, repuestoRep);
+
+    COMMIT;
+
+END //
+
 ~~~
 
 ___
@@ -316,6 +345,12 @@ ___
 #### - cantDiasReparacion: 4
 #### - telefonoReparacion: 4243-4255
 
+
+~~~
+
+CALL ejercicio11(1009443, 100, "2013-12-14 12:20:31", 4, "4243-4255", "Maidana", "bomba de combustible");
+
+~~~
 ___
 
 ### 13) Realizar las inserciones provistas en el archivo inserciones.sql. Validar mediante una consulta que la tabla REPARACIONESPORCLIENTE se esté actualizando correctamente.
