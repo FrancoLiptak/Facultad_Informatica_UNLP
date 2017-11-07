@@ -123,7 +123,9 @@ CREATE VIEW sucursalesPorCliente
 
 ~~~
 
+SELECT dniCliente FROM cliente WHERE dniCliente NOT IN (SELECT r.dniCliente FROM reparacion r WHERE r.direccionReparacionCliente NOT IN (SELECT s.domicilioSucursal FROM sucursal s INNER JOIN cliente c ON c.ciudadCliente = s.ciudadSucursal))
 
+# Consultar. Está mal
 
 ~~~
 
