@@ -135,12 +135,12 @@ ___
 USE reparacion;
 
 SELECT *
-FROM cliente c2
-WHERE c2.dniCliente NOT IN (    SELECT c.dniCliente
-                                FROM sucursal s INNER JOIN cliente c ON (s.ciudadSucursal = c.ciudadCliente)
+FROM cliente c
+WHERE c.dniCliente NOT IN (    SELECT c2.dniCliente
+                                FROM sucursal s INNER JOIN cliente c2 ON (s.ciudadSucursal = c2.ciudadCliente)
                                 WHERE s.codSucursal <> All (    SELECT r.codSucursal
-                                                                FROM reparacion r
-                                                                WHERE r.ciudadReparacionCliente = c2.ciudadCliente
+                                                                FROM reparacion r INNER JOIN cliente c3 ON (c3.dniCliente = r.dniCliente)
+                                                                WHERE r.ciudadReparacionCliente = c3.ciudadCliente AND c2.dniCliente = c3.dniCliente
                                                             )
                             );
 
