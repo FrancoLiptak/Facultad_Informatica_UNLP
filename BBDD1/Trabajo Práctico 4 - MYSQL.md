@@ -138,13 +138,13 @@ SELECT *
 FROM cliente c2
 WHERE c2.dniCliente NOT IN (    SELECT c.dniCliente
                                 FROM sucursal s INNER JOIN cliente c ON (s.ciudadSucursal = c.ciudadCliente)
-                                WHERE c.dniCliente = c2.dniCliente AND s.codSucursal <> All (   SELECT r.codSucursal
-                                                                                                FROM reparacion r
-                                                                                                WHERE r.ciudadReparacionCliente = c2.ciudadCliente
-                                                                                            )
+                                WHERE s.codSucursal <> All (    SELECT r.codSucursal
+                                                                FROM reparacion r
+                                                                WHERE r.ciudadReparacionCliente = c2.ciudadCliente
+                                                            )
                             );
 
-# 20000 rows in set (0.43 sec)
+# 20000 rows in set (0.53 sec)
 
 ~~~
 
@@ -153,16 +153,16 @@ WHERE c2.dniCliente NOT IN (    SELECT c.dniCliente
 ~~~
 
 SELECT *
-FROM cliente c2
-WHERE c2.dniCliente NOT IN  (   SELECT spc.dniCliente
+FROM cliente c
+WHERE c.dniCliente NOT IN  (    SELECT spc.dniCliente
                                 FROM sucursalesPorCliente spc INNER JOIN sucursal s ON (s.ciudadSucursal = spc.ciudadCliente)
-                                WHERE c2.dniCliente = spc.dniCliente AND s.codSucursal <> ALL ( SELECT r.codSucursal
-                                                                                                FROM reparacion r
-                                                                                                WHERE r.ciudadReparacionCliente = c2.ciudadCliente
-                                                                                              ) 
+                                WHERE s.codSucursal <> ALL (    SELECT r.codSucursal
+                                                                FROM reparacion r
+                                                                WHERE r.ciudadReparacionCliente = c.ciudadCliente
+                                                                ) 
                             );
 
-# 20000 rows in set (0.44 sec)
+# 20000 rows in set (0.45 sec)
 
 # Primero se resuelve la vista, y después se resuelve el resto de la consulta.
 
