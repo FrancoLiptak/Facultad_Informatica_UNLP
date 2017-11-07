@@ -58,6 +58,8 @@ FLUSH PRIVILEGES;
 
 ~~~
 
+___
+
 ### 2) Listar dni, nombre y apellido de todos los clientes ordenados por dni en forma ascendente. Realice la consulta en ambas bases. ¿Qué diferencia nota en cuanto a performance? ¿Arrojan los mismos resultados? ¿Qué puede concluir en base a las diferencias halladas?
 
 ~~~
@@ -76,6 +78,8 @@ SELECT dniCliente, nombreApellidoCliente FROM reparacion ORDER BY dniCliente ASC
 Podemos notar una gran diferencia en cuanto a performance. La base reparacion produjo menos cantidad de resultados, y en cuanto a tiempo, fue mucho menor.
 reparacion_dn nos arroja muchas tuplas repetidas. Esto se debe a que, como no está normalizada, cada vez que un usuario realiza una nueva reparación, toda su información debe ser cargada en el sistema, ocacionando repetición de información.
 
+___
+
 ### 3) Hallar aquellos clientes que para todas sus reparaciones siempre hayan usado su tarjeta de crédito primaria (nunca la tarjeta secundaria). Realice la consulta en ambas bases.
 
 ~~~
@@ -90,7 +94,10 @@ USE reparacion_dn;
 SELECT r.dniCliente, r.nombreApellidoCliente FROM reparacion r WHERE NOT EXISTS (SELECT * FROM reparacion re WHERE r.dniCliente = re.dniCliente AND r.tarjetaSecundaria = re.tarjetaReparacion);
 
 # 89603 rows in set (0.32 sec)
+
 ~~~
+
+___
 
 ### 4) Crear una vista llamada ‘sucursalesPorCliente’ que muestre los dni de los clientes y los códigos de sucursales de la ciudad donde vive el cliente. Cree la vista en ambas bases.
 
@@ -113,6 +120,8 @@ CREATE VIEW sucursalesPorCliente
 # Query OK, 0 rows affected (0.06 sec)
 
 ~~~
+
+___
 
 ### 5) En la base normalizada, hallar los clientes que dejaron vehículos a reparar en todas las sucursales de la ciudad en la que viven
 
@@ -156,7 +165,9 @@ WHERE c2.dniCliente NOT IN  (   SELECT spc.dniCliente
 # 20000 rows in set (0.44 sec)
 
 # Primero se resuelve la vista, y después se resuelve el resto de la consulta.
+
 ~~~
+___
 
 ### 6) Hallar los clientes que en alguna de sus reparaciones hayan dejado como dato de contacto el mismo domicilio y ciudad que figura en su DNI. Realice la consulta en ambas bases.
 
@@ -173,6 +184,7 @@ Select * FROM reparacion WHERE direccionReparacionCliente = domicilioCliente AND
 # 130138 rows in set (0.69 sec)
 
 ~~~
+___
 
 ### 7) Para aquellas reparaciones que tengan registrados mas de 3 repuestos, listar el DNI del cliente, el código de sucursal, la fecha de reparación y la cantidad de repuestos utilizados. Realice la consulta en ambas bases.
 
@@ -190,6 +202,113 @@ SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(r.repuestorep
 # 20789 rows in set (0.12 sec)
 
 ~~~
+___
 
+## En la base normalizada realice los siguientes ejercicios:
 
+### 8) Agregar la siguiente tabla:
+
+#### REPARACIONESPORCLIENTE
+#### idRC: int(11) PK AI
+#### dniCliente: int(11)
+#### cantidadReparaciones: int(11)
+#### fechaultimaactualizacion: datetime
+#### usuario: char(16)
+
+~~~
+
+CREATE TABLE reparacionesporcliente  (
+    idRC int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,  
+    dniCliente int(11) NOT NULL,  
+    cantidadReparaciones int(11) NOT NULL,
+    fechaultimaactualizacion datetime NOT NULL,  
+    usuario char(16) NOT NULL
+    );
+
+~~~
+
+___
+
+### 9) Stored procedures
+
+### a) Crear un stored procedure que realice los siguientes pasos dentro de una transacción:
+
+#### - Realizar una consulta que para cada cliente (dniCliente), calcule la cantidad de reparaciones que tiene registradas. Registrar la fecha en la que se realiza la consulta y el usuario con el que la realizó.
+
+#### - Guardar el resultado de la consulta en un cursor.
+
+#### - Iterar el cursor e insertar los valores correspondientes en la tabla REPARACIONESPORCLIENTE.
+
+~~~
+
+~~~
+
+### b) Ejecute el stored procedure.
+
+___
+
+### 10) Crear un trigger de modo que al insertar un dato en la tabla REPARACION, se actualice la cantidad de reparaciones del cliente, la fecha de actualización y el usuario responsable de la misma (actualiza la tabla REPARACIONESPORCLIENTE).
+
+~~~
+
+~~~
+
+___
+
+### 11) Crear un stored procedure que sirva para agregar una reparación, junto con una revisión de un empleado (REVISIONREPARACION) y un repuesto (REPUESTOREPARACION) relacionados dentro de una sola transacción. El stored procedure debe recibir los siguientes parámetros: dniCliente, codSucursal, fechaReparacion, cantDiasReparacion, telefonoReparacion, empleadoReparacion, repuestoReparacion.
+
+~~~
+~~~
+
+___
+
+### 12) Ejecutar el stored procedure del punto 11 con los siguientes datos:
+
+#### - dniCliente: 1009443
+#### - codSucursal: 100
+#### - fechaReparacion: 2013-12-14 12:20:31
+#### - empleadoReparacion: ‘Maidana’
+#### - repuestoReparacion: ‘bomba de combustible’
+#### - cantDiasReparacion: 4
+#### - telefonoReparacion: 4243-4255
+
+___
+
+### 13) Realizar las inserciones provistas en el archivo inserciones.sql. Validar mediante una consulta que la tabla REPARACIONESPORCLIENTE se esté actualizando correctamente.
+
+___
+
+### 14) Considerando la siguiente consulta
+
+~~~ 
+
+select count(r.dniCliente) from reparacion r, cliente c, sucursal s, revisionreparacion rv where r.dnicliente=c.dnicliente
+and r.codsucursal=s.codsucursal
+and r.dnicliente=rv.dnicliente
+and r.fechainicioreparacion=rv.fechainicioreparacion
+and empleadoreparacion = 'Maidana'
+and s.m2<200
+and s.ciudadsucursal='La Plata';
+
+~~~
+
+### Analice su plan de ejecución mediante el uso de la sentencia EXPLAIN.
+
+#### a) ¿Qué atributos del plan de ejecución encuentra relevantes para evaluar la performance de la consulta?
+
+#### b) Observe en particular el atributo type ¿cómo se están aplicando los JOIN entre las tablas involucradas?
+
+#### c) Según lo que observó en los puntos anteriores, ¿qué mejoras se pueden realizar para optimizar la consulta?
+
+#### d) Aplique las mejoras propuestas y vuelva a analizar el plan de ejecución. ¿Qué cambios observa?
+
+___
+
+### 15) Análisis de permisos.
+
+### a) Para cada punto de la práctica incluido en el cuadro, ejecutarlo con cada uno de los usuarios creados en el punto 1 e indicar con cuáles fue posible realizar la operación.
+
+### b) Determine para cada caso, cuál es el conjunto de permisos mínimo.
+
+### c) Desde su punto de vista y contemplando lo visto en la materia, explique cuál es la manera óptima de asignar permisos a los usuarios.
 
