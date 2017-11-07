@@ -134,7 +134,7 @@ ___
 
 USE reparacion;
 
-SELECT *
+SELECT c.dniCliente
 FROM cliente c
 WHERE c.dniCliente NOT IN (    SELECT c2.dniCliente
                                 FROM sucursal s INNER JOIN cliente c2 ON (s.ciudadSucursal = c2.ciudadCliente)
@@ -142,9 +142,10 @@ WHERE c.dniCliente NOT IN (    SELECT c2.dniCliente
                                                                 FROM reparacion r INNER JOIN cliente c3 ON (c3.dniCliente = r.dniCliente)
                                                                 WHERE r.ciudadReparacionCliente = c3.ciudadCliente AND c2.dniCliente = c3.dniCliente
                                                             )
-                            );
+                            )
+LIMIT 100;
 
-# 20000 rows in set (0.53 sec)
+# 13021 rows in set (1.17 sec)
 
 ~~~
 
@@ -152,17 +153,18 @@ WHERE c.dniCliente NOT IN (    SELECT c2.dniCliente
 
 ~~~
 
-SELECT *
+SELECT c.dniCliente
 FROM cliente c
 WHERE c.dniCliente NOT IN  (    SELECT spc.dniCliente
                                 FROM sucursalesPorCliente spc INNER JOIN sucursal s ON (s.ciudadSucursal = spc.ciudadCliente)
                                 WHERE s.codSucursal <> ALL (    SELECT r.codSucursal
-                                                                FROM reparacion r
-                                                                WHERE r.ciudadReparacionCliente = c.ciudadCliente
+                                                                FROM reparacion r INNER JOIN cliente c2 ON (r.dniCliente = c2.dniCliente)
+                                                                WHERE r.ciudadReparacionCliente = c.ciudadCliente AND spc.dniCliente = c2.dniCliente
                                                                 ) 
-                            );
+                            )
+LIMIT 100;
 
-# 20000 rows in set (0.45 sec)
+# 13021 rows in set (1.36 sec)
 
 # Primero se resuelve la vista, y después se resuelve el resto de la consulta.
 
@@ -174,14 +176,14 @@ ___
 ~~~
 
 USE reparacion;
-Select * FROM cliente c INNER JOIN reparacion r ON (c.dniCliente = r.dniCliente) WHERE r.direccionReparacionCliente = c.domicilioCliente AND r.ciudadReparacionCliente = c.ciudadCliente;
+Select DISTINCT c.dniCliente FROM cliente c INNER JOIN reparacion r ON (c.dniCliente = r.dniCliente) WHERE r.direccionReparacionCliente = c.domicilioCliente AND r.ciudadReparacionCliente = c.ciudadCliente;
 
-# 30286 rows in set (0.18 sec)
+# 18374 rows in set (0.18 sec)
 
 USE reparacion_dn;
-Select * FROM reparacion WHERE direccionReparacionCliente = domicilioCliente AND ciudadReparacionCliente = ciudadCliente;
+Select DISTINCT dniCliente FROM reparacion WHERE direccionReparacionCliente = domicilioCliente AND ciudadReparacionCliente = ciudadCliente;
 
-# 130138 rows in set (0.69 sec)
+# 18307 rows in set (0.71 sec)
 
 ~~~
 ___
@@ -192,14 +194,15 @@ ___
 
 USE reparacion;
 
-SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(rep.repuestoreparacion) AS cantidad_repuestos FROM reparacion r INNER JOIN repuestoreparacion rep ON (r.fechaInicioReparacion = rep.fechaInicioReparacion) WHERE (r.dniCliente = rep.dniCliente) GROUP BY r.dniCliente, r.fechaInicioReparacion HAVING COUNT(rep.repuestoreparacion) > 3;
+SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(rep.repuestoreparacion) AS cantidad_repuestos FROM reparacion r INNER JOIN repuestoreparacion rep ON (r.fechaInicioReparacion = rep.fechaInicioReparacion) WHERE (r.dniCliente = rep.dniCliente) GROUP BY r.dniCliente, r.fechaInicioReparacion HAVING COUNT(DISTINCT rep.repuestoreparacion) > 3;
 
 # 4068 rows in set (0.10 sec)
 
 USE reparacion_dn;
-SELECT r.dniCliente, r.codSucursal, r.fechaInicioReparacion, COUNT(r.repuestoreparacion) AS cantidad_repuestos FROM reparacion r GROUP BY r.dniCliente, r.fechaInicioReparacion HAVING COUNT(cantidad_repuestos) > 3;
 
-# 20789 rows in set (0.12 sec)
+SELECT dniCliente, codSucursal, fechaInicioReparacion, COUNT(repuestoreparacion) AS cantidad_repuestos FROM reparacion GROUP BY dniCliente, fechaInicioReparacion HAVING COUNT(DISTINCT repuestoreparacion) > 3;
+
+# 3964 rows in set (0.12 sec)
 
 ~~~
 ___
@@ -364,7 +367,7 @@ ___
 
 ~~~ 
 
-select count(r.dniCliente) from reparacion r, cliente c, sucursal s, revisionreparacion rv where r.dnicliente=c.dnicliente
+EXPLAIN select count(r.dniCliente) from reparacion r, cliente c, sucursal s, revisionreparacion rv where r.dnicliente=c.dnicliente
 and r.codsucursal=s.codsucursal
 and r.dnicliente=rv.dnicliente
 and r.fechainicioreparacion=rv.fechainicioreparacion
@@ -380,9 +383,29 @@ La sentencia EXPLAIN se utiliza para optimizar consultas. Esta sentencia nos per
 
 #### a) ¿Qué atributos del plan de ejecución encuentra relevantes para evaluar la performance de la consulta?
 
+Para esto, debemos ver la cantidad de filas escaneadas, y también si se han usado índices. Si no hubiera indices, se recorrerían todos los registros de la tabla para obtener el resultado.
+
+En el campo REF vemos que una fila está en NULL, y las otras muestran atributos.
+
+(REF: Las columnas del índice que se está usando, o una constante si esta es posible.)
+
+Por ende, vemos que en la fila que está en NULL no se está usando ninguna columna, por ende ningún index.
+
 #### b) Observe en particular el atributo type ¿cómo se están aplicando los JOIN entre las tablas involucradas?
 
+Index: Escaneo completo de la tabla para cada combinación de filas de las tablas previas, revisando únicamente el índice.
+
+Ref: Todas las filas con valores en el índice que coincidan serán leídos desde esta tabla por cada combinación de filas de las tablas previas. Similar a eq_ref, pero usado cuando usa sólo un prefijo más a la izquierda de la clave o si la clave no es UNIQUE o PRIMARY KEY. Si la clave que es usada coincide sólo con pocas filas, esta union es buena.
+
+Eq_ref: Una fila de la tabla 1 será leída por cada combinación de filas de la tabla 2. Este tipo es usado cuando todas las partes de un índice se usan en la consulta y el índice es UNIQUE o PRIMARY KEY.
+
+Fuente: http://manelperez.com/bases-de-datos/explain-mysql-para-optimizar-tus-consultas/
+
 #### c) Según lo que observó en los puntos anteriores, ¿qué mejoras se pueden realizar para optimizar la consulta?
+
+Primero que nada, vemos que la fila en la cual se observa mayor cantidad de rows, es la fila en la cual se usa 'index', y 'ref' es null.
+
+Deberíamos usar un índice en dicho lugar.
 
 #### d) Aplique las mejoras propuestas y vuelva a analizar el plan de ejecución. ¿Qué cambios observa?
 
