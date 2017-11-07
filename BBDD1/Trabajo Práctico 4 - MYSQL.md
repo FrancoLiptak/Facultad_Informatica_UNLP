@@ -285,8 +285,15 @@ ___
 
 ~~~
 
-CREATE TRIGGER ejercicio10 BEFORE INSERT
-ON reparacion FOR EACH ROW 
+DELIMITER |
+CREATE TRIGGER ejercicio10 AFTER INSERT ON reparacion 
+    FOR EACH ROW 
+    BEGIN
+        UPDATE reparacionesporcliente
+        SET cantidadReparaciones = cantidadReparaciones + 1, fechaultimaactualizacion = NOW(), usuario = CURRENT_USER()
+        WHERE NEW.dniCliente = reparacionesporcliente.dniCliente;
+    END;
+|
 
 ~~~
 
