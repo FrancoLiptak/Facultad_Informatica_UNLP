@@ -4,9 +4,6 @@
 
 ~~~
 
-``sql``
-`` CREATE ``
-
 CREATE USER 'reparacion'@'localhost' IDENTIFIED BY 'pass';
 GRANT ALL PRIVILEGES ON reparacion.* TO 'reparacion'@'localhost';
 
