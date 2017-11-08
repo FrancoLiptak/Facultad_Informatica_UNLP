@@ -437,6 +437,8 @@ ___
 
 ### a) Para cada punto de la práctica incluido en el cuadro, ejecutarlo con cada uno de los usuarios creados en el punto 1 e indicar con cuáles fue posible realizar la operación.
 
+![Imagen cuadro punto 15](./punto15.jpeg)
+
 ### b) Determine para cada caso, cuál es el conjunto de permisos mínimo.
 
 ### c) Desde su punto de vista y contemplando lo visto en la materia, explique cuál es la manera óptima de asignar permisos a los usuarios.
