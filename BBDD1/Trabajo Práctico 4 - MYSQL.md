@@ -437,7 +437,21 @@ ___
 
 ### a) Para cada punto de la práctica incluido en el cuadro, ejecutarlo con cada uno de los usuarios creados en el punto 1 e indicar con cuáles fue posible realizar la operación.
 
-![Imagen cuadro punto 15](./punto15.jpeg)
+Usuario A |  B
+-- | --
+Campo A0 | Campo B0
+Campo A1 | Campo B1
+
+Usuario | Permisos asignados | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9a | 9b | 10 | 11 | 12 | 13 | 14
+-- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | --
+reparacion           | ALL                    | si | si | si | si | si | si | si | si | si | si | si | si | si | si
+reparacion_dn        | ALL                    | si | si | si | si | si | si | si | si | si | si | si | si | si | si
+reparacion_select    | SELECT                 | si | si | no | si | si | si | no | no | no | no | no | no | no | no
+reparacion_dn_select | SELECT                 | si | si | no | si | si | si | no | no | no | no | no | no | no | no
+reparacion_update    | SELECT, UPDATE, DELETE | si | si | no | si | si | si | no | no | no | no | no | no | no | no
+reparacion_dn_update | SELECT, UPDATE, DELETE | si | si | no | si | si | si | no | no | no | no | no | no | no | no
+reparacion_schema    | SELECT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE VIEW, TRIGGER | si | si | si | si | si | si | si | si | no | si | si | no | no | si
+reparacion_dn_schema | SELECT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE VIEW, TRIGGER                      | si | si | si | si | si | si | si | si | no | si | si | no | no | si
 
 Aclaración: El punto 15 no fue contemplado en la tabla debido a que no hay nada que ejecutar. Se asume error de enunciado.
 
