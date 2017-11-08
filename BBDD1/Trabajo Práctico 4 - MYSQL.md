@@ -359,8 +359,6 @@ ___
 
 ### 13) Realizar las inserciones provistas en el archivo inserciones.sql. Validar mediante una consulta que la tabla REPARACIONESPORCLIENTE se esté actualizando correctamente.
 
-# CONSULTAR
-
 ___
 
 ### 14) Considerando la siguiente consulta
@@ -399,15 +397,27 @@ Ref: Todas las filas con valores en el índice que coincidan serán leídos desd
 
 Eq_ref: Una fila de la tabla 1 será leída por cada combinación de filas de la tabla 2. Este tipo es usado cuando todas las partes de un índice se usan en la consulta y el índice es UNIQUE o PRIMARY KEY.
 
-Fuente: http://manelperez.com/bases-de-datos/explain-mysql-para-optimizar-tus-consultas/
-
 #### c) Según lo que observó en los puntos anteriores, ¿qué mejoras se pueden realizar para optimizar la consulta?
 
 Primero que nada, vemos que la fila en la cual se observa mayor cantidad de rows, es la fila en la cual se usa 'index', y 'ref' es null.
 
-Deberíamos usar un índice en dicho lugar.
+Deberíamos usar indices.
 
 #### d) Aplique las mejoras propuestas y vuelva a analizar el plan de ejecución. ¿Qué cambios observa?
+
+~~~
+
+CREATE INDEX metros_cuadrados ON sucursal (m2);
+CREATE INDEX ciudad ON sucursal (ciudadsucursal);
+CREATE INDEX empleado ON revisionreparacion (empleadoreparacion);
+CREATE INDEX r_fechainicio ON reparacion (fechaInicioReparacion);
+
+EXPLAIN 
+SELECT COUNT(r.dniCliente) 
+FROM reparacion r INNER JOIN (SELECT codsucursal FROM sucursal WHERE m2<200 AND ciudadsucursal='La Plata') AS s ON (r.codsucursal = s.codsucursal), revisionreparacion rv 
+WHERE r.dnicliente=rv.dnicliente AND r.fechainicioreparacion=rv.fechainicioreparacion AND empleadoreparacion = 'Maidana';
+
+~~~
 
 ___
 
