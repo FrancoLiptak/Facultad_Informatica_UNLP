@@ -405,6 +405,12 @@ Deberíamos usar indices.
 
 #### d) Aplique las mejoras propuestas y vuelva a analizar el plan de ejecución. ¿Qué cambios observa?
 
+Como se puede observar, elegí crear distintos indices, como también modificar la consulta. Respecto a esta consulta en particular, solo con agregar el índice "empleado", la cantidad de rows disminuyó mucho. Sin embargo, se añadieron otros índices debido a que ante un hipotético crecimiento de la base de datos en cuanto a datos que contiene, podrían beneficiarme en otras consultas.
+
+A su vez, también modifiqué la consulta. Para empezar, notamos que la tabla "cliente" era innecesaria. El único atributo que se usaba era dniCliente, el cuál también está presente en reparación. Tener una tabla menos nos va a facilitar la consulta, en el sentido de que se deben cruzar menos tablas y por ende habrá menos operaciones.
+
+Varias cuestiones a analizar en el WHERE en la consulta original se han movido al FROM. Esto es debido a que estoy intentando que en resultados intermedios de la consulta, me queden conjuntos más chicos (es decir, estoy filtrando). Por ende, las últimas operaciones se hacen sobre conjuntos mas chicos, y por ende, tenemos mejor performance.
+
 ~~~
 
 CREATE INDEX metros_cuadrados ON sucursal (m2);
