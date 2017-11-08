@@ -4,6 +4,8 @@
 
 ~~~
 
+```sql```
+
 CREATE USER 'reparacion'@'localhost' IDENTIFIED BY 'pass';
 GRANT ALL PRIVILEGES ON reparacion.* TO 'reparacion'@'localhost';
 
@@ -294,10 +296,16 @@ DELIMITER |
 CREATE TRIGGER ejercicio10 AFTER INSERT ON reparacion 
     FOR EACH ROW 
     BEGIN
-        UPDATE reparacionesporcliente
-        SET cantidadReparaciones = cantidadReparaciones + 1, fechaultimaactualizacion = NOW(), usuario = CURRENT_USER()
-        WHERE NEW.dniCliente = reparacionesporcliente.dniCliente;
-    END;
+
+        IF (NEW.dniCliente IN (SELECT dniCliente FROM reparacionesporcliente))
+        THEN
+            UPDATE reparacionesporcliente
+            SET cantidadReparaciones = cantidadReparaciones + 1, fechaultimaactualizacion = NOW(), usuario = CURRENT_USER()
+            WHERE NEW.dniCliente = reparacionesporcliente.dniCliente;
+        ELSE
+            INSERT INTO reparacionesporcliente (dniCliente, cantidadReparaciones, fechaultimaactualizacion, usuario) VALUES (NEW.dniCliente, 1, NOW(), CURRENT_USER());
+        END IF;
+    END
 |
 
 ~~~
