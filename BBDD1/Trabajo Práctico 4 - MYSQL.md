@@ -437,11 +437,6 @@ ___
 
 ### a) Para cada punto de la práctica incluido en el cuadro, ejecutarlo con cada uno de los usuarios creados en el punto 1 e indicar con cuáles fue posible realizar la operación.
 
-Usuario A |  B
--- | --
-Campo A0 | Campo B0
-Campo A1 | Campo B1
-
 Usuario | Permisos asignados | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9a | 9b | 10 | 11 | 12 | 13 | 14
 -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | --
 reparacion           | ALL                    | si | si | si | si | si | si | si | si | si | si | si | si | si | si
