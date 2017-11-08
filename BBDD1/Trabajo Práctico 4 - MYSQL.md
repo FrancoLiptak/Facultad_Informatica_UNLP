@@ -439,7 +439,15 @@ ___
 
 ![Imagen cuadro punto 15](./punto15.jpeg)
 
+Aclaración: El punto 15 no fue contemplado en la tabla debido a que no hay nada que ejecutar. Se asume error de enunciado.
+
 ### b) Determine para cada caso, cuál es el conjunto de permisos mínimo.
+
+Los puntos 2, 3, 5, 6 y 7 se pueden ejecutar con todos los permisos. Asumimos que el conjunto mínimo sería permisos SELECT.
+
+Para el punto 8, el conjunto mínimo de permisos sería CREATE.
+
+Los demás puntos solo pueden ejecutarse en aquellos que tengan ALL PRIVILEGES.
 
 ### c) Desde su punto de vista y contemplando lo visto en la materia, explique cuál es la manera óptima de asignar permisos a los usuarios.
 
