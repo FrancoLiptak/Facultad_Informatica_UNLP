@@ -243,7 +243,7 @@ ___
 #### - Iterar el cursor e insertar los valores correspondientes en la tabla REPARACIONESPORCLIENTE.
 
 ~~~
-# Consultar lugar del NOW y CURRENT en el cursor.
+# Aclaracion: NOW() y CURRENT_USER() podrían estar fuera del cursor, y usarse en la insersión.
 
 DELIMITER //
 CREATE PROCEDURE ejercicio9()
