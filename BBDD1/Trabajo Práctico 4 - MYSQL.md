@@ -49,10 +49,10 @@ FLUSH PRIVILEGES;
 ~~~
 
 CREATE USER 'reparacion_schema'@'localhost' IDENTIFIED BY 'pass';
-GRANT SELECT, DELETE, UPDATE, CREATE, DROP, INSERT, ALTER ON reparacion.* TO 'reparacion_schema'@'localhost';
+GRANT SELECT, DELETE, UPDATE, CREATE, DROP, ALTER, INDEX, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE VIEW ON reparacion.* TO 'reparacion_schema'@'localhost';
 
 CREATE USER 'reparacion_dn_schema'@'localhost' IDENTIFIED BY 'pass';
-GRANT SELECT, DELETE, UPDATE, CREATE, DROP, INSERT, ALTER ON reparacion_dn.* TO 'reparacion_dn_schema'@'localhost';
+GRANT SELECT, DELETE, UPDATE, CREATE, DROP, ALTER, INDEX, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE VIEW ON reparacion_dn.* TO 'reparacion_dn_schema'@'localhost';
 
 FLUSH PRIVILEGES;
 
@@ -443,11 +443,28 @@ Aclaración: El punto 15 no fue contemplado en la tabla debido a que no hay nada
 
 ### b) Determine para cada caso, cuál es el conjunto de permisos mínimo.
 
-Los puntos 2, 3, 5, 6 y 7 se pueden ejecutar con todos los permisos. Asumimos que el conjunto mínimo sería permisos SELECT.
+Los puntos 2, 3, 5 6 y 7 se pueden ejecutar con todos los permisos. Asumimos que el conjunto mínimo sería permisos SELECT.
+
+El punto 4 necesita: SELECT y CREATE VIEW.
 
 Para el punto 8, el conjunto mínimo de permisos sería CREATE.
 
-Los demás puntos solo pueden ejecutarse en aquellos que tengan ALL PRIVILEGES.
+Para el punto 9A se necesita CREATE ROUTINE. Para el 9B EXCEUTE e INSERT.
+
+Para el punto 10 se necesita TRIGGER.
+
+Para el punto 11 se necesita CREATE ROUTINE.
+
+Para el punto 12 se necesita EXECUTE, INSERT, UPDATE.
+
+Para el punto 13 se necesita INSERT.
+
+Para el punto 14 se necesita SELECT, INDEX.
 
 ### c) Desde su punto de vista y contemplando lo visto en la materia, explique cuál es la manera óptima de asignar permisos a los usuarios.
+
+Para asignar permisos de manera óptima, se debería pensar en el conjunto mínimo de cosas que debería poder hacer cada usuario. Por ejemplo, un usuario que solo hace consultas debería alcanzar con un permiso SELECT. Si tal usuario también puede modificar o eliminar datos, podríamos darle los permisos SELECT, UPDATE, DELETE.
+
+El esquema de la base de datos, a priori, debería estar restringidos a un conjunto pequeño de usuarios. La idea de asignar estos permisos a un conjunto pequeño de usuarios sería la de proteger la base lo máximo posible. Los permisos en cuestión serían CREATE, ALTER, DROP, INDEX.
+
 
