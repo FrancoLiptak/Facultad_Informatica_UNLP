@@ -192,7 +192,7 @@ T8: ( * #comision, #inscripcion, #ayudante * )
 
 Clave: { * #comision, #inscripcion, #ayudante * }
 
-Ahora busco las dependencias multivaluadas para empezar a llevar el esquema a 4FN. Siempre las dependencias multivaluadas deben tener un único atributo.
+Ahora busco las dependencias multivaluadas para empezar a llevar el esquema a 4FN. Siempre las dependencias multivaluadas deben tener un único atributo determinante.
 
 DM1) #comision -->> #inscripcion.
 DM2) #comision -->> #ayudante.
@@ -203,8 +203,8 @@ En T1, T3, T5 y T7 no vale ninguna de las dependencias multivaluadas. Puedo aseg
 En T8 valen DM1, DM2, DM3, las cuales NO son triviales. Para que sean triviales, la suma de atributos determinados y determinantes debería ser igual al conjunto esquema.
 Debo particionar T8 en base a alguna DM y elijo particionar en base a DM1.
 
-T9: ( *#comision* , #inscripcion ) 
-T10: ( *#comision*, #ayudante)
+T9: ( * #comision * , #inscripcion ) 
+T10: ( * #comision *, #ayudante)
 
 Veo que ahora DM1 vale en T9, y DM2 y DM3 valen en T10. Las 3 DM son triviales y por ende, puedo asegurar que están en 4FN.
 
@@ -219,7 +219,7 @@ Finalmente, las particiones en 4FN son:
 
 ___
 
-## Conferencias
+## 12. Conferencias
 
 ### CONFERENCIA (#conferencia, nombreConferencia, #publicación, #simposio, tituloPublicacion, #autor, nombreAutor, #responsableSimposio, nombreResponsable, nombreSimposio)
 
@@ -229,5 +229,28 @@ ___
 #### • Un simposio tiene varios responsables, pero cada uno de ellos es responsable de un único simposio.
 #### • En cada simposio se presentan publicaciones. Cada publicación se presenta en un único simposio de una conferencia.
 #### • Una publicación tiene muchos autores.
+
+
+Empiezo buscando las dependencias funcionales.
+
+DF1) #simposio -> nombreSimposio.
+
+DF1) #responsableSimposio -> nombreResponsable, #simposio.
+DF2) #conferencia, #publicacion -> #simposio.
+DF3) #conferencia -> nombreConferencia.
+DF4) #publicacion -> tituloPublicacion.
+DF5) #autor -> nombreautor.
+
+# DUDA: en DF1 tengo que incluir "nombreSimposio" ?
+
+Busco ahora la clave candidata: { #responsableSimposio, #conferencia, #publicacion, #autor }
+
+#### ¿ CONFERENCIA está en BCNF ?
+
+No, ya que en CONFERENCIA observamos DF1 a DF6, las cuales no cumplen que sus determinantes sean superclaves del esquema. Por ende, debo realizar una partición, y lo hago en base a DF1.
+
+T1: ( * #simposio * , nombreSimposio )
+T2: ( * #responsableSimposio, #conferencia, #publicacion, #autor *, nombreConferencia, #simposio, tituloPublicacion, nombreAutor, nombreResponsable )
+
 
 
