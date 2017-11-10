@@ -210,12 +210,24 @@ Veo que ahora DM1 vale en T9, y DM2 y DM3 valen en T10. Las 3 DM son triviales y
 
 Finalmente, las particiones en 4FN son:
 
-T1: ( * #aula *, nombreAula, capacidad )
-T3: ( * #comision *, horario, #aula )
-T5: ( * #alumno *,  nombrealumno, dniAlumno )
-T7: ( * #comision, #inscripcion *, fechaInscripcion, #alumno )
-T9: ( *#comision* , #inscripcion ) 
-T10: ( *#comision*, #ayudante)
+- T1: ( * #aula *, nombreAula, capacidad )
+- T3: ( * #comision *, horario, #aula )
+- T5: ( * #alumno *,  nombrealumno, dniAlumno )
+- T7: ( * #comision, #inscripcion *, fechaInscripcion, #alumno )
+- T9: ( * #comision * , #inscripcion ) 
+- T10: ( * #comision *, #ayudante)
 
+___
+
+## Conferencias
+
+### CONFERENCIA (#conferencia, nombreConferencia, #publicación, #simposio, tituloPublicacion, #autor, nombreAutor, #responsableSimposio, nombreResponsable, nombreSimposio)
+
+#### Donde:
+
+#### • Una conferencia tiene muchos simposios. Los #simposio se pueden repetir en diferentes conferencias.
+#### • Un simposio tiene varios responsables, pero cada uno de ellos es responsable de un único simposio.
+#### • En cada simposio se presentan publicaciones. Cada publicación se presenta en un único simposio de una conferencia.
+#### • Una publicación tiene muchos autores.
 
 
