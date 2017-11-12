@@ -214,3 +214,57 @@ ___
 #### • En cada simposio se presentan publicaciones. Cada publicación se presenta en un único simposio de una conferencia.
 #### • Una publicación tiene muchos autores.
 
+DFS
+
+* DF1: #conferencia -> nombreConferencia
+* DF2: #responsableSimposio -> nombreResponsable, #simposio
+* DF3: #autor -> nombreAutor
+* DF4: #conferencia, #publicacion -> #simposio
+* DF5: #publicacion -> tituloPublicacion
+
+cc: { #conferencia, #publicacion, #autor, #responsableSimposio }
+
+DF2
+R1: ( * #responsableSimposio *, nombreResponsable, #simposio)
+R2: (#conferencia, nombreConferencia, #publicación, tituloPublicacion, #autor, nombreAutor, #responsableSimposio, nombreSimposio)
+
+Tengo que aplicar el algoritmo
+
+~~~
+
+Como sospechamos que se perdió DF4:
+
+PASO 1
+res = { #conferencia, #publicacion }
+res = { #conferencia, #publicacion } U ( ( { #conferencia, #publicacion } ∩ ( * #responsableSimposio *, nombreResponsable, #simposio))+ ∩ ( * #responsableSimposio *, nombreResponsable, #simposio))
+res = { #conferencia, #publicacion } U ( ( 0 )+ ∩ ( * #responsableSimposio *, nombreResponsable, #simposio))
+res = { #conferencia, #publicacion } U ( 0 )
+res = { #conferencia, #publicacion }
+
+PASO 2
+res = { #conferencia, #publicacion } U ( ( { #conferencia, #publicacion } ∩ ( R2 ) )+ ∩ ( R2 ))
+res = { #conferencia, #publicacion } U ( ( { #conferencia, #publicacion } )+ ∩ ( R2 ) )
+res = { #conferencia, #publicacion } U ( ( { #conferencia, #publicacion, #simposio, nombreConferencia } ∩ ( R2 ) )
+res = { #conferencia, #publicacion } U ( { #conferencia, #publicacion, nombreConferencia } )
+
+~~~
+
+Como no se puede llegar a BCNF, llevo el esquema a 3FN
+
+R1: ( * #conferencia *, nombreConferencia)
+R2: ( * #responsableSimposio *, nombreResponsable, #simposio)
+R3: ( * #autor *, nombreAutor)
+R4: ( * #conferencia, #publicacion *, #simposio)
+R5: ( * #publicacion *, tituloPublicacion)
+R6: ( * #conferencia, #publicacion, #autor, #responsableSimposio *)
+
+De R1 a R6 están en BCNF. Como todas están en BCNF las llevo a 4FN.
+
+DMS
+
+DM1: #conferencia, #responsableSimposio, #publicacion -->> #autor
+
+
+
+
+
