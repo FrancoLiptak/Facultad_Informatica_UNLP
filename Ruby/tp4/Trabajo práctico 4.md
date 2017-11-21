@@ -69,3 +69,38 @@ http://guides.rubygems.org/run-your-own-gem-server/
 
 https://semver.org/
 
+### 7. Utilizando el proyecto creado en el punto anterior como referencia, contestá las siguientes preguntas:
+
+#### 1. ¿Qué finalidad tiene el archivo Gemfile?
+
+Es el archivo donde se van a indicar las gemas que va a usar la aplicación
+
+#### 2. ¿Para qué sirve la directiva source del Gemfile? ¿Cuántas pueden haber en un mismo archivo?
+
+http://bundler.io/gemfile.html
+
+#### 3. Acorde a cómo agregaste la gema colorputs, ¿qué versión se instaló de la misma? Si mañana se publicara la versión 7.3.2, ¿esta se instalaría en tu proyecto? ¿Por qué? ¿Cómo podrías limitar esto y hacer que sólo se instalen releases de la gema en las que no cambie la versión mayor de la misma?
+
+La gema instalada es: ` gem 'colorputs', '~> 0.2.3' `.
+
+
+#### 4. ¿Qué ocurrió la primera vez que ejecutaste prueba.rb? ¿Por qué?
+
+No funcionó, ya que la gema solicitada no estaba instalada.
+
+#### 5. ¿Qué cambió al ejecutar bundle install?
+
+` bundle install ` instaló la gema en el sistema. Desde este momento, la ejecución de prueba.rb no falló.
+
+#### 6. ¿Qué diferencia hay entre bundle install y bundle update?
+
+https://stackoverflow.com/questions/16495626/difference-between-bundle-install-and-bundle-update
+
+#### 7. ¿Qué ocurrió al ejecutar prueba_dos.rb de las distintas formas enunciadas? ¿Por qué? ¿Cómo modificarías el archivo prueba_dos.rb para que funcione correctamente?
+
+Al ejecutar ` ruby prueba_dos.rb `  ocurrió un error (uninitialized constant Bundler (NameError)).
+Al ejecutar ` bundle exec ruby prueba_dos.rb ` funcionó perfectamente.
+
+La razón es que ` bundle exec ` ejecuta el script en el contexto del bundle actual definido por Gemfile.
+
+Para que funcione de la primer forma, habría que agregar la siguiente línea: ` require 'bundler/setup' `.
