@@ -97,6 +97,7 @@ b. ¿Perdí dependencias funcionales con el particionamiento?
 DF3 y DF4 valen en T5. En T6 vale DF5, pero no podemos asegurar que vale DF6. Debemos aplicar el algoritmo para verificar que dicha DF sigue valiendo. En caso de que no siga valiendo, el esquema no podrá ser llevado a BCNF y por ende, deberíamos intentar llevarlo a 3FN.
 
 ~~~
+APLICAR EL ALGORITMO CON TODAS LAS PARTICIONES NO INTERMEDIAS QUE ME FUERON QUEDANDO. Y EL ALGORITMO DE CLAUSURAS APLICARLO CON TODAS LAS DEPENDENCIAS FUNCIONALES. HASTA QUE ENCUENTRE O NO CAMBIE EL RESULTADO. SI NO LAS RECUPERE PERDI LA DEPENDENCIA FUNCIONAL.
 
 Paso 1)
 
@@ -192,7 +193,7 @@ T8: ( * #comision, #inscripcion, #ayudante * )
 
 Clave: { * #comision, #inscripcion, #ayudante * }
 
-Ahora busco las dependencias multivaluadas para empezar a llevar el esquema a 4FN. Siempre las dependencias multivaluadas deben tener un único atributo determinante.
+Ahora busco las dependencias multivaluadas para empezar a llevar el esquema a 4FN. Generalmente voy a tener un solo determinado. Podría tener determinante vacío, sería en el caso de que los atributos no tengan nada en común. Además, después tengo que ver que las tablas que me queden no sean proyección de las que ya tengo. Si lo fueran, digo que es proyección y no la contemplo en la presentación final de tablas.
 
 DM1) #comision -->> #inscripcion.
 DM2) #comision -->> #ayudante.
@@ -234,12 +235,11 @@ ___
 Empiezo buscando las dependencias funcionales.
 
 DF1) #simposio -> nombreSimposio.
-
-DF1) #responsableSimposio -> nombreResponsable, #simposio.
-DF2) #conferencia, #publicacion -> #simposio.
-DF3) #conferencia -> nombreConferencia.
-DF4) #publicacion -> tituloPublicacion.
-DF5) #autor -> nombreautor.
+DF2) #responsableSimposio -> nombreResponsable, #simposio.
+DF3) #conferencia, #publicacion -> #simposio.
+DF4) #conferencia -> nombreConferencia.
+DF5) #publicacion -> tituloPublicacion.
+DF6) #autor -> nombreautor.
 
 # DUDA: en DF1 tengo que incluir "nombreSimposio" ?
 
@@ -251,6 +251,57 @@ No, ya que en CONFERENCIA observamos DF1 a DF6, las cuales no cumplen que sus de
 
 T1: ( * #simposio * , nombreSimposio )
 T2: ( * #responsableSimposio, #conferencia, #publicacion, #autor *, nombreConferencia, #simposio, tituloPublicacion, nombreAutor, nombreResponsable )
+
+a.  ¿Perdí información con este particionamiento?
+
+No. Podemos observar que T1 ∩ T2 = { #simposio }. Sabemos que #simposio es clave de la partición T1.
+
+b. ¿Perdí dependencias funcionales con el particionamiento?
+
+No. DF1 vale en T1. DF2 a DF5 valen en T2.
+
+c. ¿T1 cumple con la definición de BCNF?
+
+Si. En T1 vale DF1, donde su determinante es superclave del esquema T1.
+
+d. ¿T2 cumple con la definición de BCNF?
+
+No. En T2 siguen valiendo DF2, DF3, DF4 DF5 y DF6, cuyos determinantes no son superclave del esquema. Debo seguir particionando, y elijo particionar en base a DF2.
+
+T3: ( * #responsableSimposio *, nombreResponsable, #simposio )
+T4: ( * #responsableSimposio, #conferencia, #publicacion, #autor *, nombreConferencia, tituloPublicacion, nombreAutor )
+
+a.  ¿Perdí información con este particionamiento?
+
+No. Podemos observar que T3 ∩ T4 = { #responsable }. Sabemos que #responsable es clave de la partición T3.
+
+b. ¿Perdí dependencias funcionales con el particionamiento?
+
+DF2 vale en T3. En T4 valen DF4, DF5 y DF6. Sin embargo, no puedo asegurar que valga DF3. Debo aplicar el algoritmo para verificar.
+
+~~~
+
+ALGORITMO 1:
+
+Paso 1)
+result = { #conferencia, #publicacion }
+i = 1
+result = { #conferencia, #publicacion } U ( ( { #conferencia, #publicacion } ∩ ( * #responsableSimposio *, nombreResponsable, #simposio ) )+ ∩ ( * #responsableSimposio *, nombreResponsable, #simposio ) )
+result = { #conferencia, #publicacion }
+
+Paso 2)
+result = { #conferencia, #publicacion }
+i = 2
+result = { #conferencia, #publicacion } U ( ( { #conferencia, #publicacion } ∩ ( * #responsableSimposio, #conferencia, #publicacion, #autor *, nombreConferencia, tituloPublicacion, nombreAutor ))+ ∩ ( * #responsableSimposio, #conferencia, #publicacion, #autor *, nombreConferencia, tituloPublicacion, nombreAutor ))
+result = { #conferencia, #publicacion } U ( ( { #conferencia, #publicacion } )+ ∩ ( * #responsableSimposio, #conferencia, #publicacion, #autor *, nombreConferencia, tituloPublicacion, nombreAutor ))
+
+APLICO EL SEGUNDO ALGORITMO PARA RESOLVER EL +
+        Paso 1)
+        result = { #conferencia, #publicacion } 
+
+        PREGUNTAR BIEN COMO SEGUIR EL ALGORMITO
+
+~~~
 
 
 
