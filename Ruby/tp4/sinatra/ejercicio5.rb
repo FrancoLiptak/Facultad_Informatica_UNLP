@@ -2,6 +2,12 @@ require 'bundler'
 require 'sinatra/advanced_routes'
 Bundler.require
 
+
+require './ejercicio6.rb'
+require './ejercicio7.rb'
+use Middleware2
+use Middleware
+
 get '/' do
     s = "Las rutas disponibles son: <br>"
     Sinatra::Application.each_route do |route|
@@ -39,5 +45,5 @@ post '/random' do
 end
 
 post '/random/:lower/:upper' do |lower, upper|
-    rand(lower..upper).to_s
+    rand(lower.to_i..upper.to_i).to_s
 end
