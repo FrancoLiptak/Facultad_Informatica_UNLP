@@ -1,4 +1,3 @@
-require 'bundler'
 require_relative 'ahorcado'
 require 'sinatra'
 
@@ -12,9 +11,9 @@ get '/:id' do
     words[params['id'].to_i].state
 end
 
-put '/:id/:intento' do
+put '/:id' do
     if  words[params['id'].to_i].canContinue?
-        words[params['id']].tryWith(params['intento'])
+        words[params['id'].to_i].tryWith(params['intento'])
         redirect "/#{params['id']}"
     else
         "El juego terminó"
