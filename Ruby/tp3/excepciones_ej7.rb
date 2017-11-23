@@ -1,6 +1,6 @@
 class InvalidValue < StandardError
-    def initialize(msg = "Debe ingresar un número")
-      super msg
+    def initialize msg = "Debe ingresar un número"
+      super
     end
   end
 
