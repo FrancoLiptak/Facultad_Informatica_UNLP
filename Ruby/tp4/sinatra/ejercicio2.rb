@@ -2,7 +2,7 @@ require 'rack'
 
 class MoL
     def self.call(env)
-        num = Random::rand(42)
+        num = rand(42)
         
         num == 42 ? code = 200 : code = 404
 

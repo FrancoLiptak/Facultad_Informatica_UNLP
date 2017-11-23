@@ -12,7 +12,7 @@ class Ahorcado
             return "Juego terminado, perdiste!"
         else
             return "La cantidad de letras adivinadas es: #{@state['guessed_letters']}. 
-                    La cantidad de intentos fallidos es: #{@state['failed_attempts'] - 1}.
+                    La cantidad de intentos fallidos es: #{@state['remaining_attempts'] - 1}.
                     La cantidad de intentos posibles es: #{@state['remaining_attempts']}"
         end
     end
