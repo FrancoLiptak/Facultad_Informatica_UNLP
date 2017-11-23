@@ -2,46 +2,52 @@
 # de cada número por su entero inmediato anterior.
 # Como primer paso se pide al usuario que indique la cantidad de números que ingresará.
 
-cantidad = 0
+begin
 
-puts '¿Cuál es la cantidad de números que ingresará? Debe ser al menos 15'
+    puts '¿Cuál es la cantidad de números que ingresará? Debe ser al menos 15'
+    cantidad = Integer(gets)
+
+    Raise RunTimeError => "Debe ingresar un número mayor o igual a 15" unless cantidad >= 15
+
+rescue RunTimeError => e
+    puts "#{e.message}"
+    retry
+rescue NameError => e
+    puts "#{e.message}"
+    retry
+rescue ArgumentError => e
+    puts "#{e.message}. Intentelo nuevamente"
+    retry
+end 
+
+# Luego se almacenan los números
+numeros = 1.upto(cantidad).map do
+puts 'Ingrese un número'
 
 begin
-    cantidad = Integer(gets) 
+    numero = Integer(gets)
 
-    raise Exception, "Debe ingresar un número mayor o igual a 15. Intente nuevamente:" unless cantidad >= 15
+    raise RuntimeError, "Debe ingresar un número mayor a 0. Intente nuevamente:" unless numero > 0
 
+rescue RuntimeError => e
+    puts "#{e.message}"
+    retry
+rescue NameError => e
+    puts "#{e.message}"
+    retry
 rescue ArgumentError => e
-    puts "#{e.message}. Intentelo nuevamente:"
+    puts "#{e.message}. Intentelo nuevamente"
     retry
-rescue Exception => e
-    puts e.message
-    retry
-end    
+end
+numero
+end
 
-
-numeros = 1.upto(cantidad).map do
-    puts 'Ingrese un número:'
-
-    begin
-        numero = Integer(gets)
-
-        raise Exception, "Debe ingresar un número mayor a 0. Intente nuevamente:" unless numero > 0
-
-    rescue ArgumentError => e
-        puts "#{e.message}. Intente nuevamente:"
-        retry
-    rescue Exception => e
-        puts e.message
-        retry
-    end
-    numero 
- end
+# Y finalmente se imprime cada número dividido por su número entero inmediato anterior
 
 resultado = numeros.map do | x| 
     begin 
         result = x / (x - 1) 
-        raise ZeroDivisionError unless (x - 1) > 0
+
     rescue ZeroDivisionError => e
         puts e.message
     end
