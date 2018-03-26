@@ -69,13 +69,20 @@ Repaso sobre lenguajes:
 
 Ejemplo: http://scanftree.com/automata/turing-machine-for-a-to-power-n-b-to-power-n-c-to-power-n
 
-- Construcción: La MT M = (Q, Ʃ, Ʃ, Γ, δ, q0, qA, qR) es:
-* Q = {qa, qb, qc, qL, qH}, donde qa: M busca una a, qb: M busca una b, qc: M busca una c, qL: M vuelve, qH: no hay más a.
+* Construcción: La MT M = (Q, Ʃ, Ʃ, Γ, δ, q0, qA, qR) es:
+* Q = {qa, qb, qc, qL, qH}
+
+- qa: M busca una a
+- qb: M busca una b
+- qc: M busca una c
+- qL: M vuelve
+- qH: no hay más a.
+
 * Ʃ = {a, b, c}
 * Γ = {a, b, c, α, β, µ, B}
 * q0 = qa
 
-- Función de transición δ:
+* Función de transición δ:
 
 |  | a | b | c | α | β | µ | B |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
@@ -103,7 +110,43 @@ Por cómo está definida la función de transición δ, claramente a partir de w
 - Si w tiene un símbolo distinto de a o de b, M rechaza porque dicho símbolo no está considerado en δ
 - Si w empieza con b, M rechaza porque no está definido en δ el par (qa, b)
 
+* Agregadas por mi:
+- Si w tiene la forma 'aba' (es decir, 'a' después de 'b'), M rechaza dado que no está definido en δ el par (qH, a)
+- si w tiene más 'a' que 'b', M rechaza, dado que no está definido en δ el par (qb, B)
+- Si w tiene más 'b' que 'a', M rechaza, dado que no está definido en δ el par (qH, b)
+
 ## Ejercicio 5. En la clase 1 se construyó una MT con dos cintas para aceptar el lenguaje L = {w | w ∈ {a, b}* y w es un palíndromo o “capicúa”}. Construir ahora una MT con una cinta para aceptar el mismo lenguaje (se puede considerar la idea de solución propuesta en clase).
+
+Sea L = {w | w ∈ {a, b}* y w es un palíndromo o “capicúa”}
+w es un palíndromo o “capicúa” si w = w^R, siendo w^R la cadena inversa de w
+Queremos construir una MT M que acepte L
+
+- Idea general: queremos comprobar que una palabra es palídromo. Para eso, tenemos que comparar el primer caracter y el último (siguiente y anterior a un blanco). Si hay coincidencia se marca como 'Blanco' se avanza, caso contrario se rechaza. Si todos los elementos de la cinta son blancos, entonces efectívamente la palabra es palídromo.
+
+* La MT M = (Q, Ʃ, Γ, δ, q0, qA, qR) es:
+
+* Q = {qx, qa, qb, qaB, qbB, qL}
+- *qx* es el estado en el que se busca una 'b' o una 'a'.
+- *qa* es el estado en el que se busca una 'a'.
+- *qb* es el estado en el que se busca una 'b'.
+- *qaB* es el estado en el que se busca el próximo espacio en blanco, habiendo encontrado antes una 'a'.
+- *qbB* es el estado en el que se busca el próximo espacio en blanco, habiendo encontrado antes una 'b'.
+- *qL* es el estado en el que se vuelve para encontrar el próximo caracter.
+
+* Ʃ = {a, b}
+* Γ = {a, b, B}
+* q0 = qa
+
+* Función de transición δ:
+
+|     | a  | b  | B  |
+| --- | -- | -- | -- |
+| qx  |    |    |    |
+| qa  |    |    |    |
+| qb  |    |    |    |
+| qaB |    |    |    |
+| qbB |    |    |    |
+| qL  |    |    |    |
 
 ## Ejercicio 6. En la clase 1 se construyó una MTN (MT no determinística) para aceptar las cadenas de la forma ha^n o hb^n, con n ≥ 0. Construir ahora una MTD (MT determinística) para lo mismo.
 
