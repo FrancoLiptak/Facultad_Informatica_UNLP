@@ -85,8 +85,11 @@ Ejemplo: http://scanftree.com/automata/turing-machine-for-a-to-power-n-b-to-powe
 | qL  | qL, a, L | qL, b, L | qL, c, L | qL, α, R | qL, β, L | qL, µ, L |  |
 | qH  |  |  |  |  | qH, β, R  | qH, µ, R  | qA, B, S |
 
+Las celdas en blanco representan los casos de rechazo (estado qr)
 
 ## Ejercicio 4. Completar la prueba iniciada en la clase 1, de que L(M) = {a^n b^n | n ≥ 1}, siendo M la MT construida para aceptar dicho lenguaje.
+
+![Sin titulo](pictures/tp1_ej4.png)
 
 ## Ejercicio 5. En la clase 1 se construyó una MT con dos cintas para aceptar el lenguaje L = {w | w ∈ {a, b}* y w es un palíndromo o “capicúa”}. Construir ahora una MT con una cinta para aceptar el mismo lenguaje (se puede considerar la idea de solución propuesta en clase).
 
