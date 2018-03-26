@@ -38,7 +38,6 @@ La tesis de Church-Turing formula hipotéticamente la equivalencia entre los con
 ### 1. Obtener el lenguaje Ʃ* y el conjunto de partes del subconjunto de Ʃ* con cadenas de a lo sumo dos símbolos. ¿Cuál es el cardinal (o tamaño) de este último conjunto?
 
 ~~~
-
 Repaso sobre lenguajes:
 
 *   Ʃ. Alfabeto o conjunto de símbolos:
@@ -78,6 +77,13 @@ Ejemplo: http://scanftree.com/automata/turing-machine-for-a-to-power-n-b-to-powe
 
 - Función de transición δ:
 
+|  | a | b | c | α | β | µ | B |
+| ------------- | ------------- |
+| qa  |  |  |  |  |  |  |  |
+| qb  |  |  |  |  |  |  |  |
+| qc  |  |  |  |  |  |  |  |
+| qL  |  |  |  |  |  |  |  |
+| qH  |  |  |  |  |  |  |  |
 
 
 ## Ejercicio 4. Completar la prueba iniciada en la clase 1, de que L(M) = {a^n b^n | n ≥ 1}, siendo M la MT construida para aceptar dicho lenguaje.
