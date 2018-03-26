@@ -91,6 +91,18 @@ Las celdas en blanco representan los casos de rechazo (estado qr)
 
 ![Sin titulo](pictures/tp1_ej4.png)
 
+Prueba de L(M) = L.
+
+* Si w ∈ L, entonces w tiene la forma a^n b^n, con n ≥ 1
+
+Por cómo está definida la función de transición δ, claramente a partir de w la MT M acepta w, es decir que w ∈ L(M)
+
+• Si w ∉ L, entonces M no tiene la forma a^n b^n, con n ≥ 1. Se cumple w ∉ L(M):
+
+- Si w = λ, M rechaza porque no está definido en δ el par (qa, B)
+- Si w tiene un símbolo distinto de a o de b, M rechaza porque dicho símbolo no está considerado en δ
+- Si w empieza con b, M rechaza porque no está definido en δ el par (qa, b)
+
 ## Ejercicio 5. En la clase 1 se construyó una MT con dos cintas para aceptar el lenguaje L = {w | w ∈ {a, b}* y w es un palíndromo o “capicúa”}. Construir ahora una MT con una cinta para aceptar el mismo lenguaje (se puede considerar la idea de solución propuesta en clase).
 
 ## Ejercicio 6. En la clase 1 se construyó una MTN (MT no determinística) para aceptar las cadenas de la forma ha^n o hb^n, con n ≥ 0. Construir ahora una MTD (MT determinística) para lo mismo.
