@@ -70,7 +70,7 @@ Repaso sobre lenguajes:
 Ejemplo: http://scanftree.com/automata/turing-machine-for-a-to-power-n-b-to-power-n-c-to-power-n
 
 - Construcción: La MT M = (Q, Ʃ, Ʃ, Γ, δ, q0, qA, qR) es:
-* Q = {qa, qb, qc, qL, qH}, donde qa: M busca una a, qb: M busca una B, qc: M busca una C, qL: M vuelve, qH: no hay más a.
+* Q = {qa, qb, qc, qL, qH}, donde qa: M busca una a, qb: M busca una b, qc: M busca una c, qL: M vuelve, qH: no hay más a.
 * Ʃ = {a, b, c}
 * Γ = {a, b, c, α, β, µ, B}
 * q0 = qa
@@ -79,11 +79,11 @@ Ejemplo: http://scanftree.com/automata/turing-machine-for-a-to-power-n-b-to-powe
 
 |  | a | b | c | α | β | µ | B |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| qa  |  |  |  |  |  |  |  |
-| qb  |  |  |  |  |  |  |  |
-| qc  |  |  |  |  |  |  |  |
-| qL  |  |  |  |  |  |  |  |
-| qH  |  |  |  |  |  |  |  |
+| qa  | qb, α, R | |  | qH, α, R |  |  | qA, B, S |
+| qb  | qb, a, R | qc, β, R |  |  | qH, β, R |  |  |
+| qc  |  | qc, b, R | qL, µ, L  |  |  | qL, µ, R |  |
+| qL  | qL, a, L | qL, b, L | qL, c, L | qL, α, R | qL, β, L | qL, µ, L |  |
+| qH  |  |  |  |  | qH, β, R  | qH, µ, R  | qA, B, S |
 
 
 ## Ejercicio 4. Completar la prueba iniciada en la clase 1, de que L(M) = {a^n b^n | n ≥ 1}, siendo M la MT construida para aceptar dicho lenguaje.
