@@ -92,7 +92,7 @@ Ejemplo: http://scanftree.com/automata/turing-machine-for-a-to-power-n-b-to-powe
 | qL  | qL, a, L | qL, b, L | qL, c, L | qL, α, R | qL, β, L | qL, µ, L |  |
 | qH  |  |  |  |  | qH, β, R  | qH, µ, R  | qA, B, S |
 
-Las celdas en blanco representan los casos de rechazo (estado qr)
+Las celdas en blanco representan los casos de rechazo (estado qR)
 
 ## Ejercicio 4. Completar la prueba iniciada en la clase 1, de que L(M) = {a^n b^n | n ≥ 1}, siendo M la MT construida para aceptar dicho lenguaje.
 
@@ -139,16 +139,44 @@ Queremos construir una MT M que acepte L
 
 * Función de transición δ:
 
-|     | a  | b  | B  |
-| --- | -- | -- | -- |
-| qx  |    |    |    |
-| qa  |    |    |    |
-| qb  |    |    |    |
-| qaB |    |    |    |
-| qbB |    |    |    |
-| qL  |    |    |    |
+|      | a         | b         | B        |
+| ---  | --------  | --------- | -------- |
+| qx   | qb, B, R  | qa, B, R  | qA, B, S |
+| qaB  | qaB, a, R | qaB, b, R | qa, B, L |
+| qbB  | qbB, a, R | qbB, b, R | qb, B, L |
+| qa   | qb, B, L  |           | qA, B, S |
+| qb   |           | qa, B, L  | qA, B, S |
+| qL   | qL, a, L  | qL, b, L  | qx, B, R |
+
+Las celdas en blanco representan los casos de rechazo (estado qR)
 
 ## Ejercicio 6. En la clase 1 se construyó una MTN (MT no determinística) para aceptar las cadenas de la forma ha^n o hb^n, con n ≥ 0. Construir ahora una MTD (MT determinística) para lo mismo.
+
+- Idea general: Tenemos que las cadenas si o si tienen que empezar con 'h'. Después, la idea es seguir recorriendo la cadena, donde solo se puede encontrar blanco, cero o más 'a', cero o más 'b'. No puede haber cadenas que combinen 'a' y 'b'.
+
+* La MT M = (Q, Ʃ, Γ, δ, q0, qA, qR) es:
+
+* Q = { qh, qa, qb, qab }
+
+- *qh* es el estado inicial, donde se busca una 'h'.
+- *qa* es el estado en el que se busca una 'a'.
+- *qb* es el estado en el que se busca una 'b'.
+- *qab* es el estado en el que se busca una 'a' o una 'b', después de encontrar una 'h'.
+
+* Ʃ = {a, b, h}
+* Γ = {a, b, h, B}
+* q0 = qh
+
+* Función de transición δ:
+
+|     | h         |  a       |   b      |   B      |
+| --- | --------- | -------- | -------- | -------- |
+| qh  | qab, B, R |          |          |          |
+| qa  |           | qa, B, R |          | qA, B, S |
+| qb  |           |          | qb, B, R | qA, B, S |
+| qab |           | qa, B, R | qb, B, R | qA, B, S |
+
+Las celdas en blanco representan los casos de rechazo (estado qR)
 
 ## Ejercicio 7. Construir una MT que calcule la resta de dos números (se puede considerar la idea de solución propuesta en la clase 1).
 
