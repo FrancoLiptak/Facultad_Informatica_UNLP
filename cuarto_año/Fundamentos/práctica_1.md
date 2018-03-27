@@ -84,13 +84,13 @@ Ejemplo: http://scanftree.com/automata/turing-machine-for-a-to-power-n-b-to-powe
 
 * Función de transición δ:
 
-|  | a | b | c | α | β | µ | B |
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| qa  | qb, α, R | |  | qH, α, R |  |  | qA, B, S |
-| qb  | qb, a, R | qc, β, R |  |  | qH, β, R |  |  |
-| qc  |  | qc, b, R | qL, µ, L  |  |  | qL, µ, R |  |
-| qL  | qL, a, L | qL, b, L | qL, c, L | qL, α, R | qL, β, L | qL, µ, L |  |
-| qH  |  |  |  |  | qH, β, R  | qH, µ, R  | qA, B, S |
+|     | a        | b        | c        | α        | β        | µ        | B        |
+| --- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
+| qa  | qb, α, R |          |          | qH, α, R |          |          | qA, B, S |
+| qb  | qb, a, R | qc, β, R |          |          | qH, β, R |          |          |
+| qc  |          | qc, b, R | qL, µ, L |          |          | qL, µ, R |          |
+| qL  | qL, a, L | qL, b, L | qL, c, L | qL, α, R | qL, β, L | qL, µ, L |          |
+| qH  |          |          |          |          | qH, β, R | qH, µ, R | qA, B, S |
 
 Las celdas en blanco representan los casos de rechazo (estado qR)
 
@@ -180,7 +180,57 @@ Las celdas en blanco representan los casos de rechazo (estado qR)
 
 ## Ejercicio 7. Construir una MT que calcule la resta de dos números (se puede considerar la idea de solución propuesta en la clase 1).
 
+Se va a construir una MT M que calcula la resta m – n, tal que m y n son dos números naturales representados en notación unaria. Cuando m ≤ n, M devuelve la cadena vacía λ. En la entrada, m y n aparecen separados por el dígito 0.
+
+* Idea general: Dado w = 1m01n, con m ≥ 0 y n ≥ 0, la MT M itera de la siguiente manera. En cada paso elimina el primer 1 del minuendo, y correspondientemente reemplaza el primer 1 del sustraendo por un 0. Al final elimina todos los 0 (caso m > n), o bien elimina todos los dígitos (caso m ≤ n).
+
+* Construcción de la MT M.
+
+* La MT M = (Q, Ʃ, Γ, δ, q0, F) es tal que:
+
+* Q = {q0, q1, q2, q3, q4, q5, q6}.
+- El estado q0 es el estado de inicio de una iteración.
+- El estado q1 es el estado en que M busca el primer 0 yendo a la derecha. 
+- El estado q2 es el estado en que M encuentra el primer 0 yendo a la derecha. 
+- El estado q3 es el estado en que M encuentra un 1 después de un 0 yendo a la derecha. 
+- El estado q4 es el estado en que M yendo a la derecha buscando un 1 después de un 0 encuentra en cambio un blanco. 
+- El estado q5 es el estado en que M, iniciando una iteración, no encuentra como primer dígito un 1. 
+- El estado q6 es el estado final.
+
+* Ʃ = {1, 0}
+* Γ = {1, 0, B}
+* F = {q6}
+
+* La función de transición δ se define de la siguiente manera:
+
+1. δ(q0, 1) = (q1, B, R) 
+2. δ(q1, 1) = (q1, 1, R)
+3. δ(q1, 0) = (q2, 0, R) 
+4. δ(q2, 1) = (q3, 0, L)
+5. δ(q2, 0) = (q2, 0, R) 
+6. δ(q3, 0) = (q3, 0, L)
+7. δ(q3, 1) = (q3, 1, L) 
+8. δ(q3, B) = (q0, B, R)
+9. δ(q2, B) = (q4, B, L) 
+10. δ(q4, 0) = (q4, B, L)
+11. δ(q4, 1) = (q4, 1, L) 
+12. δ(q4, B) = (q6, 1, S)
+13. δ(q0, 0) = (q5, B, R) 
+14. δ(q5, 0) = (q5, B, R)
+15. δ(q5, 1) = (q5, B, R) 
+16. δ(q5, B) = (q6, B, S)
+
 ## Ejercicio 8. Construir una MT que genere todas las cadenas de la forma a^n b^n, con n ≥ 1 (se puede considerar la idea de solución propuesta en la clase 1).
+
+Las MT que generan lenguajes tienen una cinta de salida de sólo escritura, en la que el cabezal se mueve únicamente hacia la derecha, y las cadenas se separan por el símbolo. Se asume que la entrada es la cadena vacía λ.
+
+El lenguaje generado por una MT es el conjunto de cadenas que escribe en su cinta de salida. Las cadenas se pueden repetir, y no aparecen en ningún orden determinado.
+La expresión G(M) denota el lenguaje generado por la MT M. 
+
+Idea: 
+(1) i := 1
+(2) imprimir i veces a, imprimir i veces b, e imprimir separador
+(3) i := i + 1 y volver a (2)
 
 ## Ejercicio 9. Explicar (informal pero claramente) cómo simular una MT por otra que en un paso no pueda simultáneamente modificar un símbolo y moverse.
 
