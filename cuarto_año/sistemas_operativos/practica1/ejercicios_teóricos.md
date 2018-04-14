@@ -104,3 +104,36 @@ Permite esperar a que un proceso lanzado en background termine.
 #### (b) Sin ella, ¿qué sucedería, pensando en la implementación de la shell?
 
 Sin el wait no se podría esperar a que una línea de comando termine de ejecutarse para poder recibir la siguiente.
+
+## Redes y Sistemas Operativos
+
+### 1. La herramienta netcat provee una forma sencilla de establecer una conexión TCP/IP. En una terminal levante una sesión de netcat en modo servidor, que escuche en la IP 127.0.0.1 (localhost) en un puerto a elección. En otra terminal conéctese, también vía netcat, al servidor recién levantado. Interactúe y experimente con ambas terminales. 
+
+Para levantar una sesión netcat en modo servidor se debe escribir el comando nc -l [ port ]. Este parámetro (l = listen) se utiliza para indicar a nc que se tiene que quedar esperando recibir pedidos de conexión en lugar de inicializar una conexión con un host remoto. El número de puerto tiene que ser mayor a 1024 (uno no privilegiado).
+
+Para abrir una conexión ahora es necesario que en otra terminal ejecutamos el comando nc [ ip ] [ port ]
+
+Ejemplo:
+nc -l 1234  → Servidor
+nc 127.0.0.1 1234  → Cliente
+
+### 2. netcat también es bueno al momento de transmitir archivos sobre una red TCP/IP. Utilizando dos terminales como se hizo en el ejercicio anterior, transmita el archivo /etc/passwd desde una sesión de netcat hacia la otra. Tip: recordar pipes y redirecciones. 
+
+
+nc -l 1234  → Servidor
+cat /etc/passwd | nc 127.0.0.1 1234 → Cliente
+
+### 5. Intérprete y describa qué es lo que hace el siguiente fragmento de código extraído de la man page de netcat.
+#### 1 → $ rm −f /tmp/f; mkfifo /tmp/f
+#### 2 → $ cat /tmp/f | /bin/sh −i 2>&1 | nc −l 127.0.0.1 1234 > /tmp/f 
+
+### Tip: man mkfifo
+
+mkfifo es un comando que se utiliza para crear “named pipes”. En la línea 1, se está definiendo el named pipe bajo el nombre “/tmp/f”. La instrucción anterior se realiza para que, en el caso de que dicho pipe ya exista, al intentar crearlo con mkfifo no haya error alguno.
+
+/bin/sh o dash permite generar una shell. Con el parámetro -i se fuerza a que la misma se comporte de forma interactiva. Seguido a esto hay una forma de redirección.
+ [n1]<&n2    Entrada estándar duplicada (o n1) del descriptor de archivo n2.
+
+En el tercer paso del pipe se establece un servidor escuchando en el local host en el puerto 80 usando netcat.
+
+Al hacer esto, crea un fifo en /tmp/f y hace que nc escuche en el puerto 1234 de la dirección 127.0.0.1 en el lado del 'servidor', cuando un 'cliente' establece un conexión exitosa a ese puerto, / bin / sh se ejecuta en 'servidor' lado y el indicador de shell se da al lado 'cliente'.
