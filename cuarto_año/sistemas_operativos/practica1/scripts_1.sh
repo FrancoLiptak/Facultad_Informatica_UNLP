@@ -1,4 +1,6 @@
-cut -d: -f1,3 /etc/passwd | egrep ':[0-9]{4}$' | cut -d: -f1
+#!/bin/bash
+
+cut -d: -f1,3 /etc/passwd | egrep ':[0-9]{4}' | cut -d: -f1 >> /tmp/usuarios
 
 # cut -d: indica por que campos queremos cortar
 # -f1,3 indica que queremos cortar la fila 1 (nombre de usuario) y 3 (uid)
