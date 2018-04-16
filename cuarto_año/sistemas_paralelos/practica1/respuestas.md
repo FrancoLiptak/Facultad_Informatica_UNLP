@@ -50,13 +50,15 @@ El algoritmo funciona de la siguiente manera:
 
 Para tamaños de bloque chicos, el ejercicio 1 es más eficiente. Podemos asociar esto a la cantidad de desplazamientos que hay que realizar en multBloques en este caso, donde no se aprovecha el principio de localidad espacial. Si aumenta el número de bloques, la multiplicación por bloques mejora el rendimiento.
 
-### (Preguntar cual es el tamaño de bloque óptimo).
+El tamaño del bloque óptimo estará relacionado con el tamaño del bloque llevado a memoria caché. Con un tamaño de bloque grande, habrá muchos fallos de caché y habrá que ir muchas veces a memoria a buscar información. Por el contrario, si el bloque es chico, habrá que llevar y traer bloques con mucha frecuencia y la performance se ve perjudicada. Para este ejercicio, un bloque de 32 parece el tamaño óptimo.
+
+### Duda: ¿si trae mucha matriz (un tamaño de bloque muy grande) no es mejor?
 
 ### 4. Analizar el algoritmo triangular.c que resuelve la multiplicación de una matriz cuadrada por una matriz triangular inferior, ambas de N*N, ¿Cómo se podría optimizar el código? Implementar una solución optimizada y comparar los tiempos probando con diferentes tamaños de matrices.
 
 Para optimizar el código, podemos cambiar la manera de inicializar la matriz C. En lugar de alocar espacio con ` C=(double*)malloc(sizeof(double)*N*N); ` , podemos iniciarlizarla con ` C=(double*)calloc(N*N,sizeof(double)); `. Esto inicializa la matriz en 0. También hay que eliminar la inicialización explícita en 0 de dicha matriz.
 
-# Dudas: Creo que la matriz BT no se inicializa con 1. ¿Solamente eso se puede hacer?
+# Dudas: Creo que la matriz BT no se inicializa con 1 | ¿Solamente eso se puede hacer?
 
 ### 5. El algoritmo fib.c resuelve la serie de Fibonacci, para un número N dado, utilizando dos métodos: recursivo e iterativo. Analizar los tiempos de ambos métodos ¿Cuál es más rápido? ¿Por qué?
 
@@ -71,3 +73,109 @@ En general, si comparamos una solución iterativa contra una solución recursiva
 
 Algo recursivo o recurrente es algo que se llama a si mismo. Tiene que ver con el principio de inducción.
 La recursividad consume muchísima memoria, ya que mantiene las variables del método mientras que se ejecuta, y también mucho tiempo. La recursividad es costosa pero es más natural, se prefiere. Por ejemplo, Java no puede implementar de forma recursiva el cálculo del factorial de un millón, pues cualquier computador se quedaría sin memoria, sin embargo, es necesario de implementar para poder escribir y entender ciertos programas.
+
+### 6. El algoritmo funcion.c resuelve, para un x dado, una operación matemática. El algoritmo compara dos alternativas de solución. ¿Cuál de las dos formas es más rápida? ¿Por qué?
+
+En mi máquina local, tuve los siguientes resultados:
+
+```
+Funcion calculada...
+ Tiempo total en segundos 0.4488320351 
+ Tiempo promedio en segundos 0.0000000045 
+Funcion calculada cada vez...
+ Tiempo total en segundos 0.7574851513 
+ Tiempo promedio en segundos 0.0000000076
+ ```
+
+ La razón de que la solución que primero calcula la función sea más rápida es la siguiente:
+ - Como la segunda solución realiza el cálculo dentro del for, tenemos que se hace la cantidad de veces que el for itere. Si llamamos M a la operación que calcula la función, tenemos que el tiempo de ejecución es de (M+T)*N (siendo N la cantidad de vueltas al for, y "T" corresponde en este ejemplo a la suma del resultado).
+ - La primer solución plantea calcular la función solo una vez, el tiempo sería M+N*T.
+
+### 7. El algoritmo instrucciones.c compara el tiempo de ejecución de las operaciones básicas: suma (+), resta (-), multiplicación (*) y división (/), para dos operandos dados x e y. ¿Qué análisis se puede hacer de cada operación? ¿Qué ocurre si x e y son potencias de 2?
+
+Las operaciones se hacen la misma cantidad de veces: 1000000000.
+
+La salida en la terminal fue:
+
+```
+Suma...
+ Tiempo total en segundos 1.8209850788 
+ Tiempo promedio en segundos 0.0000000018 
+Resta...
+ Tiempo total en segundos 2.2676270008 
+ Tiempo promedio en segundos 0.0000000023 
+Producto...
+ Tiempo total en segundos 2.1992869377 
+ Tiempo promedio en segundos 0.0000000022 
+Division...
+ Tiempo total en segundos 5.1558990479 
+ Tiempo promedio en segundos 0.0000000052
+```
+
+Esto es por la cantidad de ciclos de reloj que tiene que ejecutar. Por ejemplo:
+- La suma no representa ninguna "instrucción extra".
+- Para la resta A-B, primero se hace un cambio de signo de B, y luego ejecuta una suma.
+- Para la multiplicacion son varias sumas.
+- Para la division primero intenta cambiar el numero y despues hace la multiplicacion. Por ejemplo, es más eficiente la operación "4*0,5" que la operación "4/2".
+
+### 8. En función del ejercicio 7 analizar el algoritmo instrucciones2.c que resuelve una operación binaria (dos operandos) con dos operaciones distintas. 
+
+```
+Division...
+ Tiempo total en segundos 5.1570799351 
+ Tiempo promedio en segundos 0.0000000052 
+Producto...
+ Tiempo total en segundos 2.1020569801 
+ Tiempo promedio en segundos 0.0000000021 
+Resultado correcto
+```
+
+La razón de que la multiplicación sea más rápida que la división es la definida en la respuesta al punto 7:
+
+Esto es por la cantidad de ciclos de reloj que tiene que ejecutar. Por ejemplo:
+- Para la multiplicacion son varias sumas.
+- Para la division primero intenta cambiar el numero y despues hace la multiplicacion. Por ejemplo, es más eficiente la operación "4*0,5" que la operación "4/2".
+
+### 9. Analizar el algoritmo iterstruc.c que resuelve una multiplicación de matrices utilizando dos estructuras de control distintas. ¿Cuál de las dos estructuras de control tiende a acelerar el cómputo?
+
+El for tiende de acelerar el cómputo.
+
+Para una matriz de 1024*1024 y 10 repeticiones:
+
+```
+Incializando matrices...
+Calculando While...
+Tiempo While en segundos 11.655083 
+Calculando For...
+ Tiempo For en segundos 11.701611 
+```
+
+Para una matriz de 1024*1024 y 20 repeticiones:
+
+```
+Incializando matrices...
+Calculando While...
+Tiempo While en segundos 11.596586 
+Calculando For...
+ Tiempo For en segundos 11.595632 
+```
+
+Para una matriz de 2048*2048 y 20 repeticiones:
+
+```
+Incializando matrices...
+Calculando While...
+Tiempo While en segundos 94.346017 
+Calculando For...
+ Tiempo For en segundos 93.159317
+```
+
+La conclusión depende de la arquitectura sobre la que estemos trabajando.
+El while, como tal, es simplemente una iteración y está implementada en bajo nivel como saltos. Entonces, simplemente evalúa una condición y realiza el salto (pasando en limpio, el while evalúa un bloque, y ejecuta un bloque). Podríamos afirmar entonces, que el for debería ser más ineficiente, ya que ejecuta 3 bloques para evaluar la condición, y ejecuta el bloque que tiene adentro.
+
+Los creadores del lenguaje C invirtieron tiempo en optimizar el for, pero no el while. El while es "normal". El for es más eficiente. Sin embargo, hay que ver si el compilador esté optimizando o no el for.
+
+### Duda, no entiendo lo de la repeticion que hay que pasarle al programa. No se donde lo usa.
+
+
+
