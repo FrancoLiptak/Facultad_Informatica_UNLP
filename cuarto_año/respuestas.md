@@ -33,6 +33,6 @@ Con tamaño de matriz 1024*1024:
 - SumMulMatrices: Tiempo en segundos 29.987039
 
 - La diferencia entre ambos en código es por como realizan la multiplicación. En SumMulMatrices tenemos que toda la operación se hace dentro de 3 for anidados. En SumMulMatricesOpt tenemos que cada operacion se hace en for anidados diferentes. 
-- Además, en SumMulMatrices, tenemos que la linea ´´´ tot[i*N+j]= cd[i*N+j]+ ab[i*N+j]; ´´´ está definida en función de las variables i y j, pero no de k, lo cual nos permite sacarla de ese último for. Este simple cambio hace que SumMulMatrices tenga mejor tiempo de ejecución que SumMulMatricesOpt.
+- Además, en SumMulMatrices, tenemos que la linea ` tot[i*N+j]= cd[i*N+j]+ ab[i*N+j]; ` está definida en función de las variables i y j, pero no de k, lo cual nos permite sacarla de ese último for. Este simple cambio hace que SumMulMatrices tenga mejor tiempo de ejecución que SumMulMatricesOpt.
 - Otro dato interesante, es que las únicas matrices donde importa el valor inicial son ab y cd. Podríamos no inicializar las otras.
-- La inicialización podría realizarse en la creación, con la función ´´´ calloc ´´´. Por ejemplo: ´´´ ab = (double*) calloc(N*N, sizeof(double)); ´´´.
+- La inicialización podría realizarse en la creación, con la función ` calloc `. Por ejemplo: ` ab = (double*) calloc(N*N, sizeof(double)); `.
