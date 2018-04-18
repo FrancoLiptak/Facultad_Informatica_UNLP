@@ -88,6 +88,8 @@ Las celdas en blanco representan los casos de rechazo (estado qR)
 ![Sin titulo](img/ejercicio_4.png)
 
 - Idea General. Un posible algoritmo es:
+
+```
                                 aaaaabbbbb
                                 αaaaabbbbb
                                 αaaaaβbbbb
@@ -96,6 +98,7 @@ Las celdas en blanco representan los casos de rechazo (estado qR)
 
                                 ..........
                                 αααααβββββ
+```
 
 - Construcción de la MT M = (Q, Ʃ, Γ, δ, q0, qA, qR):
 
@@ -180,6 +183,8 @@ La función de transición δ se define de la siguiente manera:
 16. δ(q5, B) = (q6, B, S)
 
 ## Ejercicio 8. Construir una MT que genere todas las cadenas de la forma a^n b^n, con n ≥ 1 (se puede considerar la idea de solución propuesta en la clase 1).
+
+
 
 ## Ejercicio 9. Explicar (informal pero claramente) cómo simular una MT por otra que en un paso no pueda simultáneamente modificar un símbolo y moverse.
 
