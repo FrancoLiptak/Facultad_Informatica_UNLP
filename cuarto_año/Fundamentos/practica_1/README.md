@@ -78,7 +78,7 @@ Todo lenguaje que consideremos será un subconjunto de Ʃ* (ya que Ʃ* es la tot
 | qa  | qb, x, R |          |          | qH, x, R |          |          | qA, B, S |
 | qb  | qb, a, R | qc, y, R |          |          | qH, y, R |          |          |
 | qc  |          | qc, y, R | qL, z, L |          |          | qH, z, R |          |
-| qH  |          | qR, b, S | qR, c, S |          | qH, y, R | qH, z, R | qA, B, S |
+| qH  |          |          |          |          | qH, y, R | qH, z, R | qA, B, S |
 | qL  | qL, a, L | qL, b, L |          | qa, x, R | qL, y, L | qL, z, L |          |
 
 Las celdas en blanco representan los casos de rechazo (estado qR)
@@ -130,6 +130,35 @@ Por cómo está definida la función de transición δ, claramente a partir de w
 
 ## Ejercicio 5. En la clase 1 se construyó una MT con dos cintas para aceptar el lenguaje L = {w | w ∈ {a, b}* y w es un palíndromo o “capicúa”}. Construir ahora una MT con una cinta para aceptar el mismo lenguaje (se puede considerar la idea de solución propuesta en clase).
 
+- Sea L = {w | w ∈ {a, b}* y w es un palíndromo o “capicúa”}
+- w es un palíndromo o “capicúa” sii w = wR, siendo wR la cadena inversa de w
+- Queremos construir una MT M que acepte L
+
+- Idea general: Lo ideal sería que la máquina vaya recorriendo de derecha a izquierda. Comparamos el primer caracter con el último, y a medida que realizo la verificación, voy marcándolos con un B (blanco). Si el resultado final es una cadena en blanco, entonces la entrada era un palídromo.
+
+* Q = { qab, qa, qb, qaB, qbB, qLB }
+    - qab es el estado en el que se busca una 'a' o una 'b'.
+    - qa es el estado en el que se busca que una 'a' sea el último caracter de la cadena. (La idea es que este estado esté presente en solo un movimiento, del blanco, a su inmediato anterior). Solo se mueve una vez a la izquierda en este estado.
+    - qb es el estado en el que se busca que una 'b' sea el último caracter de la cadena. (La idea es que este estado esté presente en solo un movimiento, del blanco, a su inmediato anterior). Solo se mueve una vez a la izquierda en este estado.
+    - qaB es el estado en el que se busca un blanco, luego de encontrar una 'a'.
+    - qbB es el estado en el que se busca un blanco, luego de encontrar una 'b'.
+    - qLB es el estado en el que se vuelve a la izquierda, hasta encontrar un blanco, para luego encontrar el próximo primer caracter
+
+- Ʃ = {a, b }
+- Γ = {a, b, B}
+- q0 = qa
+
+- La función de transición es:
+
+|     | a         | b         | B         |
+| --- | --------- | --------- | --------- |
+| qab | qaB, B, R | qbB, B, R | qA, B, S  |
+| qa  | qL, B, L  |           | qA, B, S  |
+| qb  |           | qL, B, L  | qA, B, S  |
+| qaB | qaB, a, R | qbB, b, R | qa, B, L  |
+| qbB | qaB, a, R | qbB, b, R | qb, B, L  |
+| qL  | qL, a, L  | qL, b, L  | qab, B, R |
+
 ## Ejercicio 6. En la clase 1 se construyó una MTN (MT no determinística) para aceptar las cadenas de la forma ha^n o hb^n, con n ≥ 0. Construir ahora una MTD (MT determinística) para lo mismo.
 
 Es importante diferenciar entre una máquina de Turing determinística, de una no determinística:
@@ -140,7 +169,29 @@ Es importante diferenciar entre una máquina de Turing determinística, de una n
 
 • *Una MTN acepta si y sólo si al menos una computación acepta*
 
-# HACER
+Resolución del ejercicio:
+
+- Idea general: Tenemos que ver que el input comience con 'h'. Después, tiene que seguir con 'a' o 'b'. En caso de seguir con 'a', todos los caracteres deben ser 'a', hasta llegar a un blanco. Lo mismo en caso de que siga con una 'b' después de la 'h' inicial.
+
+- Construcción de la MT M = (Q, Ʃ, Γ, δ, q0, qA, qR):
+
+* Q = { qh, qa, qb, qab }
+    qh es el estado inicial, en donde se busca una 'h'.
+    qa es el estado en el que se encuentra una 'a', y se espera seguir encontrando 'a' o blanco (B).
+    qb es el estado en el que se encuentra una 'b', y se espera seguir encontrando 'b' o blanco (B).
+    qab es el estado en el que se encontró una 'h', y ahora se espera encontrar una 'a' o 'b'.
+- Ʃ = {a, b, h}
+- Γ = {a, b, h, B}
+- q0 = qh
+
+- Función de transición:
+
+|     | h         | a        | b        | B        |
+| --- | --------  | -------- | -------- | -------- |
+| qh  | qab, x, R |          |          |          |
+| qab |           | qa, a, R |          | qA, B, S |
+| qa  |           | qa, a, R | qb, b, R | qA, B, S |
+| qb  |           |          | qb, b, R | qA, B, S |
 
 ## Ejercicio 7. Construir una MT que calcule la resta de dos números (se puede considerar la idea de solución propuesta en la clase 1).
 
@@ -184,13 +235,33 @@ La función de transición δ se define de la siguiente manera:
 
 ## Ejercicio 8. Construir una MT que genere todas las cadenas de la forma a^n b^n, con n ≥ 1 (se puede considerar la idea de solución propuesta en la clase 1).
 
+Las MT que generan lenguajes tienen una cinta de salida de sólo escritura, en la que el cabezal se mueve únicamente hacia la derecha, y las cadenas se separan por el símbolo. Se asume que la entrada es la cadena vacía λ.
 
+El lenguaje generado por una MT es el conjunto de cadenas que escribe en su cinta de salida. Las cadenas se pueden repetir, y no aparecen en ningún orden determinado.
+
+La expresión G(M) denota el lenguaje generado por la MT M. 
+
+- Idea general: Podemos plantear una MT M con dos cintas. Una cinta sirve para contar, y la otra para escribir los caracteres 'a' o 'b' según corresponda. Usamos notación unaria en la cinta que usamos para contar. Cuando leo B (blanco), pongo un valor unario "i" que represente la cantidad de apariciones de 'a' y 'b' en la cinta de escritura de caracteres. En la cinta de caracteres, a partir de B, escribo i veces 'a', e i veces 'b'. Luego imprimo un separador, e incremento el valor de la cinta contadora. Es infinito.
+
+Pasado en limpio, los pasos serían:
+
+1. i := 1
+2. imprimir i veces a, imprimir i veces b, e imprimir separador
+3. i := i + 1 y volver a (2)
 
 ## Ejercicio 9. Explicar (informal pero claramente) cómo simular una MT por otra que en un paso no pueda simultáneamente modificar un símbolo y moverse.
 
+Se necesitaría un estado más para esa máquina. La idea sería que en ese estado la máquina se mueva, ya que no podría moverse y modificar el símbolo al mismo tiempo.
+
+Las funciones de transición, en lugar de ser algo del estilo (qa, B, R), pasarían a ser algo del estilo: (qa, B), (qM, R), donde qM sería el estado en el que el cabezal se mueve.
+
 ## Ejercicio 10. Explicar (informal pero claramente) cómo simular una MT por otra que no tenga el movimiento S (es decir el no movimiento).
 
+Bajo esta situación, entra la necesidad de hacer movimientos innecesarios del cabezal. De nuevo serán necesarios estados adicionales. Como no existe el movimiento S siempre se hará un movimiento adicional para la derecha o para la izquierda. Estos nuevos estados deberán realizar un movimiento en sentido contrario, para volver a la posición necesaria.
+
 ## Ejercicio 11. Explicar (informal pero claramente) cómo simular una MT por otra que no tenga el movimiento L sino el movimiento JUMP, cuyo efecto es posicionar el cabezal en el símbolo de más a la izquierda.
+
+Para esto, simplemente será necesario hacer multiples corrimientos a la derecha, hasta encontrar el caracter buscado.
 
 ## Ejercicio 12. Sea USAT el lenguaje de las fórmulas booleanas satisfactibles con exactamente una asignación de valores de verdad. P.ej. x1 ^ x2 pertenece a USAT, mientras que (x1 ^ x2) v x3 no. Indicar, justificando la respuesta, si la siguiente MTN acepta USAT:
 
@@ -199,3 +270,10 @@ La función de transición δ se define de la siguiente manera:
 ### 3. Genera no determinísticamente una asignación A’ ≠ A. Si A’ no satisface la fórmula, acepta, y si A’ la satisface, rechaza.
 
 #### Ayuda: Considerar p.ej. el caso en que la fórmula tiene dos asignaciones que la satisfacen.
+
+El OR satisface con 3 asignaciones (VV, VF, FV). El enunciado pide que la fórmula se satisfaga con solo una asignacion (por ejemplo, AND). Por ende, si la máquina acepta el caso OR, quiere decir que la máquina no acepta USAT.
+
+Esta máquina acepta el OR, y por ende, no acepta USAT.
+
+## Preguntar por dibujo
+
