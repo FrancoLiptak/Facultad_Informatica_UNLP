@@ -90,14 +90,14 @@ Las celdas en blanco representan los casos de rechazo (estado qR)
 - Idea General. Un posible algoritmo es:
 
 ```
-                                aaaaabbbbb
-                                αaaaabbbbb
-                                αaaaaβbbbb
-                                ααaaaβbbbb
-                                ααaaaββbbb
+aaaaabbbbb
+αaaaabbbbb
+αaaaaβbbbb
+ααaaaβbbbb
+ααaaaββbbb
 
-                                ..........
-                                αααααβββββ
+..........
+αααααβββββ
 ```
 
 - Construcción de la MT M = (Q, Ʃ, Γ, δ, q0, qA, qR):
