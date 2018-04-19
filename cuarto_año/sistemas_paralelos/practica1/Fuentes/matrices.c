@@ -79,7 +79,7 @@ int main(int argc,char*argv[]){ // argv contiene en su posición 0 el nombre del
  //Verifica el resultado
   for(i=0;i<N;i++){
    for(j=0;j<N;j++){
-	check=check&&(getValor(C,i,j,ORDENXFILAS)==N);
+	check=check&&(getValor(C,i,j,ORDENXFILAS)==N); // El resultado debe ser N
    }
   }   
 
