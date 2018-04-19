@@ -1,4 +1,4 @@
-# Máquinas de Turing (MT). 
+# Práctica 1 - Máquinas de Turing (MT). 
 
 ## Ejercicio 1. Responder brevemente los siguientes incisos:
 
@@ -275,5 +275,5 @@ El OR satisface con 3 asignaciones (VV, VF, FV). El enunciado pide que la fórmu
 
 Esta máquina acepta el OR, y por ende, no acepta USAT.
 
-## Preguntar por dibujo
+## Duda: Preguntar por dibujo
 
