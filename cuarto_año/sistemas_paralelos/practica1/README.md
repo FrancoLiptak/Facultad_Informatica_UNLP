@@ -13,7 +13,10 @@ En una matriz de 1024 * 1024 en mi máquina local, tuve los siguientes tiempos:
 - Bajamos a 53.595559 cambiando solo el tipo de acceso a la matriz (en lugar de ser por filas, lo hice por columnas).
 - Finalmente bajamos a 11.716093, quitando los llamados a funciones.
 
-### Consultar duda en el código. No entiendo como controla los argumentos ni el resultado.
+##### Consultar duda en el código. No entiendo como controla los argumentos ni el resultado.
+
+- argv contiene en su posición 0 el nombre del programa, posición 1 es N.
+- El resultado tiene que ser N. Check es un entero que lo usa como un booleano.
 
 ### 2. Analizar los algoritmos SumMulMatrices.c y SumMulMatricesOpt.c que resuelven la siguiente operación (A*B) + (C*D) donde A, B, C y D son matrices cuadradas de N*N. Comparar los tiempos probando con diferentes tamaños de matrices, ¿Cuál es más rápido? ¿Por qué?
 
@@ -52,13 +55,17 @@ Para tamaños de bloque chicos, el ejercicio 1 es más eficiente. Podemos asocia
 
 El tamaño del bloque óptimo estará relacionado con el tamaño del bloque llevado a memoria caché. Con un tamaño de bloque grande, habrá muchos fallos de caché y habrá que ir muchas veces a memoria a buscar información. Por el contrario, si el bloque es chico, habrá que llevar y traer bloques con mucha frecuencia y la performance se ve perjudicada. Para este ejercicio, un bloque de 32 parece el tamaño óptimo.
 
-### Duda: ¿si trae mucha matriz (un tamaño de bloque muy grande) no es mejor?
+##### Duda: ¿si trae mucha matriz (un tamaño de bloque muy grande) no es mejor?
+
+- El tamaño óptimo del bloque depende de la caché.
 
 ### 4. Analizar el algoritmo triangular.c que resuelve la multiplicación de una matriz cuadrada por una matriz triangular inferior, ambas de N*N, ¿Cómo se podría optimizar el código? Implementar una solución optimizada y comparar los tiempos probando con diferentes tamaños de matrices.
 
 Para optimizar el código, podemos cambiar la manera de inicializar la matriz C. En lugar de alocar espacio con ` C=(double*)malloc(sizeof(double)*N*N); ` , podemos iniciarlizarla con ` C=(double*)calloc(N*N,sizeof(double)); `. Esto inicializa la matriz en 0. También hay que eliminar la inicialización explícita en 0 de dicha matriz.
 
-# Dudas: Creo que la matriz BT no se inicializa con 1 | ¿Solamente eso se puede hacer?
+###### ¿Solamente eso se puede hacer?
+
+- Otra cosa que se puede hacer es no inicializar la parte superior de la matriz BT en 0. Luego, tenemos que cambiar la linea ` C[i*N+j]=C[i*N+j] + A[i*N+k]*BT[k+j*N]; ` por ` C[i*N+j]=C[i*N+j] + A[i*N+k]*BT[j*N+(k-(k-j))]; `, para controlar que no se intente acceder a posiciones de la matriz que no tienen valores asignados (la solución original inicializa en 0, nosotros tenemos que evitar inicializar en 0 (y por ende tenemos que evitar consultar esas posiciones), ya que desperdicia tiempo y espacio de forma innecesaria).
 
 ### 5. El algoritmo fib.c resuelve la serie de Fibonacci, para un número N dado, utilizando dos métodos: recursivo e iterativo. Analizar los tiempos de ambos métodos ¿Cuál es más rápido? ¿Por qué?
 
@@ -175,7 +182,8 @@ El while, como tal, es simplemente una iteración y está implementada en bajo n
 
 Los creadores del lenguaje C invirtieron tiempo en optimizar el for, pero no el while. El while es "normal". El for es más eficiente. Sin embargo, hay que ver si el compilador esté optimizando o no el for.
 
-### Duda, no entiendo lo de la repeticion que hay que pasarle al programa. No se donde lo usa.
+##### Duda, no entiendo lo de la repeticion que hay que pasarle al programa. No se donde lo usa.
 
+- Las repeticiones las utiliza en la variable N. Si bien hay un N inicializado, la idea es no usarlo nunca. Lo vamos a reemplazar con el parámetro.
 
 
