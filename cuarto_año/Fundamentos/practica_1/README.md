@@ -45,8 +45,12 @@ La tesis de Church-Turing formula hipotéticamente la equivalencia entre los con
 ### 1. Obtener el lenguaje Ʃ* y el conjunto de partes del subconjunto de Ʃ* con cadenas de a lo sumo dos símbolos. ¿Cuál es el cardinal (o tamaño) de este último conjunto?
 
 Ʃ es el alfabeto o conjunto de símbolos. En este caso Ʃ = {a, b, c}.
-Ʃ*: Es el lenguaje o conjunto de cadenas de símbolos de Ʃ. En este caso: Ʃ* = { λ, (a), (b), (c), (ab), (ac), (bc), (ba), (ca), (cb), (aa), (bb), (cc) }, donde "λ" corresponde a la cadena vacía.
-El tamaño de Ʃ* es 13.
+
+Ʃ*: Es el lenguaje o conjunto de cadenas de símbolos de Ʃ. Es infinita.
+
+Llamo Ʃ*' al conjunto de partes del subconjunto de Ʃ* con cadenas de a lo sumo dos símbolos.
+
+Ʃ*' = { λ, (a), (b), (c), (ab), (ac), (bc), (ba), (ca), (cb), (aa), (bb), (cc) }, donde "λ" corresponde a la cadena vacía. El tamaño de Ʃ*' es 13.
 
 ### 2. Dado el lenguaje L = {a^n b^n c^n | n ≥ 0}, obtener la intersección Ʃ* ⋂ L, la unión Ʃ* ⋃ L, el complemento de L respecto de Ʃ*, y la concatenación Ʃ . L.
 
@@ -251,9 +255,7 @@ Pasado en limpio, los pasos serían:
 
 ## Ejercicio 9. Explicar (informal pero claramente) cómo simular una MT por otra que en un paso no pueda simultáneamente modificar un símbolo y moverse.
 
-Se necesitaría un estado más para esa máquina. La idea sería que en ese estado la máquina se mueva, ya que no podría moverse y modificar el símbolo al mismo tiempo.
-
-Las funciones de transición, en lugar de ser algo del estilo (qa, B, R), pasarían a ser algo del estilo: (qa, B), (qM, R), donde qM sería el estado en el que el cabezal se mueve.
+Se necesitaría un estado más para esa máquina. 
 
 ## Ejercicio 10. Explicar (informal pero claramente) cómo simular una MT por otra que no tenga el movimiento S (es decir el no movimiento).
 
@@ -261,7 +263,37 @@ Bajo esta situación, entra la necesidad de hacer movimientos innecesarios del c
 
 ## Ejercicio 11. Explicar (informal pero claramente) cómo simular una MT por otra que no tenga el movimiento L sino el movimiento JUMP, cuyo efecto es posicionar el cabezal en el símbolo de más a la izquierda.
 
-Para esto, simplemente será necesario hacer multiples corrimientos a la derecha, hasta encontrar el caracter buscado.
+Puedo simularla utilizando 2 cintas. En la primera escribo el input y en la segunda llevo un contador. A medida que me muevo por el input voy contando la cantidad de pasos (menos el primero) que hago de modo que al intentar realizar el movimiento L se realiza un JUMP y luego tantos R (movimiento a derecha) como lleve la cuenta de la segunda cinta sin sumar y sin cambiar ningún símbolo, pero restando 1 al contador.
+
+Por ejemplo:
+
+Cinta 1: B1234B
+Cinta 2: 111
+
+Hasta ese punto, el cabezal en cinta 1 apunta al 4, y cinta 2 tiene el valor 3 en notación unaria. Si tengo que ir a la izquierda, hago un JUMP.
+Miro la información de Cinta 2. Como tiene el valor 3, me muevo 3 veces a la derecha (quedo parado en el 3). A Cinta 2 le resto 1, quedando:
+
+Cinta 1: B1234B
+Cinta 2: 11
+
+El cabezal apunta al 3 en Cinta 1.
+
+Esto solo sirve para casos en los que no voy a escribir nunca antes de la "posición 0". Si puedo escribir más a la izquierda de la posición 0, esta solución no sirve.
+
+Lo que habría que hacer, sería tener dos cintas:
+
+Cinta 1: B123B
+Cinta 2: B
+
+Si quiero escribir en Cinta 1 en el primer B que se vé (antes del 1), entonces debería "backupear" la Cinta 1 en la Cinta 2, y luego hacer un corrimiento en Cinta 1. Quedaría algo como:
+
+Cinta 1: 023B
+Cinta 2: 1
+
+Luego, tengo que seguir "backupeando", y reescribiendo en Cinta 1. El resultado final sería:
+
+Cinta 1: 0123B
+Cinta 2: 123
 
 ## Ejercicio 12. Sea USAT el lenguaje de las fórmulas booleanas satisfactibles con exactamente una asignación de valores de verdad. P.ej. x1 ^ x2 pertenece a USAT, mientras que (x1 ^ x2) v x3 no. Indicar, justificando la respuesta, si la siguiente MTN acepta USAT:
 
@@ -275,5 +307,21 @@ El OR satisface con 3 asignaciones (VV, VF, FV). El enunciado pide que la fórmu
 
 Esta máquina acepta el OR, y por ende, no acepta USAT.
 
-## Duda: Preguntar por dibujo
+### Duda: Preguntar por dibujo
+
+El dibujo debería ser un árbol, en el que se genera por cada rama una combinación distinta de valores de verdad. A modo de resumen, el árbol sería:
+
+              *
+              |
+_______________________________
+|      |            |         |
+A      A            A         A
+|      |            |         |
+FF     FV          VF         VV
+|   __ | __      __ | _        |
+qR  |   |  |     |  |  |       |
+    VV-FF-VF    VV-FF-FV      qA
+    qA qR qA    qA qR qA
+
+Como se rechaza cuando todas las ramas rechazan, y va a haber más de una rama que acepte, entonces la máquina acepta el OR, y no acepta USAT.
 
