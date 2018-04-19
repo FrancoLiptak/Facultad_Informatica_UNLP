@@ -34,7 +34,7 @@ double dwalltime(){
         return sec;
 }
 
-int main(int argc,char*argv[]){
+int main(int argc,char*argv[]){ // argv contiene en su posición 0 el nombre del programa, posición 1 es N 
  double *A,*B,*C;
  int i,j,k;
  int check=1;
@@ -79,7 +79,7 @@ int main(int argc,char*argv[]){
  //Verifica el resultado
   for(i=0;i<N;i++){
    for(j=0;j<N;j++){
-	check=check&&(getValor(C,i,j,ORDENXFILAS)==N);
+	check=check&&(getValor(C,i,j,ORDENXFILAS)==N); // El resultado debe ser N
    }
   }   
 
