@@ -79,40 +79,38 @@ Por propiedad de clausura respecto a la intersección, L1 ⋂ L2 está en RE. En
 ## Ejercicio 2. Considerando el Lema 2 estudiado en la Clase Teórica 2 (propiedad de clausura de la clase R con respecto a la operación de intersección):
 
 ### 1. Indicar cómo se implementaría copiar el input w en la cinta 2 de la MT M construida.
-
+```
 mientras (no llegue a un B en la cinta 1)
 	escribo el simbolo que lee la cinta 1 en la cinta 2 y me muevo a la derecha en las 2
-
+```
 ### 2. Indicar cómo se implementaría borrar el contenido de la cinta 2 de M.
-
+```
 mientras (no llegue a un B en la cinta 2)
 	escribo B en la cinta 2 y se mueve a la derecha
-
+```
 ### 3. Probar la correctitud de la construcción: 
 
 - **(a) M para siempre**
 
-- Si w ∈ L, entonces ML a partir de w para en su estado qA
-- Si w ∉ L, entonces ML a partir de w para en su estado qR
+1. Si w ∈ L, entonces ML a partir de w para en su estado qA
+2. Si w ∉ L, entonces ML a partir de w para en su estado qR
 
 - **(b) L(M) = L1 ⋂ L2**
 
-- w ∈ L(M) ↔ w ∈ L ↔ con entrada w, la MT M llega al estado qA ↔  con entrada w, la MT M1 se detiene en qA y la MT M2 se detiene en qA.
-- w ∉ L(M) ↔ w ∉ L ↔ con entrada w, la MT M llega al estado qR o loopea ↔  con entrada w, la MT M1 se detiene en qR o loopea o la MT M2 se detiene en qR o loopea.
+1. w ∈ L(M) ↔ w ∈ L ↔ con entrada w, la MT M llega al estado qA ↔  con entrada w, la MT M1 se detiene en qA y la MT M2 se detiene en qA.
+2. w ∉ L(M) ↔ w ∉ L ↔ con entrada w, la MT M llega al estado qR o loopea ↔  con entrada w, la MT M1 se detiene en qR o loopea o la MT M2 se detiene en qR o loopea.
 
 ### 4. Probar las otras propiedades de clausura de R mencionadas.
 
-Para esto tendríamos que construir una MT M y probar que M se detiene siempre y acepta L, siendo L un lenguaje recursivo.
-
-Nota: Si quisieramos probar que L es recursivamente numerable, tendríamos que construir una MTM M y probar que M acepta L.
-
 *La resolución se encuentra en el libro, entre las páginas 28 y 31 inclusive*.
+
+Considerando las operaciones de complemento, intersección, unión y concatenación de lenguajes, se cumple que la clase R es cerrada con respecto a todas ellas.
 
 #### *Probamos propiedad de clausura de R con respecto al complemento*:
 
-Dado unlenguaje L, su lenguaje complemento es L^C= {w | w ∈ Ʃ* ∧ w ∉ L}. Demostramos a continuación que si L ∈ R, entonces también L^C ∈ R.
+Dado un lenguaje L, su lenguaje complemento es L^C = {w | w ∈ Ʃ* ∧ w ∉ L}. Demostramos a continuación que si L ∈ R, entonces también L^C ∈ R.
 
-- Idea general: Dado un lenguaje recursivo L, sea M una MT que lo acepta y se detiene siempre, es decir a partir de cualquier entrada. Se va a construir una MT M^C que acepta LC y se detiene siempre, de la siguiente manera: dada una entrada w, si M se detiene en qA, entonces M^C se detiene en qR, y viceversa. La figura siguiente ilustra esta idea:
+- Idea general: Dado un lenguaje recursivo L, sea M una MT que lo acepta y se detiene siempre, es decir a partir de cualquier entrada. Se va a construir una MT M^C que acepta L^C y se detiene siempre, de la siguiente manera: dada una entrada w, si M se detiene en qA, entonces M^C se detiene en qR, y viceversa. La figura siguiente ilustra esta idea:
 
 ![MT complemento](img/ejercicio_2-4_complemento.png)
 
@@ -125,18 +123,18 @@ Si M = (Q, Ʃ, Γ, δ, q0, qA, qR), entonces M^C = (Q, Ʃ, Γ, δ’, q0, qA, qR
 
 - Prueba de que M^C se detiene siempre.
 
-a. w ∈ LC → w ∉ L → con entrada w, M se detiene en qR → con entrada w, M^C se detiene en qA.
-b. w ∉ LC → w ∈ L → con entrada w, M se detiene en qA → con entrada w, M^C se detiene en qR.
+1. w ∈ L^C → w ∉ L → con entrada w, M se detiene en qR → con entrada w, M^C se detiene en qA.
+2. w ∉ L^C → w ∈ L → con entrada w, M se detiene en qA → con entrada w, M^C se detiene en qR.
 
-- Prueba de L(MC) = L^C.
+- Prueba de L(M^C) = L^C.
 
-w ∈ L(MC) ↔ con entrada w, M^C se detiene en qA ↔ con entrada w, M se detiene en qR ↔ w ∉ L ↔ w ∈ L^C.
+w ∈ L(M^C) ↔ con entrada w, M^C se detiene en qA ↔ con entrada w, M se detiene en qR ↔ w ∉ L ↔ w ∈ L^C.
 
 Esta es una típica prueba por construcción de que un lenguaje L es recursivo. Se construye una MT M, y se prueba que M se detiene siempre y acepta L. La prueba por construcción de que un lenguaje L es recursivamente numerable, en cambio, requiere solamente la construcción de una MT M y la prueba de que M acepta L.
 
 #### *Probamos propiedad de clausura de R con respecto a la unión*:
 
-- Idea general: Sean M1 una MT que acepta L1 y se detiene siempre, y M2 una MT que acepta L2 y se detiene siempre, se va a construir una MT M que acepta L1 U L2 = L3 y se detiene siempre, con las siguientes características. M simula primero M1 y luego M2. Dada una entrada w si M1 se detiene en su estado qA entonces M se detiene en qA. En cambio, si M1 se detiene en qR entonces con la misma entrada w se simula en M M2 y si esta se detiene en qA entonces M se detiene en qA, caso contrario M para en qR.
+- Idea general: Sean M1 una MT que acepta L1 y se detiene siempre, y M2 una MT que acepta L2 y se detiene siempre, se va a construir una MT M que acepta L1 U L2 = L3 y se detiene siempre, con las siguientes características: M simula primero M1 y luego M2. Dada una entrada w si M1 se detiene en su estado qA entonces M se detiene en qA. En cambio, si M1 se detiene en qR entonces con la misma entrada w se simula en M M2 y si esta se detiene en qA entonces M se detiene en qA, caso contrario M para en qR.
 
 ![MT union](img/ejercicio_2-4_union.png)
 
@@ -151,12 +149,12 @@ M  tiene 2 cintas. Dada una entrada w en la cinta 1, M:
 5. Simula M2 a partir de w en la cinta. M se detendrá en el estado en que lo haga M2. 
 
 - Prueba de que M se detiene siempre.
-w ∈ L3  → con entrada w, M se detiene en qA luego de que acepten M1 o M2
+w ∈ L3 → con entrada w, M se detiene en qA luego de que acepten M1 o M2
 
 w ∉ L3 → con entrada w, M se detiene en qR luego de que rechaze M1 y rechace M2
 
-- Prueba de que L(M) = L1U  L2.= L3
-w ∈ L3  ↔con entrada w M se detiene en qA↔ con entrada w M1 se detiene en qA o M2 se detiene en qA 
+- Prueba de que L(M) = L1 U L2 = L3
+w ∈ L3 ↔ con entrada w M se detiene en qA ↔ con entrada w M1 se detiene en qA o M2 se detiene en qA 
 
 #### *Probamos propiedad de clausura de R con respecto a la concatenación*:
 
@@ -180,18 +178,62 @@ w ∈ L3 → con entrada w, M se detiene en qA luego de que acepten M1 y M2  cad
 
 w ∉ L3 → con entrada w, M se detiene en qR luego de haber hecho todas las particiones posibles de w y que M1 y M2 sigan rechazando.
 
-- Prueba de que L(M) = L1. L2.= L3
+- Prueba de que L(M) = L1 . L2 = L3
 w ∈ L3 ↔ con entrada w M se detiene en qA↔ con una porcion de w M1 se detiene en qA y con el resto de w  M2 se detiene en qA
 
 ## Ejercicio 3. Considerando el Lema 3 estudiado en la Clase Teórica 2 (propiedad de clausura de la clase RE con respecto a la operación de unión):
 
 ### 1. Indicar cómo se implementaría la suma de 1 al contador i en la MT M construida.
 
+Hay que escribir 1 después de cada paso. Se usa notación unaria.
+
 ### 2. Indicar cómo se implementaría ejecutar en M, i pasos de las MT M1 y M2.
+
+Mientras ninguna de las dos pare en qA, se vuelve a ingresar el mismo input a las máquinas para ver que pasa. M puede aceptar y detenerse, o loopear.
 
 ### 3. Probar la correctitud de la construcción: L(M) = L1 ⋃ L2.
 
+- Prueba de que M se detiene en qA o loopea
+
+1. w ∈ L3 → con entrada w, M se detiene en qA luego de i pasos en los que se determina acepta M1 o M2 al recibir w
+2. w ∉ L3 → con entrada w, M se queda en loop mientras que M1 y M2  sigan recibiendo w y loopeando (no podemos asumir que se detienen y rechazan).
+
+- Prueba de que L(M) = L1 ⋃ L2
+
+1. w ∈ L(M) ↔ w ∈ L ↔ con entrada w, la MT M llega al estado qA ↔ con entrada w, la MT M1 se detiene en qA o la MT M2 se detiene en qA.
+
 ### 4. Probar las otras propiedades de clausura de RE mencionadas.
+
+*La resolución se encuentra en el libro, entre las páginas 22 y 34 inclusive*.
+
+Considerando las operaciones de intersección, unión y concatenación de lenguajes, se cumple que también la clase RE es cerrada con respecto a ellas. En cambio, a diferencia de la clase R, RE no es cerrada con respecto al complemento.
+
+#### *Probamos propiedad de clausura de RE con respecto a la concatenación*:
+
+Al igual que la clase R, RE es cerrada con respecto a la concatenación de lenguajes, es decir que si L1 ∈ RE y L2 ∈ RE, entonces también L1 ⦁ L2 ∈ RE, lo que se prueba a continuación. Como en el caso de la unión de lenguajes recursivamente numerables visto recién, debe tenerse en cuenta que las MT consideradas pueden no detenerse en caso de rechazo.
+
+- Idea general: Tal como se hizo con los lenguajes recursivos, se va a construir una MT M que reconozca L1 ⦁ L2 simulando M1 y M2 (las MT que reconocen L1 y L2, respectivamente), primero a partir de 0 y |w| símbolos de la entrada w, después a partir de 1 y |w – 1| símbolos, y así siguiendo hasta llegar a |w| y 0 símbolos, aceptando eventualmente. La diferencia con el caso de los lenguajes recursivos está en que ahora, teniendo en cuenta las posibles no detenciones de M1 y M2, M debe simularlas “en paralelo”. La MT M primero hace simulaciones de un paso de M1 y M2 con todas las posibles particiones de la entrada w (|w| + 1 posibilidades), luego hace simulaciones de a lo sumo dos pasos, y así siguiendo hasta eventualmente aceptar (éste es el caso en que al cabo de a lo sumo un determinado número de pasos, digamos k, M1 acepta los primeros i símbolos de w y M2 acepta los últimos |w| – i símbolos de w).
+
+- Construcción de la MT M.
+Sea la siguiente MT M con seis cintas, que a partir de una entrada w en su cinta 1, tal que |w| = n, hace:
+
+1. Escribe el número 1 en la cinta 2. Sea h dicho número.
+2. Escribe el número 0 en la cinta 3. Sea i dicho número.
+3. Escribe el número n en la cinta 4. Sea k dicho número.
+4. Escribe los primeros i símbolos de w en la cinta 5.
+5. Escribe los últimos k símbolos de w en la cinta 6.
+6. Simula a lo sumo h pasos de M1 en la cinta 5 a partir del contenido de dicha cinta, y simula a lo sumo h pasos de M2 en la cinta 6 a partir del contenido de dicha cinta. Si ambas simulaciones se detienen en qA, entonces M se detiene en qA.
+7. Si i = n, hace h := h + 1 en la cinta 2, borra los contenidos de las cintas 3, 4, 5 y 6, y vuelve al paso 2.
+8. Hace i := i + 1 en la cinta 3, k := k – 1 en la cinta 4, borra los contenidos de las cintas 5 y 6, y vuelve al paso 4.
+
+- Prueba de que M se detiene en qA o loopea:
+
+1. w ∈ L3  → con entrada w, M se detiene en qA luego de h pasos en los que se determina acepta M1 al recibir una porcion de w y acepta M2  al recibir el resto de w.
+2. w ∉ L3 → con entrada w, M se queda en loop mientras que M1 y M2  sigan recibiendo partes de  w y no aceptando, quedando en loop (no podemos asumir que se detienen y rechazan).
+
+- Prueba de que L(M) = L1 . L2 = L3
+
+1. w ∈ L3 ↔ con entrada w M se detiene en qA ↔ con una parte de w M1 se detiene en qA y con el resto de w  M2  se detiene en qA.
 
 ## Ejercicio 4. Considerando el Lema 4 estudiado en la Clase Teórica 2 (R = RE ⋂ CO-RE): 
 
@@ -202,7 +244,11 @@ w ∈ L3 ↔ con entrada w M se detiene en qA↔ con una porcion de w M1 se deti
 
 ### 1. La propiedad de clausura de R con respecto a la operación de concatenación.
 
+Resuelto en el ejercicio 2.
+
 ### 2. La propiedad de clausura de RE con respecto a la operación de concatenación.
+
+Resuelto en el ejercicio 3.
 
 ### 3. La propiedad de clausura de RE con respecto a la operación de unión utilizando una MTN. 
 
