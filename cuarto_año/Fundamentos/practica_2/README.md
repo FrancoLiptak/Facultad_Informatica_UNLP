@@ -128,7 +128,7 @@ Si M = (Q, Ʃ, Γ, δ, q0, qA, qR), entonces M^C = (Q, Ʃ, Γ, δ’, q0, qA, qR
 
 - Prueba de L(M^C) = L^C.
 
-w ∈ L(M^C) ↔ con entrada w, M^C se detiene en qA ↔ con entrada w, M se detiene en qR ↔ w ∉ L ↔ w ∈ L^C.
+1. w ∈ L(M^C) ↔ con entrada w, M^C se detiene en qA ↔ con entrada w, M se detiene en qR ↔ w ∉ L ↔ w ∈ L^C.
 
 Esta es una típica prueba por construcción de que un lenguaje L es recursivo. Se construye una MT M, y se prueba que M se detiene siempre y acepta L. La prueba por construcción de que un lenguaje L es recursivamente numerable, en cambio, requiere solamente la construcción de una MT M y la prueba de que M acepta L.
 
@@ -149,16 +149,17 @@ M  tiene 2 cintas. Dada una entrada w en la cinta 1, M:
 5. Simula M2 a partir de w en la cinta. M se detendrá en el estado en que lo haga M2. 
 
 - Prueba de que M se detiene siempre.
-w ∈ L3 → con entrada w, M se detiene en qA luego de que acepten M1 o M2
 
-w ∉ L3 → con entrada w, M se detiene en qR luego de que rechaze M1 y rechace M2
+1. w ∈ L3 → con entrada w, M se detiene en qA luego de que acepten M1 o M2
+2. w ∉ L3 → con entrada w, M se detiene en qR luego de que rechaze M1 y rechace M2
 
 - Prueba de que L(M) = L1 U L2 = L3
-w ∈ L3 ↔ con entrada w M se detiene en qA ↔ con entrada w M1 se detiene en qA o M2 se detiene en qA 
+
+1. w ∈ L3 ↔ con entrada w M se detiene en qA ↔ con entrada w M1 se detiene en qA o M2 se detiene en qA 
 
 #### *Probamos propiedad de clausura de R con respecto a la concatenación*:
 
-- Idea general: Sean M1 una MT que acepta L1 y se detiene siempre, y M2 una MT que acepta L2 y se detiene siempre. Se va a construir una MT M que acepta L1 ⦁ L2 y se detiene siempre, con las siguientes características. Dada una entrada w, con |w| = n, M simula M1 a partir de los primeros 0 símbolos de w, y M2 a partir de los últimos n símbolos de w, y si en ambos casos hay aceptación, entonces M acepta w. En caso contrario, M hace lo mismo pero ahora con el primer símbolo de w y los últimos n – 1 símbolos de w. Mientras no se detenga por aceptación, M repite el proceso con 2 y n – 2 símbolos de w, 3 y n – 3 símbolos, y así siguiendo hasta llegar a los n y 0 símbolos, en cuyo caso M rechaza w.
+- Idea general: Sean M1 una MT que acepta L1 y se detiene siempre, y M2 una MT que acepta L2 y se detiene siempre. Se va a construir una MT M que acepta L1 . L2 y se detiene siempre, con las siguientes características. Dada una entrada w, con |w| = n, M simula M1 a partir de los primeros 0 símbolos de w, y M2 a partir de los últimos n símbolos de w, y si en ambos casos hay aceptación, entonces M acepta w. En caso contrario, M hace lo mismo pero ahora con el primer símbolo de w y los últimos n – 1 símbolos de w. Mientras no se detenga por aceptación, M repite el proceso con 2 y n – 2 símbolos de w, 3 y n – 3 símbolos, y así siguiendo hasta llegar a los n y 0 símbolos, en cuyo caso M rechaza w.
 
 - Construcción de la MT M.
 
@@ -174,12 +175,12 @@ M tiene cinco cintas. A partir de una entrada w en su cinta 1, tal que |w| = n, 
 
 - Prueba de que M se detiene siempre.
 
-w ∈ L3 → con entrada w, M se detiene en qA luego de que acepten M1 y M2  cada una una porción de w
-
-w ∉ L3 → con entrada w, M se detiene en qR luego de haber hecho todas las particiones posibles de w y que M1 y M2 sigan rechazando.
+1. w ∈ L3 → con entrada w, M se detiene en qA luego de que acepten M1 y M2  cada una una porción de w
+2. w ∉ L3 → con entrada w, M se detiene en qR luego de haber hecho todas las particiones posibles de w y que M1 y M2 sigan rechazando.
 
 - Prueba de que L(M) = L1 . L2 = L3
-w ∈ L3 ↔ con entrada w M se detiene en qA↔ con una porcion de w M1 se detiene en qA y con el resto de w  M2 se detiene en qA
+
+1. w ∈ L3 ↔ con entrada w M se detiene en qA↔ con una porcion de w M1 se detiene en qA y con el resto de w  M2 se detiene en qA
 
 ## Ejercicio 3. Considerando el Lema 3 estudiado en la Clase Teórica 2 (propiedad de clausura de la clase RE con respecto a la operación de unión):
 
@@ -210,11 +211,12 @@ Considerando las operaciones de intersección, unión y concatenación de lengua
 
 #### *Probamos propiedad de clausura de RE con respecto a la concatenación*:
 
-Al igual que la clase R, RE es cerrada con respecto a la concatenación de lenguajes, es decir que si L1 ∈ RE y L2 ∈ RE, entonces también L1 ⦁ L2 ∈ RE, lo que se prueba a continuación. Como en el caso de la unión de lenguajes recursivamente numerables visto recién, debe tenerse en cuenta que las MT consideradas pueden no detenerse en caso de rechazo.
+Al igual que la clase R, RE es cerrada con respecto a la concatenación de lenguajes, es decir que si L1 ∈ RE y L2 ∈ RE, entonces también (L1 . L2) ∈ RE, lo que se prueba a continuación. Debe tenerse en cuenta que las MT consideradas pueden no detenerse en caso de rechazo.
 
-- Idea general: Tal como se hizo con los lenguajes recursivos, se va a construir una MT M que reconozca L1 ⦁ L2 simulando M1 y M2 (las MT que reconocen L1 y L2, respectivamente), primero a partir de 0 y |w| símbolos de la entrada w, después a partir de 1 y |w – 1| símbolos, y así siguiendo hasta llegar a |w| y 0 símbolos, aceptando eventualmente. La diferencia con el caso de los lenguajes recursivos está en que ahora, teniendo en cuenta las posibles no detenciones de M1 y M2, M debe simularlas “en paralelo”. La MT M primero hace simulaciones de un paso de M1 y M2 con todas las posibles particiones de la entrada w (|w| + 1 posibilidades), luego hace simulaciones de a lo sumo dos pasos, y así siguiendo hasta eventualmente aceptar (éste es el caso en que al cabo de a lo sumo un determinado número de pasos, digamos k, M1 acepta los primeros i símbolos de w y M2 acepta los últimos |w| – i símbolos de w).
+- Idea general: Tal como se hizo con los lenguajes recursivos, se va a construir una MT M que reconozca L1 . L2 simulando M1 y M2 (las MT que reconocen L1 y L2, respectivamente), primero a partir de 0 y |w| símbolos de la entrada w, después a partir de 1 y |w – 1| símbolos, y así siguiendo hasta llegar a |w| y 0 símbolos, aceptando eventualmente. La diferencia con el caso de los lenguajes recursivos está en que ahora, teniendo en cuenta las posibles no detenciones de M1 y M2, M debe simularlas “en paralelo”. La MT M primero hace simulaciones de un paso de M1 y M2 con todas las posibles particiones de la entrada w (|w| + 1 posibilidades), luego hace simulaciones de a lo sumo dos pasos, y así siguiendo hasta eventualmente aceptar (éste es el caso en que al cabo de a lo sumo un determinado número de pasos, digamos k, M1 acepta los primeros i símbolos de w y M2 acepta los últimos |w| – i símbolos de w).
 
 - Construcción de la MT M.
+
 Sea la siguiente MT M con seis cintas, que a partir de una entrada w en su cinta 1, tal que |w| = n, hace:
 
 1. Escribe el número 1 en la cinta 2. Sea h dicho número.
@@ -226,19 +228,72 @@ Sea la siguiente MT M con seis cintas, que a partir de una entrada w en su cinta
 7. Si i = n, hace h := h + 1 en la cinta 2, borra los contenidos de las cintas 3, 4, 5 y 6, y vuelve al paso 2.
 8. Hace i := i + 1 en la cinta 3, k := k – 1 en la cinta 4, borra los contenidos de las cintas 5 y 6, y vuelve al paso 4.
 
-- Prueba de que M se detiene en qA o loopea:
+- Prueba de que M se detiene en qA o loopea: (llamo L3 al resultado de L1 . L2)
 
-1. w ∈ L3  → con entrada w, M se detiene en qA luego de h pasos en los que se determina acepta M1 al recibir una porcion de w y acepta M2  al recibir el resto de w.
-2. w ∉ L3 → con entrada w, M se queda en loop mientras que M1 y M2  sigan recibiendo partes de  w y no aceptando, quedando en loop (no podemos asumir que se detienen y rechazan).
+1. w ∈ L3 → con entrada w, M se detiene en qA luego de h pasos en los que se determina acepta M1 al recibir una porcion de w y acepta M2 al recibir el resto de w.
+2. w ∉ L3 → con entrada w, M se queda en loop mientras que M1 y M2 sigan recibiendo partes de  w y no aceptando (no podemos asumir que se detienen y rechazan).
 
 - Prueba de que L(M) = L1 . L2 = L3
 
-1. w ∈ L3 ↔ con entrada w M se detiene en qA ↔ con una parte de w M1 se detiene en qA y con el resto de w  M2  se detiene en qA.
+1. w ∈ L3 ↔ con entrada w M se detiene en qA ↔ con una parte de w M1 se detiene en qA y con el resto de w M2 se detiene en qA.
+
+#### *Probamos propiedad de clausura de RE con respecto a la intersección*:
+
+- Idea general: Sea M1 una MT que acepta L1 y M2 una MT que acepta l2, se va a construir una MT M que reconozca L1 ⋂ L2 simulando M1 y M2 (las MT que reconocen L1 y L2, respectivamente). En este caso no hace falta la ejecución en paralelo, ya que si M1 no acepta L1, la máquina M tampoco aceptará (es decir, ambas deben aceptar para que M acepte). Tenemos entonces, si M1 loopea, M loopea. Si M1 ante w se detiene en su estado qA, entonces M simula M2 con w y si M2 también se detiene en su estado qA, entonces M acepta. Caso contrario, M loopea.
+
+- Construcción de la MT M
+
+M tiene dos cintas. Dada una entrada w en la cinta 1, M:
+
+1. Copia w en la cinta 2.
+2. Simula M1 a partir de w en la cinta 2. Si M1 loopea, entonces M loopea.
+3. Borra el contenido de la cinta 2.
+4. Copia w en la cinta 2.
+5. Simula M2 a partir de w en la cinta. M se detiene si M2 acepta. Sino, puede loopear.
+
+- Prueba de que M se detiene en qA o loopea: (llamo L3 al resultado de L1 U L2)
+
+1. w ∈ L3 → con entrada w, M se detiene en qA si M1 se detuvo en qA y M2 se detuvo en qA.
+2. w ∉ L3 → con entrada w, M se queda en loop mientras que M1 o M2 sigan recibiendo partes de  w y no aceptando, o rechaza (se detiene en qR).
+
+- Prueba de que L(M) = L1 U L2 = L3
+
+1. w ∈ L3 ↔ con entrada w M se detiene en qA ↔ con entrada w M1 se detiene en qA y M2 se detiene en qA.
 
 ## Ejercicio 4. Considerando el Lema 4 estudiado en la Clase Teórica 2 (R = RE ⋂ CO-RE): 
 
 ### 1. Construir la MT M.
+
+Se prueba fácilmente que R ⊆ RE ⋂ CO-RE.
+
+La inclusión R ⊆ RE se cumple por definición.
+
+También vale R ⊆ CO-RE porque L ∈ R → L^C ∈ R → L^C ∈ RE → L ∈ CO-RE.
+
+Veamos que también se cumple la inversa, es decir, RE ⋂ CO-RE ⊆ R.
+
+- Idea general: Sean M y M^C dos MT que aceptan los lenguajes L y L^C, respectivamente. Se va a construir una MT M1 que se detiene siempre y acepta L, de la siguiente manera.
+
+1. M1 simula “en paralelo” las MT M y M^C.
+2. Si M se detiene en qA, entonces M1 se detiene en su estado qA.
+3. Y si M^C se detiene en qA, entonces M1 se detiene en su estado qR.
+
+La figura siguiente ilustra esta idea:
+
+![MT](img/ejercicio_4-1.png)
+
+Se cumple que M1 se detiene siempre porque para toda entrada w, vale que w ∈ L o w ∈ L^C, y por lo tanto M o M^C aceptan w.
+
 ### 2. Probar la correctitud de la construcción.
+
+- Prueba de que M1 se detiene siempre.
+
+1. w ∈ L → con entrada w, M se detiene en qA luego de que acepte M.
+2. w ∉ L → con entrada w, M se detiene en qR luego de que acepte M^c.
+
+- Prueba de que L(M1) = L
+
+1. w ∈ L ↔ con entrada w M1 se detiene en qA ↔ con entrada w M se detiene en qA 0 M^C se detiene en qR.
 
 ## Ejercicio 5. Verificar la correctitud de las construcciones de las MT efectuadas en la Clase Práctica 2, es decir las correspondientes a las pruebas de:
 
@@ -252,12 +307,42 @@ Resuelto en el ejercicio 3.
 
 ### 3. La propiedad de clausura de RE con respecto a la operación de unión utilizando una MTN. 
 
+Valiéndonos de las MT no determinísticas (o MTN), podemos plantear la siguiente construcción: Si M1 = (Q1, Ʃ1, Γ1, δ1, q10, qA, qR) y M2 = (Q2, Ʃ2, Γ2, δ2, q20, qA, qR) son dos MT determinísticas (o MTD) que aceptan los lenguajes L1 y L2, respectivamente, se puede construir una MTN M que acepta L1 ⋃ L2 a partir de M1 y M2. Sea q0 un estado que no está en Q1 ni en Q2. La MTN M es la tupla M = (Q1 ∪ Q2 ∪ {q0}, Ʃ1 ∪ Ʃ2, Γ1 ∪ Γ2, ∆, q0, qA, qR), tal que 
+
+```
+∆= δ1 ∪ δ2 ∪ {(q0, x, q10, x, S), (q0, x, q20, x, S)}, considerando todos los x de Ʃ
+```
+
+Es decir, al comienzo la MTN M pasa no determinísticamente a la configuración inicial de la MTD M1 o a la configuración inicial de la MTD M2, y después se comporta determinísticamente como ellas.
+
+- Prueba de que M se detiene en qA o loopea:
+
+1. w ∈ L3 → con entrada w, M se detiene en qA luego de i pasos en los que se determina acepta M1 o M2  al recibir w.
+2. w ∉ L3 → con entrada w, M se queda en loop mientras que M1 y M2  sigan recibiendo w y loopeando (no podemos asumir que se detienen y rechazan).
+
+- Prueba de que L(M) = L1 ⋃ L2 = L3
+
+1. w ∈ L3 ↔ con entrada w M se detiene en qA ↔ con w M1 se detiene en qA o con w M2 se detiene en qA. 
+
 ## Ejercicio 6. Sean L1 y L2 dos lenguajes recursivamente numerables de números naturales representados en notación unaria (por ejemplo, el número 5 se representa con 11111). Probar que también es recursivamente numerable el lenguaje L = {x | x es un número natural representado en notación unaria, y existen y, z, tales que y + z = x, con y ∈ L1, z ∈ L2}. Ayuda: la prueba es similar a la de la propiedad de clausura de la clase RE con respecto a la operación de concatenación.
+
+Es igual a la concatenación.
+
+La idea es que a mi me llega un resultado, y yo necesito saber que efectivamente es una concatenación de los lenguajes L1 y L2. Como yo tengo dos máquinas de Turing que aceptan L1 y L2 respectivamente, tengo que "desglozar" la entrada, y ver si logro que ambas máquinas acepten en el mismo intento.
 
 ## Ejercicio 7. Dada una MT M1 con Ʃ = {0, 1}:
 
 ### 1. Construir una MT M2 que determine si L(M1) tiene al menos una cadena.
 
+Se tiene que tener especial atención a que la MT M2 no se quede loopeando. Es fácil detectar cuando una máquina queda en este estado al ver que ya ha pasado por todos los estados posibles definidos. 
+Se entiende como “paso” a un cambio de estado (escribir algo, y hacer algún tipo de movimiento). 
+
+Para evitar caer en loop se podría ejecutar la maquina de a pasos. Esto quiere decir ejecutar primero la máquina con 1 paso, luego intentar con 2, y así sucesivamente. En la primera instancia (solo 1 paso) se detecta y la máquina M1 acepta una cadena de longitud 1 (acepta 0 o 1), si lo hace entonces ya cumple, en caso contrario se deberá intentar con cadenas de longitud 2 (se realizan 2 pasos). Este procedimiento debe repetirse hasta encontrar una cadena w de longitud k. Es importante notar que los inputs que se usaron en "intentos" anteriores deben seguir ingresándose: podría darse el caso en que una máquina acepte un deterinado caracter después de hacer una cierta cantidad de movimientos y cambios de estado.
+
+Con encontrar una unica cadena que cumpla ya se puede parar.
+
 ### 2. ¿Se puede construir además una MT M3 para determinar si L(M1) tiene a lo sumo una cadena? Justificar.
+
+Resulta imposible probar que solo 1 cumple, puesto a que el alfabeto que utiliza MT M1 genera un conjunto infinito de cadenas (nunca se podría parar de probar).
 
 #### Ayuda para la parte (1): Si L(M1) tiene al menos una cadena, entonces existe al menos una cadena w de unos y ceros, de tamaño n, tal que M1 a partir de w acepta en k pasos. Teniendo en cuenta esto, pensar cómo M2 podría simular M1 considerando todas las cadenas de unos y ceros hasta encontrar eventualmente una que M1 acepte (¡cuidándose de los casos en que M1 entre en loop!).
