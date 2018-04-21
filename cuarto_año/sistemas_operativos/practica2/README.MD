@@ -2,36 +2,182 @@
 
 ## Práctica 2
 
-## Conceptos teóricos
+## Conceptos teóricos. (Realizado por _el borre_)
 
 _El propósito de esta primera sección de la práctica es introducir los conceptos preliminares que
 necesitará el alumno, para desarrollar la actividad práctica del apartado B de la presente guía
 de estudio._
 
 ### 1. ¿Qué es el _kernel_ de GNU/Linux? ¿Cuáles son sus funciones principales dentro del Sistema Operativo?
-### 2. Indique una breve reseña histórica acerca de la evolución del _kernel_ de GNU/Linux
-### 3. Explique brevemente la arquitectura del _kernel_ de GNU/Linux teniendo en cuenta: tipo de _kernel_, módulos, portabilidad, etc.
-### 4. ¿Cuáles son los cambios que se introdujeron en el _kernel_ a partir de la versión 3.0? ¿Cuál fue la razón por la cual se cambió de la versión 2 a la 3? ¿Y la razón para el cambio de la versión 3 a la 4?
-### 5. ¿Cómo se define el versionado de los _kernel_ s de GNU/Linux?
-### 6. ¿Cuáles son las razones por las cuáles los usuarios de GNU/Linux recompilan sus kernels?
-### 7. ¿Cuáles son las distintas opciones para realizar la configuración de opciones de compilación de un _kernel_? Cite diferencias, necesidades (paquetes adicionales de software que se pueden requerir), pro y contras de cada una de ellas.
-### 8. Nombre al menos 5 opciones de las más importantes que encontrará al momento de realizar la configuración de un _kernel_ para su posterior compilación.
-### 9. Indique que tarea realiza cada uno de los siguientes comandos durante la tarea de configuración/compilación del _kernel_ :
-#### (a)make menuconfig
-#### (b)make clean
-#### (c)make(investigue la funcionalidad del parámetro-j)
-#### (d)make modules(utilizado en antiguos kernels, actualmente no es necesario)
-#### (e)make modules_install
-#### (f)make install
 
-### 10. Una vez que el _kernel_ fue compilado, ¿dónde queda ubicada su imagen? ¿dónde debería ser reubicada? ¿Existe algún comando que realice esta copia en forma automática?
+Es un programa que ejecuta programas y gestiona dispositivos de hardware. Es el encargado de que el software y el hardware puedan trabajar en conjunto. Las funciones principales son Administrar la memoria principal y administrar el uso del CPU. Es de código abierto a los Usuarios (kernel/sched.c) En un sentido estricto, la cátedra lo ve como el Sistema Operativo.
+
+El kernel de Linux se caracteriza por ser monolítico híbrido. 
+Los drivers y el código del Kernel se ejecutan en modo privilegiado. 
+Lo que lo hace híbrido es la posibilidad de cargar y descargar funcionalidad a través de módulos.
+
+El kernel de Linux es libre. Es decir que cualquier persona o entidad dispone de la libertad de poder usarlo, estudiarlo, mejorarlo y/o distribuirlo.
+
+### 2. Indique una breve reseña histórica acerca de la evolución del _kernel_ de GNU/Linux
+
+- En 1991 Linus Torvalds inicia la programación del kernel Linux basado en Minix[2] (Clon de Unix desarrollado por Tanembaum en 1987 con el fin de crear un SO de uso didáctico).
+- El 5 de octubre de 1991, se anuncia la primera versión “oficial” de Linux (0.02).
+- En 1992, con la release de la versión 0.12, se decide cambiar a una licencia GNU.
+- En marzo de 1994 Torvalds considera que todos los componentes del kernel estaban suficientemente maduros y lanza la versión 1.0.
+- En el año 1995 Linux se porta a arquitecturas DEC Alpha y Sun SPARC. Con el correr de los años se portó a otra decena de arquitecturas.
+- En mayo de 1996 se decide adoptar a Tux como mascota oficial de Linux.
+- En julio de 1996 se lanza la versión 2.0 y se define un sistema de nomenclatura. Se desarrolló hasta febrero de 2004 y terminó con la version 2.0.40. Esta versión comenzó a brindar soporte a sistemas multiprocesadores.
+- En 2001 se lanza la versión 2.4 y se deja de desarrollar a fines del 2010 con la 2.4.37.11. La versión 2.4 fue la que catapultó a GNU/Linux como un sistema operativo estable y robusto.
+- A fines del año 2003 se lanza la versión 2.6. Esta versión ha tenido muchas mejoras para el kernel dentro de las que se destacan soporte de threads, mejoras en la planificación y soporte de nuevo hardware.
+- El 3 de agosto de 2011 se lanza la versión 2.6.39.4 anunciándose la misma desde meses previos como la última en su revisión.
+- El 17 Julio de 2011 se lanza la versión 3.0. (No agrega mayores cambios. La decisión del cambio son los 20 años del SO y no superar los 40 números de revisión)
+- El 12 de Abril de 2015 se lanza la versión 4.0 (Una de sus principales mejoras es la posibilidad de aplicar parches y actualizaciones si necesidad de reiniciar el SO)
+
+### 3. Explique brevemente la arquitectura del _kernel_ de GNU/Linux teniendo en cuenta: tipo de _kernel_, módulos, portabilidad, etc.
+
+Es un núcleo monolítico híbrido. Los drivers y el código kernel se ejecuta en modo privilegiado. Lo que lo hace hibrido es la posibilidad de cargar y descargar funcionalidades a través de módulos.
+
+### 4. ¿Cuáles son los cambios que se introdujeron en el _kernel_ a partir de la versión 3.0?
+No agrega mayores cambios.
+
+### ¿Cuál fue la razón por la cual se cambió de la versión 2 a la 3?
+
+La decisión del cambio son los 20 años del SO y no superar los 40 números de revisión. Es incluso totalmente compatible con Kernel 2.6
+
+“I decided to just bite the bullet, and call the next version 3.0. It will get released close enough to the 20-year mark, which is excuse enough for me, although honestly, the real reason is just that I can no longer comfortably count as high as 40.”, Linus Torvalds, 2011
+
+### ¿Y la razón para el cambio de la versión 3 a la 4?
+
+Una de sus principales mejoras de la versión 4 es la posibilidad de aplicar parches y actualizaciones sin necesidad de reiniciar el SO. Agrega además soporte para nuevas CPU.
+
+“.. Because the people have spoken, and while most of it was complete gibberish, numbers don’t lie. People preferred 4.0, and 4.0 it shall be. Unless somebody can come up with a good argument against it.”
+
+### 5. ¿Cómo se define el versionado de los _kernel_ s de GNU/Linux?
+
+Hasta la versión 2.6 se definida mediante 4 letras. A.B.C.D donde:
+
+- A Denota Version. Cambia con menor Frecuencia. en 1994 (versión 1.0), en 1996 (versión 2.0), en 2011 (versión 3.0) y en en 2015 (versión 4.0). 
+- B Denota revisión mayor. Antes de la versión 2.6, los números impares indicaban desarrollo, los pares producción. 
+- C Denota revisión menor. Solo cambia cuando hay nuevos drivers o caracterısticas. 
+- D Se utiliza cuando se corrige un grave error sin agregar nueva funcionalidad.
+
+En el año 2011, cuando se pasó de la versión 2.6.39 a la 3.0, se eliminó el número de revisión mayor (B)[1].
+
+Además del número de versión, se utilizaban (previo a la versión 2.6) los campos X.Y.Z, donde:
+- X Indica serie principal. Cambia cuando su funcionalidad sufre un cambio muy importante. 
+- Y Indica si es una versión de producción o desarrollo. 
+- Z Nuevas versiones dentro de la actual. Bugfixes.
+
+Existían dos versiones del kernel:
+- Números Y pares indicaban versión en Producción (estable)
+- Números Y impares indicaban versión en Desarrollo
+
+### 6. ¿Cuáles son las razones por las cuáles los usuarios de GNU/Linux recompilan sus kernels?
+
+Existen muchos motivos:
+- Soportar nuevos dispositivos como, por ejemplo, una placa de video.
+- Agregar mayor funcionalidad (soporte para algún hardware específico).
+- Optimizar funcionamiento de acuerdo al sistema en el que corre.
+- Adaptarlo al sistema donde corre (quitar soporte de hardware no utilizado).
+- Corrección de bugs (problemas de seguridad o errores de programación).
+
+### 7. ¿Cuáles son las distintas opciones para realizar la configuración de opciones de compilación de un _kernel_? Cite diferencias, necesidades (paquetes adicionales de software que se pueden requerir), pro y contras de cada una de ellas.
+
+El kernel Linux se configura mediante el archivo .config. Este archivo, que reside en la raíz del directorio del kernel, contiene las instrucciones de que es lo que el kernel debe compilar.
+
+Existen tres interfaces que permiten generar este archivo: 
+- make config: modo texto y secuencial. Tedioso. 
+- make xconfig: interfaz gráfica utilizando un sistema de ventanas. No todos los sistemas tienen instalado X. 
+- make menuconfig: este modo utiliza ncurses, una librería que permite generar una interfaz con paneles desde la terminal. Generalmente el más utilizado.
+
+Las herramientas mencionadas permiten: 
+- Crear un archivo .config con las directivas de compilación.
+- Configurar un kernel desde cero es una tarea tediosa y propensa a errores (kernels que no arranquen). Estas herramientas automatizan el proceso por nosotros.
+
+Lo ideal es ir manteniendo el .config para no tener que configurar todo de cero. Cada nueva versión, puede valerse de un .config anterior. Por convención, es recomendable almacenar en el directorio /boot la imagen compilada del kernel junto con su .config.
+
+### 8. Nombre al menos 5 opciones de las más importantes que encontrará al momento de realizar la configuración de un _kernel_ para su posterior compilación.
+
+## Consultar.
+
+### 9. Indique que tarea realiza cada uno de los siguientes comandos durante la tarea de configuración/compilación del _kernel_ :
+
+#### (a) make menuconfig
+
+Explicado en punto 7. Utiliza ncurses, una librería que permite generar una interfaz con paneles desde la terminal.
+
+#### (b) make clean
+
+El comando clean borra todos los objetos o archivos previamentes compilados. 
+
+#### (c) make (investigue la funcionalidad del parámetro-j)
+
+El comando make busca el archivo Makefile, interpreta sus directivas y compila el kernel. Este proceso puede durar mucho tiempo dependiendo del procesador que tengamos. El parámetro -j seguido de un número se utiliza para indicar la cantidad de threads concurrentes queremos establecer para hacer este proceso.
+
+*Specifies the number of jobs (commands) to run simultaneously.  If there  is  more than  one -j option, the last one is effective.  If the -j option is given without an argument, make will not limit the number of jobs that can run simultaneously.*
+
+#### (d) make modules (utilizado en antiguos kernels, actualmente no es necesario)
+
+El comando make modules compila todos los módulos necesarios para satisfacer las opciones que hayan sido seleccionadas como módulo. Generalmente la tarea anterior se encuentra incluida en la compilación del kernel con el comando make.
+
+#### (e) make modules_install
+
+Los módulos compilados deben residir en el directorio /lib/modules/version-del-kernel. Al igual que en el paso anterior, el archivo Makefile tiene una regla para instalar los módulos. El parámetro modules install es una regla del Makefile que ubica los módulos del kernel recién compilado en el directorio correspondiente.
+
+#### (f) make install
+
+Se utiliza para instalar el kernel y otros archivos en el directorio /boot.
+
+### 10. Una vez que el _kernel_ fue compilado, ¿dónde queda ubicada su imagen?
+
+Al terminar el proceso de compilación, la imagen del kernel quedará ubicada en directorio-del-código/arch/arquitectura/boot/.
+
+#### ¿dónde debería ser reubicada? ¿Existe algún comando que realice esta copia en forma automática?
+
+Por convención, es recomendable almacenar en el directorio /boot la imagen compilada del kernel junto con su .config.
+
+Por convención el código fuente del kernel se guarda en /usr/src. Sin embargo, como dicho directorio generalmente no tiene permisos de escritura para usuarios no privilegiados, el archivo se debe descomprimir en un directorio donde tengamos permisos, como el $HOME del usuario actual. Generalmente se crea un enlace simbólico llamado linux apuntando al directorio del código fuente que actualmente se está configurando.
+
+```
+$ ln -s /usr/src/linux-4.15 /usr/src/linux
+```
+
 ### 11. ¿A qué hace referencia el archivoinitramfs? ¿Cuál es su funcionalidad? ¿Bajo qué condiciones puede no ser necesario?
+
+Un initramfs es un sistema de archivos temporal que se monta durante el arranque del sistema. Contiene ejecutables, drivers y módulos necesarios para lograr iniciar el sistema. Luego del proceso de arranque el disco se desmonta.
+Es un archivo cpio (copia entrada y salida) del archivo inicial del file System que se carga en memoria durante el startup de Linux. El programa init está pensado para completar algunas tareas antes que el archivo root file system real o final sea montado en rootfs.
 
 ### 12. ¿Cuál es la razón por la que una vez compilado el nuevo _kernel_ , es necesario reconfigurar el gestor de arranque que tengamos instalado?
 
+Luego de instalar el kernel, para que el gestor de arranque lo reconozca simplemente deberemos ejecutar, como usuario privilegiado, el siguiente comando: ` update-grub2 `.
+
 ### 13. ¿Qué es un módulo del _kernel_? ¿Cuáles son los comandos principales para el manejo de módulos del kernel?
 
+Un módulo del kernel es un fragmento de código que puede cargarse/descargarse en el mapa de memoria del SO (Kernel) bajo demanda.
+
+- Permiten extender la funcionalidad del Kernel en “caliente” (sin necesidad de reiniciar el sistema). 
+- Todo su código se ejecuta en modo Kernel (privilegiado).
+- Cualquier error en el módulo, puede colgar el SO. 
+- Permiten que el kernel se desarrolle bajo un diseño más modular. 
+- Los módulos disponibles se ubican en /lib/modules/version del kernel. 
+- Con el comando lsmod es posible ver que módulos están cargados.
+
 ### 14. ¿Qué es un parche del _kernel_? ¿Cuáles son las razones principales por las cuáles se deberían aplicar parches en el kernel? ¿A través de qué comando se realiza la aplicación de parches en el _kernel_?
+
+Es un mecanismo que permite aplicar actualizaciones NO incrementales sobre la versión base. Se basa en archivos diff (archivos de diferencia), que indican qué agregar y qué quitar. Se aplican sobre la versión base. Permiten agregar funcionalidad (nuevos drivers, correcciones menores, etc.)
+A veces puede resultar más sencillo descargar el archivo de diferencia y aplicarlo en vez de descargar todo el código de la nueva versión.
+
+Un ejemplo de cómo se utiliza se puede ver en el siguiente código:
+
+```
+$ cd linux; zcat ../patch-4.15.15.gz | patch -p1
+```
+
+En este caso se puede ver que el parche se realiza mediante el comando patch con el parámetro -p, el cual se explica abajo:
+
+![Comando patch](img/ejercicio_14.png)
+
+Es importante mencionar que patch no puede recibir el archivo comprimido (.gz) por lo cual se utiliza previamente zcat. El cual funciona de manera similar al cat con la distinción de que descomprime lo que recibe por su entrada estándar enviando el resultado por su salida estándar.
 
 ## Ejercicio taller: Compilación del kernel Linux
 
