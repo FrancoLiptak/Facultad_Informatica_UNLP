@@ -30,7 +30,7 @@
 gcc -fopenmp – o salidaEjecutable archivoFuente
 ```
 
-#### *Ejecutar:*
+#### Ejecutar:
 
 ##### *Ejercicio 1:*
 ```
