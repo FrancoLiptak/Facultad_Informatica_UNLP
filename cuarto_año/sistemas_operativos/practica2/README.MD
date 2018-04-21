@@ -285,11 +285,9 @@ La forma de movernos a través de este menú es utilizando las flechas del curso
 
     La ejecución de este último puede durar varios minutos, o incluso horas, dependiendo del tipo de hardware que tengamos en nuestra PC y las opciones que hayamos seleccionado al momento de la configuración. Una vez finalizado este proceso, debemos verificar que no haya arrojado errores. En caso de que esto ocurra debemos verificar de qué tipo de error se trata y volver a la configuración de nuestro kernel para corregir los problemas. Una vez corregidos tendremos que volver a compilar nuestro kernel. Previo a esta nueva compilación debemos correr el comandomake cleanpara eliminar pasos inconclusos de compilaciones anteriores.
 
-6. Finalizado este proceso, debemos reubicar las nuevas imágenes en los directorios correspondientes, instalar los módulos, crear una imageninitramfsy reconfigurar nuestro gestor de arranque.
+6. Finalizado este proceso, debemos reubicar las nuevas imágenes en los directorios correspondientes, instalar los módulos, crear una imagen initramfs y reconfigurar nuestro gestor de arranque.
 
-- (a) En primer lugar, para realizar la instalación de los módulos ejecutaremos:
-         ``` $ sudo make modules_install ```
-    Recordar que debemos estar ubicados en el directorio$HOME/kernel/linux-4.15. Este comando copiará los módulos compilados al directorio/lib/modules/4.15.15.
+- (a) En primer lugar, para realizar la instalación de los módulos ejecutaremos: ` $ sudo make modules_install `. Recordar que debemos estar ubicados en el directorio $HOME/kernel/linux-4.15. Este comando copiará los módulos compilados al directorio/lib/modules/4.15.15.
 
 - (b) Para reubicar la imagen del _kernel_ disponemos de al menos dos métodos:
 
@@ -312,7 +310,7 @@ $ sudo su
 
 El primer comando copiará la imagen del kernel , el segundo copiará el archivo de mapa de símbolos correspondiente a la nueva imagen del kernel. El último comando nos permitirá mantener una copia del archivo de configuración con el cual fue compilado nuestro kernel. Si bien no es necesario mantener este último archivo, es recomendable hacerlo, con el fin de mantener el orden y una documentación de las opciones de compilación utilizadas en la imagen compilada.
 
-- (c) Si en el inciso anterior se utilizó la opción demake install, entonces podremos saltear este paso. De lo contrario, para la creación de la imagen initramfs utilizaremos el comando:
+- (c) Si en el inciso anterior se utilizó la opción de ` make install `, entonces podremos saltear este paso. De lo contrario, para la creación de la imagen initramfs utilizaremos el comando:
 
 ```
 # mkinitramfs -o /boot/initrd.img-4.15.15 4.15.
@@ -326,10 +324,10 @@ El primer comando copiará la imagen del kernel , el segundo copiará el archivo
 
 Este comando se encargará de agregar las entradas correspondientes en el archivo de configuración/boot/grub/grub.cfg. Nuevamente, si utilizamos ` make install ` para instalar el kernel, entonces es posible saltear este paso.
 
-7. Como último paso, a través del comandoreboot, reiniciaremos nuestro equipo y probaremos el nuevo _kernel_ recientemente compilado. Al momento de cargarse nuestro gestor de arranque, veremos una nueva entrada que hace referencia al nuevo _kernel_. Para _bootear_, seleccionamos esta entrada y verificamos que el sistema funcione correctamente. En caso de que el sistema no arranque con el nuevo _kernel_ , tendremos la opción de volver a _bootear_ con nuestro _kernel_ anterior para corregir los errores y realizar una nueva compilación.
+7. Como último paso, a través del comando ` reboot `, reiniciaremos nuestro equipo y probaremos el nuevo _kernel_ recientemente compilado. Al momento de cargarse nuestro gestor de arranque, veremos una nueva entrada que hace referencia al nuevo _kernel_. Para _bootear_, seleccionamos esta entrada y verificamos que el sistema funcione correctamente. En caso de que el sistema no arranque con el nuevo _kernel_ , tendremos la opción de volver a _bootear_ con nuestro _kernel_ anterior para corregir los errores y realizar una nueva compilación.
 
 8. Repita el procedimiento del inciso dos. ¿Qué sucede ahora?
 
-Como nuestro kernel tiene soporte para este tipo de File System , entonces, ingresando a /mnt/minix, encontraremos la información contenida en este pseudo dispositivo. Nos encontraremos con una situación similar al querer montar el sistema de archivos ext4.
+Como nuestro kernel tiene soporte para este tipo de File System, entonces, ingresando a /mnt/minix, encontraremos la información contenida en este pseudo dispositivo. Nos encontraremos con una situación similar al querer montar el sistema de archivos ext4.
 
 
