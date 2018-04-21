@@ -2,81 +2,97 @@
 #include<stdlib.h>
 #include<pthread.h>
 #include<sys/time.h>
+
+double *A,*B,*C;
+
 //Dimension por defecto de las matrices
 int N=100;
-int cantidad_threads = 2;
+int num_threads=4;
+
+
+void * multiplicar(void * arg);
+
 
 //Para calcular tiempo
 double dwalltime(){
-  double sec;
-  struct timeval tv;
+        double sec;
+        struct timeval tv;
 
-  gettimeofday(&tv,NULL);
-  sec = tv.tv_sec + tv.tv_usec/1000000.0;
-  return sec;
+        gettimeofday(&tv,NULL);
+        sec = tv.tv_sec + tv.tv_usec/1000000.0;
+        return sec;
 }
 
-void multiplicacion(void *arg){
 
-}
+int main(int argc,char*argv[]){
 
-int main(int argc,char*argv[]){ // argc es un argumento tipo entero (contiene el número de argumentos que se introdujeron). argv es un argumento tipo array (array de punteros a caracteres)
-  double *A,*B,*C; // * es para declarar punteros
-  int i,j,k;
-  int check=1;
-  double timetick;
+ int check=1;
+ double timetick;
+ N=atoi(argv[1]);
+ num_threads=atoi(argv[2]);
+ pthread_t threads[num_threads];
+ int i,j,ids[num_threads];
 
-  //Controla los argumentos al programa
-  if ((argc != 2) || ((N = atoi(argv[1])) <= 0) )
-  {
-    printf("\nUsar: %s n\n  n: Dimension de la matriz (nxn X nxn)\n", argv[0]);
-    exit(1);
-  }
+ //Controla los argumentos al programa
 
-  //Aloca memoria para las matrices
-  A=(double*)malloc(sizeof(double)*N*N);
-  B=(double*)malloc(sizeof(double)*N*N);
-  C=(double*)malloc(sizeof(double)*N*N);
+ //Aloca memoria para las matrices
+A=(double*)malloc(sizeof(double)*N*N);
+B=(double*)malloc(sizeof(double)*N*N);
+C=(double*)malloc(sizeof(double)*N*N); 
 
-  //Inicializa las matrices A y B en 1, el resultado sera una matriz con todos sus valores en N
+ //Inicializa las matrices A y B en 1, el resultado sera una matriz con todos sus valores en N
   for(i=0;i<N;i++){
-    for(j=0;j<N;j++){
-      A[i+j*N]=1;
-      B[i+j*N]=1;
-    }
+   for(j=0;j<N;j++){
+      A[i*N+j]=1;
+      B[i*N+j]=1;
+   }
   }   
 
-
-  //Realiza la multiplicacion
-
   timetick = dwalltime();
+//Crea los threads 
+  for(i=0;i<num_threads;i++){
+    ids[i]=i;
+    pthread_create(&threads[i], NULL, multiplicar, &ids[i]);
+  }
+ //Realiza la multiplicacion
 
+
+
+  for(i=0;i<num_threads;i++){
+    pthread_join(threads[i], NULL);
+  }
+
+ printf("Tiempo en segundos %f\n", dwalltime() - timetick);
+
+ //Verifica el resultado
   for(i=0;i<N;i++){
-    for(j=0;j<N;j++){
-      C[i+j*N]=0;
-      for(k=0;k<N;k++){
-        C[i+j*N]= C[i+j*N] + A[i+j*N] * B[i+j*N];
-      }
-    }
-  }    
-
-  printf("Tiempo en segundos %f\n", dwalltime() - timetick);
-
-  //Verifica el resultado
-  for(i=0;i<N;i++){
-    for(j=0;j<N;j++){
-      check=check&&(C[i+j*N]==N);
-    }
+   for(j=0;j<N;j++){
+  check=check&&(C[i*N+j]==N);
+   }
   }   
 
   if(check){
-    printf("Multiplicacion de matrices resultado correcto\n");
+   printf("Multiplicacion de matrices resultado correcto\n");
   }else{
-    printf("Multiplicacion de matrices resultado erroneo\n");
+   printf("Multiplicacion de matrices resultado erroneo\n");
   }
 
-  free(A);
-  free(B);
-  free(C);
-  return(0);
+ free(A);
+ free(B);
+ free(C);
+ return(0);
+}
+
+void * multiplicar(void * arg){
+  int id = * (int *) arg;
+  int base = N/num_threads;
+  int i,j,k;
+  for(i=id*base;i<base*(id+1);i++){
+   for(j=0;j<N;j++){
+    for(k=0;k<N;k++){
+      C[i*N+j]= C[i*N+j] + A[i*N+k] * B[k+j*N];
+    }
+   }
+  } 
+  pthread_exit(0);
 }
