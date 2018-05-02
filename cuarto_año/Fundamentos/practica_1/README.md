@@ -79,9 +79,9 @@ Todo lenguaje que consideremos será un subconjunto de Ʃ* (ya que Ʃ* es la tot
 
 |     | a        | b        | c        | x        | y        | z        | B        |
 | --- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
-| qa  | qb, x, R |          |          | qH, x, R |          |          | qA, B, S |
+| qa  | qb, x, R |          |          |          |          |          | qA, B, S |
 | qb  | qb, a, R | qc, y, R |          |          | qH, y, R |          |          |
-| qc  |          | qc, y, R | qL, z, L |          |          | qH, z, R |          |
+| qc  |          | qc, y, R | qL, z, L |          |          |          |          |
 | qH  |          |          |          |          | qH, y, R | qH, z, R | qA, B, S |
 | qL  | qL, a, L | qL, b, L |          | qa, x, R | qL, y, L | qL, z, L |          |
 
@@ -193,8 +193,8 @@ Resolución del ejercicio:
 |     | h         | a        | b        | B        |
 | --- | --------  | -------- | -------- | -------- |
 | qh  | qab, x, R |          |          |          |
-| qab |           | qa, a, R |          | qA, B, S |
-| qa  |           | qa, a, R | qb, b, R | qA, B, S |
+| qab |           | qa, a, R | qb, b, R | qA, B, S |
+| qa  |           | qa, a, R |          | qA, B, S |
 | qb  |           |          | qb, b, R | qA, B, S |
 
 ## Ejercicio 7. Construir una MT que calcule la resta de dos números (se puede considerar la idea de solución propuesta en la clase 1).
