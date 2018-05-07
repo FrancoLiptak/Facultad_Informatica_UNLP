@@ -255,7 +255,7 @@ Pasado en limpio, los pasos serían:
 
 ## Ejercicio 9. Explicar (informal pero claramente) cómo simular una MT por otra que en un paso no pueda simultáneamente modificar un símbolo y moverse.
 
-Se necesitaría un estado más para esa máquina. 
+Podría quedarme con aquellas funciones de transición en las que se modifica y no se mueve y con aquellas en las que se deja el mismo símbolo y se mueve, mientras que con las otras las separo en 2 pasos, uno para modificar el símbolo y otro paso para moverme.
 
 ## Ejercicio 10. Explicar (informal pero claramente) cómo simular una MT por otra que no tenga el movimiento S (es decir el no movimiento).
 
