@@ -193,7 +193,7 @@ Soporte para la utilización de dispositivos de loopback
 ```
 Actualizaremos una versión de nuestro kernel, a través de la aplicación de parches
 ```
-Aquel alumno que utilice la máquina virtual provista por la Cátedra, no tendrá que instalar el software necesario para realizar la compilación, ya que el mismo se encuentra incluido. **El nombre del usuario a utilizar es 'so', y su contraseña 'sistemasoperativos'**. Este usuario tiene permitido utilizar sudo, por lo cual para obtener privilegios de root basta con ejecutar el comando ` sudo su `.
+Aquel alumno que utilice la máquina virtual provista por la Cátedra, no tendrá que instalar el software necesario para realizar la compilación, ya que el mismo se encuentra incluido. **El nombre del usuario a utilizar es 'so', y su contraseña 'so'**. Este usuario tiene permitido utilizar sudo, por lo cual para obtener privilegios de root basta con ejecutar el comando ` sudo su `.
 
 En caso de no utilizar la máquina virtual provista, se deberá realizar la instalación del software requerido para la instalación (librerías, compiladores, etc.)
 En los comandos de ejemplo de esta práctica se verá que algunos comandos empiezan con $ y otros con #. Estos símbolos representan el _prompt_ del usuario y no deben escribirse cuando se copie el comando. El símbolo $ significa que el comando debe ejecutarse con un usuario normal.
