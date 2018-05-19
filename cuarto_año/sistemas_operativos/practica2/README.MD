@@ -209,7 +209,7 @@ En el caso de la máquina virtual, es el usuario so. El símbolo # significa que
 - (c) A continuación montaremos nuestros dispositivos utilizando los siguientes comandos:
 
 ```
-$ sudo su
+$ su
 # mount -t minix $HOME/minixFS /mnt/minix/ -o loop
 # mount -t ext4 $HOME/ext4FS /mnt/ext4/ -o loop
 ```
