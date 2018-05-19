@@ -193,10 +193,10 @@ Soporte para la utilización de dispositivos de loopback
 ```
 Actualizaremos una versión de nuestro kernel, a través de la aplicación de parches
 ```
-Aquel alumno que utilice la máquina virtual provista por la Cátedra, no tendrá que instalar el software necesario para realizar la compilación, ya que el mismo se encuentra incluido. **El nombre del usuario a utilizar esso, y su contraseñasistemasoperativos**. Este usuario tiene permitido utilizarsudo, por lo cual para obtener privilegios derootbasta con ejecutar el comando ` sudo su `.
+Aquel alumno que utilice la máquina virtual provista por la Cátedra, no tendrá que instalar el software necesario para realizar la compilación, ya que el mismo se encuentra incluido. **El nombre del usuario a utilizar es 'so', y su contraseña 'so'**. Este usuario tiene permitido utilizar sudo, por lo cual para obtener privilegios de root basta con ejecutar el comando ` sudo su `.
 
 En caso de no utilizar la máquina virtual provista, se deberá realizar la instalación del software requerido para la instalación (librerías, compiladores, etc.)
-En los comandos de ejemplo de esta práctica se verá que algunos comandos empiezan con $y otros con #. Estos símbolos representan el _prompt_ del usuario y no deben escribirse cuando se copie el comando. El símbolo $ significa que el comando debe ejecutarse con un usuario normal.
+En los comandos de ejemplo de esta práctica se verá que algunos comandos empiezan con $ y otros con #. Estos símbolos representan el _prompt_ del usuario y no deben escribirse cuando se copie el comando. El símbolo $ significa que el comando debe ejecutarse con un usuario normal.
 En el caso de la máquina virtual, es el usuario so. El símbolo # significa que el comando debe ejecutarse con privilegios de usuario root.
 
 1. Descargue los archivos publicados en el sitio web de la cátedra, que se llaman _minixFS_ y _ext4FS.gz_ (en la máquina virtual provista por la cátedra se encuentran en el directorio /home/so).
@@ -205,11 +205,11 @@ En el caso de la máquina virtual, es el usuario so. El símbolo # significa que
 2. La tarea que tendremos que realizar en este ejercicio consiste en intentar montar los archivos con formato minix y ext4 que se encuentran publicado en el sitio de la cátedra y que ya hemos descargado, con el fin de poder visualizar la información que en él se encuentra. Para ello, seguiremos los siguientes pasos:
 
 - (a) Descargaremos este archivo en algún directorio determinado de nuestro _File System_, como por ejemplo nuestro directorio personal, $HOME.
-- (b) Verificaremos que dentro del directorio/mnt existan al menos dos directorios donde podamos montar nuestros pseudo dispositivos. Si no existen los directorios, los crearemos. Por ejemplo podemos utilizar el nombre/mnt/minix/y/mnt/ext4/.
+- (b) Verificaremos que dentro del directorio /mnt existan al menos dos directorios donde podamos montar nuestros pseudo dispositivos. Si no existen los directorios, los crearemos. Por ejemplo podemos utilizar el nombre/mnt/minix/ y /mnt/ext4/.
 - (c) A continuación montaremos nuestros dispositivos utilizando los siguientes comandos:
 
 ```
-$ sudo su
+$ su
 # mount -t minix $HOME/minixFS /mnt/minix/ -o loop
 # mount -t ext4 $HOME/ext4FS /mnt/ext4/ -o loop
 ```
@@ -254,7 +254,7 @@ $ xzcat /usr/src/patch-4.15.15.xz | patch -p
 $ cp /boot/config-$(uname -r) $HOME/kernel/linux-4.15/.config
 ```
 
-En este caso utilizaremos la herramientamenuconfig. Para ello ejecutaremos:
+En este caso utilizaremos la herramienta menuconfig. Para ello ejecutaremos:
 
 ```
 $ cd $HOME/kernel/linux-4.
@@ -283,7 +283,7 @@ La forma de movernos a través de este menú es utilizando las flechas del curso
     ``` $ make -j **X** ```
     **X** deberá reemplazarse por la cantidad de procesadores con los que cuente su máquina. En máquinas con más de un procesador o núcleo, la utilización de este parámetro puede acelerar mucho el proceso de compilación, ya que ejecuta X jobs o procesos para la tarea de compilación en forma simultánea. Este comando debemos ejecutarlo ubicados dentro del directorio donde se encuentra el código fuente del kernel descargado ($HOME/kernel/linux-4.15).
 
-    La ejecución de este último puede durar varios minutos, o incluso horas, dependiendo del tipo de hardware que tengamos en nuestra PC y las opciones que hayamos seleccionado al momento de la configuración. Una vez finalizado este proceso, debemos verificar que no haya arrojado errores. En caso de que esto ocurra debemos verificar de qué tipo de error se trata y volver a la configuración de nuestro kernel para corregir los problemas. Una vez corregidos tendremos que volver a compilar nuestro kernel. Previo a esta nueva compilación debemos correr el comandomake cleanpara eliminar pasos inconclusos de compilaciones anteriores.
+    La ejecución de este último puede durar varios minutos, o incluso horas, dependiendo del tipo de hardware que tengamos en nuestra PC y las opciones que hayamos seleccionado al momento de la configuración. Una vez finalizado este proceso, debemos verificar que no haya arrojado errores. En caso de que esto ocurra debemos verificar de qué tipo de error se trata y volver a la configuración de nuestro kernel para corregir los problemas. Una vez corregidos tendremos que volver a compilar nuestro kernel. Previo a esta nueva compilación debemos correr el comando ` make clean ` para eliminar pasos inconclusos de compilaciones anteriores.
 
 6. Finalizado este proceso, debemos reubicar las nuevas imágenes en los directorios correspondientes, instalar los módulos, crear una imagen initramfs y reconfigurar nuestro gestor de arranque.
 

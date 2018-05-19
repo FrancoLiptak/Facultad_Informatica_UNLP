@@ -9,12 +9,12 @@ double *A,*B,*C; // * es para declarar punteros
 
 //Para calcular tiempo
 double dwalltime(){
-  double sec;
-  struct timeval tv;
+        double sec;
+        struct timeval tv;
 
-  gettimeofday(&tv,NULL);
-  sec = tv.tv_sec + tv.tv_usec/1000000.0;
-  return sec;
+        gettimeofday(&tv,NULL);
+        sec = tv.tv_sec + tv.tv_usec/1000000.0;
+        return sec;
 }
 
 void * multiplicacion(void *arg);
@@ -41,10 +41,10 @@ int main(int argc,char*argv[]){ // argc es un argumento tipo entero (contiene el
 
   //Inicializa las matrices A y B en 1, el resultado sera una matriz con todos sus valores en N. No es de nuestro interés reducir el tiempo en la inicialización.
   for(i=0;i<N;i++){
-    for(j=0;j<N;j++){
-      A[i+j*N]=1;
-      B[i+j*N]=1;
-    }
+   for(j=0;j<N;j++){
+      A[i*N+j]=1;
+      B[i*N+j]=1;
+   }
   }   
  
   timetick = dwalltime(); // Empieza a controlar el tiempo
@@ -60,17 +60,17 @@ int main(int argc,char*argv[]){ // argc es un argumento tipo entero (contiene el
 
   printf("Tiempo en segundos %f\n", dwalltime() - timetick); // Informa el tiempo
 
-  //Verifica el resultado
+ //Verifica el resultado
   for(i=0;i<N;i++){
-    for(j=0;j<N;j++){
-      check=check&&(C[i+j*N]==N);
-    }
+   for(j=0;j<N;j++){
+  check=check&&(C[i*N+j]==N);
+   }
   }   
 
   if(check){
-    printf("Multiplicacion de matrices resultado correcto\n");
+   printf("Multiplicacion de matrices resultado correcto\n");
   }else{
-    printf("Multiplicacion de matrices resultado erroneo\n");
+   printf("Multiplicacion de matrices resultado erroneo\n");
   }
 
   free(A);

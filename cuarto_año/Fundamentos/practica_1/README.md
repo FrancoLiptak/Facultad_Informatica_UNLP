@@ -79,9 +79,9 @@ Todo lenguaje que consideremos será un subconjunto de Ʃ* (ya que Ʃ* es la tot
 
 |     | a        | b        | c        | x        | y        | z        | B        |
 | --- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
-| qa  | qb, x, R |          |          | qH, x, R |          |          | qA, B, S |
+| qa  | qb, x, R |          |          |          |          |          | qA, B, S |
 | qb  | qb, a, R | qc, y, R |          |          | qH, y, R |          |          |
-| qc  |          | qc, y, R | qL, z, L |          |          | qH, z, R |          |
+| qc  |          | qc, y, R | qL, z, L |          |          |          |          |
 | qH  |          |          |          |          | qH, y, R | qH, z, R | qA, B, S |
 | qL  | qL, a, L | qL, b, L |          | qa, x, R | qL, y, L | qL, z, L |          |
 
@@ -193,8 +193,8 @@ Resolución del ejercicio:
 |     | h         | a        | b        | B        |
 | --- | --------  | -------- | -------- | -------- |
 | qh  | qab, x, R |          |          |          |
-| qab |           | qa, a, R |          | qA, B, S |
-| qa  |           | qa, a, R | qb, b, R | qA, B, S |
+| qab |           | qa, a, R | qb, b, R | qA, B, S |
+| qa  |           | qa, a, R |          | qA, B, S |
 | qb  |           |          | qb, b, R | qA, B, S |
 
 ## Ejercicio 7. Construir una MT que calcule la resta de dos números (se puede considerar la idea de solución propuesta en la clase 1).
@@ -255,7 +255,7 @@ Pasado en limpio, los pasos serían:
 
 ## Ejercicio 9. Explicar (informal pero claramente) cómo simular una MT por otra que en un paso no pueda simultáneamente modificar un símbolo y moverse.
 
-Se necesitaría un estado más para esa máquina. 
+Podría quedarme con aquellas funciones de transición en las que se modifica y no se mueve y con aquellas en las que se deja el mismo símbolo y se mueve, mientras que con las otras las separo en 2 pasos, uno para modificar el símbolo y otro paso para moverme.
 
 ## Ejercicio 10. Explicar (informal pero claramente) cómo simular una MT por otra que no tenga el movimiento S (es decir el no movimiento).
 
