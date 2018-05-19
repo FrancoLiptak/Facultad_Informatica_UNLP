@@ -16,7 +16,7 @@ int main(int argc,char*argv[]){
 
  //Controla los argumentos al programa
   if (argc < 3){
-   printf("\n Faltan argumentos:: N dimension de la matriz, T cantidad de threads \n");
+   printf("\n Faltan argumentos: N dimension de la matriz, T cantidad de threads \n");
    return 0;
   }
    N=atoi(argv[1]);
@@ -51,7 +51,7 @@ int main(int argc,char*argv[]){
 		temp = A[i*N+j];
 		A[i*N+j]= A[j*N+i];
 		A[j*N+i]= temp;
-   
+  
    }
   }   
     printf("Tiempo en segundos para el thread %d: %f \n", tid,dwalltime() - timetick);
