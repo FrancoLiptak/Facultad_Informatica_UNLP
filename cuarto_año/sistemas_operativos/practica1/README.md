@@ -26,7 +26,7 @@ Ejecuta en espacio de usuario.
 
 ### Analice cómo implementaría este ciclo básico de interpretación de scripts.
 
-Para implementar un REPL en Lisp, es necesario únicamente implementar estas tres funciones y una función de bucle infinito (obviamente, la implementación de eval será complicada, dado que se debe también implementar todas las funciones primitivas como car o + y operadores especiales como if.). Hecho esto, un REPL básico es una única línea de código: ´´´ (loop (print (eval (read)))) ´´´.
+Para implementar un REPL en Lisp, es necesario únicamente implementar estas tres funciones y una función de bucle infinito (obviamente, la implementación de eval será complicada, dado que se debe también implementar todas las funciones primitivas como car o + y operadores especiales como if.). Hecho esto, un REPL básico es una única línea de código: ` (loop (print (eval (read))))`.
 
 Una posible implementación de eval es un intérprete recursivo que actúa sobre el árbol de sintaxis abstracta creado por read. Otra posibilidad es compilar el árbol de sintaxis en código máquina y ejecutarlo.
 Las implementaciones reales de REPLs en Lisp son en ocasiones mucho más complicadas.
@@ -69,14 +69,14 @@ Esto es llamado "overlay". El PID original no cambia, pero el código de máquin
 
 POSIX es el acrónimo de Portable Operating System Interface, y X viene de UNIX como seña de identidad de la API.
 
-´´´
+` ` ` 
 int execl(char const *path, char const *arg0, ...);
 int execle(char const *path, char const *arg0, ..., char const *envp[]);
 int execlp(char const *file, char const *arg0, ...);
 int execv(char const *path, char const *argv[]);
 int execve(char const *path, char const *argv[], char const *envp[]);
 int execvp(char const *file, char const *argv[]);
-´´´
+` ` ` 
 
 La base de cada uno es "exec" (execute), seguido de uno o más letras:
 - e - Se pasa explícitamente una matriz de punteros a variables de entorno a la nueva imagen de proceso.
