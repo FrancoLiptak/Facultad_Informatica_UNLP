@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5444c456-cba1-425d-a648-79d3ee25aab1" name="Default" comment="" />
+    <list default="true" id="7d0f48ac-ba87-4408-bbc0-ce922e5aa961" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -12,30 +12,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="text.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/punto3/text.txt">
+      <file leaf-file-name="Encuentro.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/punto4/Encuentro.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
+            <state relative-caret-position="578">
+              <caret line="34" column="93" selection-start-line="34" selection-start-column="93" selection-end-line="34" selection-end-column="93" />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TextFileToTable.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/punto3/TextFileToTable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="19" column="65" selection-start-line="19" selection-start-column="65" selection-end-line="19" selection-end-column="65" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TextFileToTable.form" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/punto3/TextFileToTable.form">
-          <provider selected="true" editor-type-id="ui-designer" />
         </entry>
       </file>
     </leaf>
@@ -47,15 +30,21 @@
       </list>
     </option>
   </component>
+  <component name="GradleLocalSettings">
+    <option name="projectSyncType">
+      <map>
+        <entry key="$USER_HOME$/Downloads/play-scala-starter-example" value="PREVIEW" />
+      </map>
+    </option>
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/src/punto2/ListaColores.form" />
-        <option value="$PROJECT_DIR$/src/punto2/ListaColores.java" />
-        <option value="$PROJECT_DIR$/src/punto3/text.txt" />
-        <option value="$PROJECT_DIR$/src/punto3/TextFileToTable.form" />
-        <option value="$PROJECT_DIR$/src/punto3/TextFileToTable.java" />
+        <option value="$PROJECT_DIR$/src/punto1/Test1.java" />
+        <option value="$PROJECT_DIR$/src/punto2/Test2.java" />
+        <option value="$PROJECT_DIR$/src/punto3/Test3.java" />
+        <option value="$PROJECT_DIR$/src/punto5/Suma.java" />
+        <option value="$PROJECT_DIR$/src/punto4/Encuentro.java" />
       </list>
     </option>
   </component>
@@ -69,42 +58,35 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="49" />
-    <option name="y" value="27" />
-    <option name="width" value="1317" />
-    <option name="height" value="741" />
+    <option name="x" value="209" />
+    <option name="width" value="1297" />
+    <option name="height" value="562" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="AndroidView" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="practica4" type="b2602c69:ProjectViewProjectNode" />
-              <item name="practica4" type="462c0819:PsiDirectoryNode" />
+              <item name="practica7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="practica7" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="practica4" type="b2602c69:ProjectViewProjectNode" />
-              <item name="practica4" type="462c0819:PsiDirectoryNode" />
+              <item name="practica7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="practica7" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="practica4" type="b2602c69:ProjectViewProjectNode" />
-              <item name="practica4" type="462c0819:PsiDirectoryNode" />
+              <item name="practica7" type="b2602c69:ProjectViewProjectNode" />
+              <item name="practica7" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="punto2" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="practica4" type="b2602c69:ProjectViewProjectNode" />
-              <item name="practica4" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="punto3" type="462c0819:PsiDirectoryNode" />
+              <item name="punto4" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -115,7 +97,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/projects/jav-2018-q2-lp-francoliptak/scala-practicas" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../practica6" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
@@ -131,10 +113,22 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.TextFileToTable">
-    <configuration name="ListaColores" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="punto2.ListaColores" />
-      <module name="practica4" />
+  <component name="RunManager" selected="Application.Suma">
+    <configuration name="Suma" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="punto5.Suma" />
+      <module name="practica7" />
+      <option name="PROGRAM_PARAMETERS" value="2 3 four" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="punto5.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+    </configuration>
+    <configuration name="Test2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="punto2.Test2" />
+      <module name="practica7" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -143,10 +137,11 @@
         </pattern>
       </extension>
     </configuration>
-    <configuration name="TextFileToTable" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="punto3.TextFileToTable" />
-      <module name="practica4" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <configuration name="Test3" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="punto3.Test3" />
+      <module name="practica7" />
+      <option name="PROGRAM_PARAMETERS" value="2 6" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="punto3.*" />
@@ -196,49 +191,53 @@
       <listeners />
     </configuration>
     <list>
-      <item itemvalue="Application.ListaColores" />
-      <item itemvalue="Application.TextFileToTable" />
+      <item itemvalue="Application.Test2" />
+      <item itemvalue="Application.Test3" />
+      <item itemvalue="Application.Suma" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.TextFileToTable" />
-        <item itemvalue="Application.ListaColores" />
+        <item itemvalue="Application.Suma" />
+        <item itemvalue="Application.Test3" />
+        <item itemvalue="Application.Test2" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SbtLocalSettings">
+    <option name="projectSyncType">
+      <map>
+        <entry key="$USER_HOME$/Downloads/play-scala-starter-example" value="PREVIEW" />
+        <entry key="$USER_HOME$/projects/jav-2018-q2-lp-francoliptak/scala-practicas" value="PREVIEW" />
+        <entry key="$USER_HOME$/projects/s-h-detail-ui" value="PREVIEW" />
+        <entry key="$USER_HOME$/projects/s-h-search-ui" value="PREVIEW" />
+        <entry key="$USER_HOME$/projects/s-pirlo" value="PREVIEW" />
+      </map>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="5444c456-cba1-425d-a648-79d3ee25aab1" name="Default" comment="" />
-      <created>1537910696044</created>
+      <changelist id="7d0f48ac-ba87-4408-bbc0-ce922e5aa961" name="Default" comment="" />
+      <created>1540770628016</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1537910696044</updated>
-      <workItem from="1537910699284" duration="8267000" />
-      <workItem from="1537969772683" duration="68000" />
+      <updated>1540770628016</updated>
+      <workItem from="1540770631639" duration="2131000" />
+      <workItem from="1540845392670" duration="922000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8335000" />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
+    <option name="totallyTimeSpent" value="3053000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="49" y="27" width="1317" height="741" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32857144" />
+      <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
@@ -246,11 +245,11 @@
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32857144" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32857144" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3283582" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2541306" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19826908" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info id="Learn" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -265,7 +264,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Messages" order="7" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.3283582" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -275,71 +274,52 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/punto3/text.txt">
+    <entry file="file://$PROJECT_DIR$/src/punto3/Test3.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
+        <state relative-caret-position="170">
+          <caret line="10" column="57" lean-forward="true" selection-start-line="10" selection-start-column="57" selection-end-line="10" selection-end-column="57" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/punto3/TextFileToTable.form">
-      <provider selected="true" editor-type-id="ui-designer" />
+    <entry file="file://$PROJECT_DIR$/src/punto5/Suma.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="94" selection-start-line="15" selection-start-column="94" selection-end-line="15" selection-end-column="94" />
+        </state>
+      </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/punto3/TextFileToTable.java">
+    <entry file="file://$PROJECT_DIR$/src/punto1/Test1.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
-          <caret line="19" column="65" lean-forward="true" selection-start-line="19" selection-start-column="65" selection-end-line="19" selection-end-column="65" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <caret line="19" column="15" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/src/punto2/Test2.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="10" selection-start-column="10" selection-end-column="10" />
+        <state relative-caret-position="204">
+          <caret line="12" column="44" lean-forward="true" selection-start-line="12" selection-start-column="44" selection-end-line="12" selection-end-column="44" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/punto2/ListaColores.form">
-      <provider selected="true" editor-type-id="ui-designer" />
-    </entry>
-    <entry file="jar:///usr/lib/jvm/java-8-oracle/src.zip!/javax/swing/ImageIcon.java">
+    <entry file="file://$PROJECT_DIR$/src/punto3/Test3.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="216" selection-start-line="216" selection-end-line="216" />
+        <state relative-caret-position="170">
+          <caret line="10" column="57" selection-start-line="10" selection-start-column="57" selection-end-line="10" selection-end-column="57" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/asd" />
-    <entry file="file://$PROJECT_DIR$/src/punto3/TextFileToTable.form">
-      <provider selected="true" editor-type-id="ui-designer" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/punto3/text.txt">
+    <entry file="file://$PROJECT_DIR$/src/punto5/Suma.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
+        <state relative-caret-position="255">
+          <caret line="15" column="94" selection-start-line="15" selection-start-column="94" selection-end-line="15" selection-end-column="94" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/punto2/ListaColores.java">
+    <entry file="file://$PROJECT_DIR$/src/punto4/Encuentro.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="42" column="76" selection-start-line="42" selection-start-column="34" selection-end-line="42" selection-end-column="76" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/punto3/TextFileToTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="19" column="65" selection-start-line="19" selection-start-column="65" selection-end-line="19" selection-end-column="65" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="578">
+          <caret line="34" column="93" selection-start-line="34" selection-start-column="93" selection-end-line="34" selection-end-column="93" />
         </state>
       </provider>
     </entry>
